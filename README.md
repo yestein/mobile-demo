@@ -1,4 +1,4 @@
 mobile-demo
 ===========
 
-my
+my first mobile demo on git
