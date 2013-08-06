@@ -8,7 +8,6 @@ function __G__TRACKBACK__(msg)
 end
 
 require("preload")
-print(1)
 
 local sharedDirector = CCDirector:sharedDirector()
 local sharedTextureCache = CCTextureCache:sharedTextureCache()
