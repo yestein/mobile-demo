@@ -108,8 +108,8 @@ local function main()
         end
 
         -- add moving dog
-        local spriteDog = creatDog()
-        layerFarm:addChild(spriteDog)
+        --local spriteDog = creatDog()
+        --layerFarm:addChild(spriteDog)
 
         -- handing touch events
         local touchBeginPoint = nil
@@ -211,6 +211,11 @@ local function main()
     sceneGame:addChild(createLayerFarm())
     sceneGame:addChild(createLayerMenu())
     sharedDirector:runWithScene(sceneGame)
+    print(os.time())
+    math.randomseed(os.time())
+    math.random(100)
+    Maze:Load()
+    Maze:Save()
 end
 
 xpcall(main, __G__TRACKBACK__)

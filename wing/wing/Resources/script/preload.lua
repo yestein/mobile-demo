@@ -18,9 +18,12 @@ if not _G.Player then
 	_G.Player = {}
 end
 
-
 if not _G.Hero then
 	_G.Hero = {}
+end
+
+if not _G.Lib then
+	_G.Lib = {}
 end
 
 require("define")

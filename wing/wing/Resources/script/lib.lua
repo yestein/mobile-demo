@@ -5,3 +5,9 @@
 -- Description  :
 -- Modify       :
 --===================================================
+
+function Lib:ShowTB1(tb)
+	for k, v in pairs(tb) do
+		print(string.format("[%s] = %s", tostring(k), tostring(v)))
+	end
+end
