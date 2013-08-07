@@ -1,3 +1,11 @@
+--===================================================
+-- File Name    : main.lua
+-- Creator      : yestein (yestein86@gmail.com)
+-- Date         : 2013-08-07 13:06:54
+-- Description  :
+-- Modify       :
+--===================================================
+
 
 -- for CCLuaEngine traceback
 function __G__TRACKBACK__(msg)

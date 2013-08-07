@@ -1,12 +1,17 @@
 --===================================================
--- File Name    : define.lua
+-- File Name    : maze.lua
 -- Creator      : yestein (yestein86@gmail.com)
--- Date         : 2013-08-07 13:06:59
+-- Date         : 2013-08-07 13:06:47
 -- Description  :
 -- Modify       :
 --===================================================
 
-local Def = _G.Def
+function Maze:Save()
+end
 
-Def.szHeroFile = "dog.png"
-Def.szMonsterFile = "icon.pnf"
+function Maze:Load()
+end
+
+function Maze:RandomMaze()
+end
+

@@ -1,12 +1,9 @@
 --===================================================
--- File Name    : define.lua
+-- File Name    : hero.lua
 -- Creator      : yestein (yestein86@gmail.com)
--- Date         : 2013-08-07 13:06:59
+-- Date         : 2013-08-07 13:09:07
 -- Description  :
 -- Modify       :
 --===================================================
 
-local Def = _G.Def
-
-Def.szHeroFile = "dog.png"
-Def.szMonsterFile = "icon.pnf"
+print("hero.lua")

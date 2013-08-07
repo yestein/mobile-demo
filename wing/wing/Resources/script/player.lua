@@ -1,12 +1,7 @@
 --===================================================
--- File Name    : define.lua
+-- File Name    : player.lua
 -- Creator      : yestein (yestein86@gmail.com)
--- Date         : 2013-08-07 13:06:59
+-- Date         : 2013-08-07 13:08:52
 -- Description  :
 -- Modify       :
 --===================================================
-
-local Def = _G.Def
-
-Def.szHeroFile = "dog.png"
-Def.szMonsterFile = "icon.pnf"
