@@ -35,6 +35,8 @@ local function main()
 
     local tbVisibleSize = sharedDirector:getVisibleSize()
     local tbOrigin = sharedDirector:getVisibleOrigin()
+    print(tbVisibleSize.width, tbVisibleSize.height)
+    print(tbOrigin.x, tbOrigin.y)
 
     -- add the moving dog
     local function creatDog()
@@ -84,7 +86,7 @@ local function main()
         local layerFarm = CCLayer:create()
 
         -- add in farm background
-        local bg = CCSprite:create("background.png")
+        local bg = CCSprite:create("farm.jpg")
         bg:setPosition(tbOrigin.x + tbVisibleSize.width / 2 + 80, tbOrigin.y + tbVisibleSize.height / 2)
         layerFarm:addChild(bg)
 
@@ -108,8 +110,13 @@ local function main()
         end
 
         -- add moving dog
-        --local spriteDog = creatDog()
-        --layerFarm:addChild(spriteDog)
+        local spriteDog = creatDog()
+        layerFarm:addChild(spriteDog)
+
+        local tbBlock = Maze:GenBlock()
+        for _, pBlock in ipairs(tbBlock) do
+            layerFarm:addChild(pBlock)
+        end
 
         -- handing touch events
         local touchBeginPoint = nil
@@ -206,16 +213,19 @@ local function main()
     local effectPath = sharedFileUtils:fullPathForFilename("effect1.wav")
     sharedEngine:preloadEffect(effectPath)
 
+    math.randomseed(os.time())
+    math.random(100)
+    Maze:Init(40, 20)
+    Maze:Load()
+    Maze:RandomMaze()
+    Maze:Save()
+
     -- run
     local sceneGame = CCScene:create()
     sceneGame:addChild(createLayerFarm())
     sceneGame:addChild(createLayerMenu())
     sharedDirector:runWithScene(sceneGame)
-    print(os.time())
-    math.randomseed(os.time())
-    math.random(100)
-    Maze:Load()
-    Maze:Save()
+    
 end
 
 xpcall(main, __G__TRACKBACK__)

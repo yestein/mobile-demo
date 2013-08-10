@@ -276,7 +276,6 @@
 		342F8C9217B0BEE300450B82 /* preload.lua in Resources */ = {isa = PBXBuildFile; fileRef = 342F8C7A17B0BEE300450B82 /* preload.lua */; };
 		342F8C9317B0BEE300450B82 /* background.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 342F8C7C17B0BEE300450B82 /* background.mp3 */; };
 		342F8C9417B0BEE300450B82 /* effect1.wav in Resources */ = {isa = PBXBuildFile; fileRef = 342F8C7D17B0BEE300450B82 /* effect1.wav */; };
-		344E79F917B28A3000B8CEDD /* savemap.txt in Resources */ = {isa = PBXBuildFile; fileRef = 344E79F817B28A3000B8CEDD /* savemap.txt */; };
 		34EB8B3717B20E8400B41539 /* hero.lua in Resources */ = {isa = PBXBuildFile; fileRef = 34EB8B3317B20E8400B41539 /* hero.lua */; };
 		34EB8B3817B20E8400B41539 /* lib.lua in Resources */ = {isa = PBXBuildFile; fileRef = 34EB8B3417B20E8400B41539 /* lib.lua */; };
 		34EB8B3917B20E8400B41539 /* maze.lua in Resources */ = {isa = PBXBuildFile; fileRef = 34EB8B3517B20E8400B41539 /* maze.lua */; };
@@ -839,7 +838,6 @@
 		342F8C7A17B0BEE300450B82 /* preload.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = preload.lua; sourceTree = "<group>"; };
 		342F8C7C17B0BEE300450B82 /* background.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = background.mp3; sourceTree = "<group>"; };
 		342F8C7D17B0BEE300450B82 /* effect1.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = effect1.wav; sourceTree = "<group>"; };
-		344E79F817B28A3000B8CEDD /* savemap.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = savemap.txt; sourceTree = "<group>"; };
 		34EB8B3317B20E8400B41539 /* hero.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = hero.lua; sourceTree = "<group>"; };
 		34EB8B3417B20E8400B41539 /* lib.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = lib.lua; sourceTree = "<group>"; };
 		34EB8B3517B20E8400B41539 /* maze.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = maze.lua; sourceTree = "<group>"; };
@@ -1997,7 +1995,6 @@
 		342F8C7717B0BEE300450B82 /* script */ = {
 			isa = PBXGroup;
 			children = (
-				344E79F817B28A3000B8CEDD /* savemap.txt */,
 				34EB8B3317B20E8400B41539 /* hero.lua */,
 				34EB8B3417B20E8400B41539 /* lib.lua */,
 				34EB8B3517B20E8400B41539 /* maze.lua */,
@@ -2102,7 +2099,6 @@
 				34EB8B3817B20E8400B41539 /* lib.lua in Resources */,
 				34EB8B3917B20E8400B41539 /* maze.lua in Resources */,
 				34EB8B3A17B20E8400B41539 /* player.lua in Resources */,
-				344E79F917B28A3000B8CEDD /* savemap.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
