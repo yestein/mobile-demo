@@ -27,7 +27,11 @@ function Maze:Save()
 end
 
 function Maze:Entry(tbData)
-	self.tbData = tbData
+	for nRow, tbRow in ipairs(tbData) do
+		for nCol, nData in ipairs(tbRow) do
+			self.tbData[nRow][nCol] = nData
+		end
+	end
 	return 1
 end
 
@@ -41,7 +45,7 @@ function Maze:Load()
 	if not file then
 		return
 	end
-	print(file:read("*all"))
+	--print(file:read("*all"))
 	local t = dofile(szPath.."savemap.lua")
 end
 
@@ -63,23 +67,43 @@ function Maze:RandomMaze()
 	end
 end
 
-function Maze:GenBlock()
+function Maze:GenBlock(pBg)
 	local frameWidth = 20
     local frameHeight = 20
-    local tbOrigin = {x = 0, y = 200}
 
-    -- create dog animate
+    local function onTouchBegan(x, y)
+
+    end
+
+    local function onTouch(eventType, x, y)
+        if eventType == "began" then   
+            return onTouchBegan(x, y)
+        end
+    end
+
+
+
     local textureDog = sharedTextureCache:addImage(Def.szBlockImg)
     local rect = CCRectMake(0, 0, frameWidth, frameHeight)
     local frame0 = CCSpriteFrame:createWithTexture(textureDog, rect)
 
     local tbSprite = {}
+    self.tbBlock = {}
+    local tbSize = pBg:getTextureRect().size
+    local nX, nY = pBg:getPosition()
+    local nStartX = -tbSize.width / 2 + frameWidth / 2
+    local nStartY = -tbSize.height / 2 + frameHeight / 2
     for nRow, tbRow in ipairs(self.tbData) do
+    	self.tbBlock[nRow] = {}
 		for nColumn, nData in ipairs(tbRow) do
-			if nData == MAP_BLOCK then
-				local pSprite = CCSprite:createWithSpriteFrame(frame0)
-	    		pSprite:setPosition(tbOrigin.x + nColumn * frameWidth, tbOrigin.y + nRow * frameHeight)
-	    		tbSprite[#tbSprite + 1] = pSprite
+			local pSprite = CCSprite:createWithSpriteFrame(frame0)
+			self.tbBlock[nRow][nColumn] = pSprite
+    		pSprite:setPosition(nStartX + (nColumn - 1) * frameWidth, nStartY + (nRow - 1) * frameHeight)
+    		--pSprite:registerScriptTouchHandler(onTouch)
+    		--pSprite:setTouchEnabled(true)
+    		tbSprite[#tbSprite + 1] = pSprite
+			if nData == MAP_FREE then
+				pSprite:setVisible(false)
 	    	end
 		end
 	end

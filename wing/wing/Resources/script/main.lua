@@ -35,8 +35,7 @@ local function main()
 
     local tbVisibleSize = sharedDirector:getVisibleSize()
     local tbOrigin = sharedDirector:getVisibleOrigin()
-    print(tbVisibleSize.width, tbVisibleSize.height)
-    print(tbOrigin.x, tbOrigin.y)
+    local nOffsetX, nOffsetY = 0, 0
 
     -- add the moving dog
     local function creatDog()
@@ -86,10 +85,19 @@ local function main()
         local layerFarm = CCLayer:create()
 
         -- add in farm background
-        local bg = CCSprite:create("farm.jpg")
-        bg:setPosition(tbOrigin.x + tbVisibleSize.width / 2 + 80, tbOrigin.y + tbVisibleSize.height / 2)
+        local bg = CCSprite:create(Def.szBGImg)
+        local tbSize = bg:getTextureRect().size
+        if tbSize.width / 2 < tbVisibleSize.width then
+            nOffsetX = tbVisibleSize.width - tbSize.width / 2
+        end
+        if tbSize.height / 2 < tbVisibleSize.height then
+            nOffsetY = tbVisibleSize.height - tbSize.height / 2
+        end
+        bg:setPosition(tbOrigin.x, tbOrigin.y)
+        layerFarm:setPosition(nOffsetX, nOffsetY)
         layerFarm:addChild(bg)
 
+        --[[
         -- add land sprite
         for i = 0, 3 do
             for j = 0, 1 do
@@ -108,12 +116,13 @@ local function main()
                 layerFarm:addChild(spriteCrop)
             end
         end
+        --]]
 
         -- add moving dog
-        local spriteDog = creatDog()
-        layerFarm:addChild(spriteDog)
+        --local spriteDog = creatDog()
+        --layerFarm:addChild(spriteDog)
 
-        local tbBlock = Maze:GenBlock()
+        local tbBlock = Maze:GenBlock(bg)
         for _, pBlock in ipairs(tbBlock) do
             layerFarm:addChild(pBlock)
         end
@@ -123,26 +132,54 @@ local function main()
 
         local function onTouchBegan(x, y)
             cclog("onTouchBegan: %0.2f, %0.2f", x, y)
+            local nX, nY = layerFarm:getPosition()
+            local nLogicX, nLogicY = x - nX, y - nY
+            nLogicX = math.floor(nLogicX / 20)
+            nLogicY = math.floor(nLogicY / 20)
+            local nCol = nLogicX + 21
+            local nRow = nLogicY + 16
+            if nRow <= 21 then
+                Maze.tbData[nRow][nCol] = 1
+                local pBlock = Maze.tbBlock[nRow][nCol]
+                pBlock:setVisible(false)
+                Maze:Save()
+            end
+             cclog("Logic: %d, %d", nLogicX, nLogicY)
             touchBeginPoint = {x = x, y = y}
-            spriteDog.isPaused = true
+            --spriteDog.isPaused = true
             -- CCTOUCHBEGAN event must return true
             return true
         end
 
         local function onTouchMoved(x, y)
-            cclog("onTouchMoved: %0.2f, %0.2f", x, y)
+            --cclog("onTouchMoved: %0.2f, %0.2f", x, y)
             if touchBeginPoint then
                 local cx, cy = layerFarm:getPosition()
-                layerFarm:setPosition(cx + x - touchBeginPoint.x,
-                                      cy + y - touchBeginPoint.y)
+                local nNewX, nNewY = cx + x - touchBeginPoint.x, cy + y - touchBeginPoint.y
+                local tbSize = bg:getTextureRect().size
+                local nMinX, nMaxX = 0, tbSize.width - tbVisibleSize.width
+                local nMinY, nMaxY = tbSize.height / 2 * -1, 0
+                if nNewX < nOffsetX then
+                    nNewX = nOffsetX
+                elseif nNewX > tbSize.width / 2 then
+                    nNewX = tbSize.width / 2
+                end
+
+                if nNewY < nOffsetY then
+                    nNewY = nOffsetY
+                elseif nNewY > tbSize.height / 2 then
+                    nNewY = tbSize.height / 2
+                end
+                layerFarm:setPosition(nNewX, nNewY)
                 touchBeginPoint = {x = x, y = y}
+                --cclog("layerFarm: %0.2f, %0.2f", nNewX, nNewY)
             end
         end
 
         local function onTouchEnded(x, y)
-            cclog("onTouchEnded: %0.2f, %0.2f", x, y)
+            --cclog("onTouchEnded: %0.2f, %0.2f", x, y)
             touchBeginPoint = nil
-            spriteDog.isPaused = false
+            --spriteDog.isPaused = false
         end
 
         local function onTouch(eventType, x, y)
@@ -151,7 +188,7 @@ local function main()
             elseif eventType == "moved" then
                 return onTouchMoved(x, y)
             else
-                cclog("Type:%s X:%d Y:%d", eventType, x, y)
+                --cclog("Type:%s X:%d Y:%d", eventType, x, y)
                 return onTouchEnded(x, y)
             end
         end
@@ -215,15 +252,13 @@ local function main()
 
     math.randomseed(os.time())
     math.random(100)
-    Maze:Init(40, 20)
+    Maze:Init(40, 21)
     Maze:Load()
-    Maze:RandomMaze()
-    Maze:Save()
 
     -- run
     local sceneGame = CCScene:create()
     sceneGame:addChild(createLayerFarm())
-    sceneGame:addChild(createLayerMenu())
+    --sceneGame:addChild(createLayerMenu())
     sharedDirector:runWithScene(sceneGame)
     
 end

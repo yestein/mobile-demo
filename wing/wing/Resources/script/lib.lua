@@ -6,6 +6,24 @@
 -- Modify       :
 --===================================================
 
+local MetaTable = {
+	__index = function(table, key)
+		local v = rawget(table, key)
+		if v then
+			return v
+		end
+		local tbBase = rawget(table, "_tbBase")
+		return tbBase[key]
+	end
+}
+
+function Lib:NewClass(tbBase)
+	local tbNew = { _tbBase = tbBase }
+	setmetatable(tbNew, MetaTable)
+	return tbNew
+end
+
+
 function Lib:ShowTB1(tb)
 	for k, v in pairs(tb) do
 		print(string.format("[%s] = %s", tostring(k), tostring(v)))
@@ -33,3 +51,4 @@ function Lib:ShowTBN(tb, n)
 	end
 	showTB(tb, 1)
 end
+

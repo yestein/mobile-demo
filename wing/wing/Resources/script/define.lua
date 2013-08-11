@@ -11,3 +11,4 @@ local Def = _G.Def
 Def.szHeroFile = "dog.png"
 Def.szMonsterFile = "icon.pnf"
 Def.szBlockImg = "block.png"
+Def.szBGImg = "background.png"
