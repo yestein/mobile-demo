@@ -52,3 +52,11 @@ function Lib:ShowTBN(tb, n)
 	showTB(tb, 1)
 end
 
+function Lib:Reload()
+	print("Lib:Reload")
+	dofile("script/maze.lua")
+	dofile("script/lib.lua")
+	dofile("script/define.lua")
+	dofile("script/hero.lua")
+end
+

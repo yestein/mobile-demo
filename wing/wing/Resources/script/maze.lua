@@ -12,6 +12,8 @@ local MAP_BLOCK = 2
 local sharedTextureCache = CCTextureCache:sharedTextureCache()
 
 function Maze:Save()
+	print("Maze:Save")
+	Lib:Reload()
     local szPath = CCFileUtils:sharedFileUtils():getWritablePath()
 	local file = assert(io.open(szPath.."savemap.lua", "w"))
 	file:write("Maze:Entry{\n")
@@ -40,6 +42,7 @@ function Maze:GetData()
 end
 
 function Maze:Load()
+	print("Maze:Load")
 	local szPath = CCFileUtils:sharedFileUtils():getWritablePath()
 	local file = io.open(szPath.."savemap.lua", "r")
 	if not file then
@@ -59,6 +62,16 @@ function Maze:Init(nWidth, nHeight)
 	end
 end
 
+function Maze:Reset()
+	print("Maze:Rest")
+	for nRow , tbRow in ipairs(self.tbData) do
+		for nCol, _ in ipairs(tbRow) do
+			self.tbData[nRow][nCol] = MAP_BLOCK
+			self.tbBlock[nRow][nCol]:setVisible(true)
+		end
+	end
+end
+
 function Maze:RandomMaze()
 	for nRow, tbRow in ipairs(self.tbData) do
 		for nColumn, nData in ipairs(tbRow) do
@@ -70,18 +83,6 @@ end
 function Maze:GenBlock(pBg)
 	local frameWidth = 20
     local frameHeight = 20
-
-    local function onTouchBegan(x, y)
-
-    end
-
-    local function onTouch(eventType, x, y)
-        if eventType == "began" then   
-            return onTouchBegan(x, y)
-        end
-    end
-
-
 
     local textureDog = sharedTextureCache:addImage(Def.szBlockImg)
     local rect = CCRectMake(0, 0, frameWidth, frameHeight)
@@ -99,8 +100,6 @@ function Maze:GenBlock(pBg)
 			local pSprite = CCSprite:createWithSpriteFrame(frame0)
 			self.tbBlock[nRow][nColumn] = pSprite
     		pSprite:setPosition(nStartX + (nColumn - 1) * frameWidth, nStartY + (nRow - 1) * frameHeight)
-    		--pSprite:registerScriptTouchHandler(onTouch)
-    		--pSprite:setTouchEnabled(true)
     		tbSprite[#tbSprite + 1] = pSprite
 			if nData == MAP_FREE then
 				pSprite:setVisible(false)

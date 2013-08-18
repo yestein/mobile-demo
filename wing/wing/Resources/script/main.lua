@@ -22,80 +22,73 @@ local sharedTextureCache = CCTextureCache:sharedTextureCache()
 local sharedEngine = SimpleAudioEngine:sharedEngine()
 local sharedFileUtils = CCFileUtils:sharedFileUtils()
 
-local function main()
-    -- avoid memory leak
-    collectgarbage("setpause", 100)
-    collectgarbage("setstepmul", 5000)
+local tbVisibleSize = sharedDirector:getVisibleSize()
+local tbOrigin = sharedDirector:getVisibleOrigin()
+local nOffsetX, nOffsetY = 0, 0
 
-    local cclog = function(...)
-        print(string.format(...))
+function cclog(...)
+    print(string.format(...))
+end
+
+-- add the moving dog
+local function creatDog()
+    local frameWidth = 105
+    local frameHeight = 95
+
+    -- create dog animate
+    local textureDog = sharedTextureCache:addImage(Def.szHeroFile)
+    local rect = CCRectMake(0, 0, frameWidth, frameHeight)
+    local frame0 = CCSpriteFrame:createWithTexture(textureDog, rect)
+    rect = CCRectMake(frameWidth, 0, frameWidth, frameHeight)
+    local frame1 = CCSpriteFrame:createWithTexture(textureDog, rect)
+
+    local spriteDog = CCSprite:createWithSpriteFrame(frame0)
+    spriteDog.isPaused = false
+    spriteDog:setPosition(tbOrigin.x, tbOrigin.y + tbVisibleSize.height / 4 * 3)
+
+    local animFrames = CCArray:create()
+
+    animFrames:addObject(frame0)
+    animFrames:addObject(frame1)
+
+    local animation = CCAnimation:createWithSpriteFrames(animFrames, 0.5)
+    local animate = CCAnimate:create(animation);
+    spriteDog:runAction(CCRepeatForever:create(animate))
+
+    -- moving dog at every frame
+    local function tick()
+        if spriteDog.isPaused then return end
+        local x, y = spriteDog:getPosition()
+        if x > tbOrigin.x + tbVisibleSize.width then
+            x = tbOrigin.x
+        else
+            x = x + 1
+        end
+
+        spriteDog:setPositionX(x)
     end
 
-    ---------------
+    sharedDirector:getScheduler():scheduleScriptFunc(tick, 0, false)
 
-    local tbVisibleSize = sharedDirector:getVisibleSize()
-    local tbOrigin = sharedDirector:getVisibleOrigin()
-    local nOffsetX, nOffsetY = 0, 0
+    return spriteDog
+end
 
-    -- add the moving dog
-    local function creatDog()
-        local frameWidth = 105
-        local frameHeight = 95
+ -- create farm
+local function createLayerFarm()
+    local layerFarm = CCLayer:create()
 
-        -- create dog animate
-        local textureDog = sharedTextureCache:addImage(Def.szHeroFile)
-        local rect = CCRectMake(0, 0, frameWidth, frameHeight)
-        local frame0 = CCSpriteFrame:createWithTexture(textureDog, rect)
-        rect = CCRectMake(frameWidth, 0, frameWidth, frameHeight)
-        local frame1 = CCSpriteFrame:createWithTexture(textureDog, rect)
-
-        local spriteDog = CCSprite:createWithSpriteFrame(frame0)
-        spriteDog.isPaused = false
-        spriteDog:setPosition(tbOrigin.x, tbOrigin.y + tbVisibleSize.height / 4 * 3)
-
-        local animFrames = CCArray:create()
-
-        animFrames:addObject(frame0)
-        animFrames:addObject(frame1)
-
-        local animation = CCAnimation:createWithSpriteFrames(animFrames, 0.5)
-        local animate = CCAnimate:create(animation);
-        spriteDog:runAction(CCRepeatForever:create(animate))
-
-        -- moving dog at every frame
-        local function tick()
-            if spriteDog.isPaused then return end
-            local x, y = spriteDog:getPosition()
-            if x > tbOrigin.x + tbVisibleSize.width then
-                x = tbOrigin.x
-            else
-                x = x + 1
-            end
-
-            spriteDog:setPositionX(x)
-        end
-
-        sharedDirector:getScheduler():scheduleScriptFunc(tick, 0, false)
-
-        return spriteDog
+    -- add in farm background
+    local bg = CCSprite:create(Def.szBGImg)
+    local tbSize = bg:getTextureRect().size
+    if tbSize.width / 2 < tbVisibleSize.width then
+        nOffsetX = tbVisibleSize.width - tbSize.width / 2
     end
-
-    -- create farm
-    local function createLayerFarm()
-        local layerFarm = CCLayer:create()
-
-        -- add in farm background
-        local bg = CCSprite:create(Def.szBGImg)
-        local tbSize = bg:getTextureRect().size
-        if tbSize.width / 2 < tbVisibleSize.width then
-            nOffsetX = tbVisibleSize.width - tbSize.width / 2
-        end
-        if tbSize.height / 2 < tbVisibleSize.height then
-            nOffsetY = tbVisibleSize.height - tbSize.height / 2
-        end
-        bg:setPosition(tbOrigin.x, tbOrigin.y)
-        layerFarm:setPosition(nOffsetX, nOffsetY)
-        layerFarm:addChild(bg)
+    if tbSize.height / 2 < tbVisibleSize.height then
+        nOffsetY = tbVisibleSize.height - tbSize.height / 2
+    end
+    bg:setPosition(tbOrigin.x, tbOrigin.y)
+    layerFarm:setPosition(nOffsetX, nOffsetY)
+    layerFarm:addChild(bg)
 
         --[[
         -- add land sprite
@@ -122,124 +115,146 @@ local function main()
         --local spriteDog = creatDog()
         --layerFarm:addChild(spriteDog)
 
-        local tbBlock = Maze:GenBlock(bg)
-        for _, pBlock in ipairs(tbBlock) do
-            layerFarm:addChild(pBlock)
-        end
+    local tbBlock = Maze:GenBlock(bg)
+    for _, pBlock in ipairs(tbBlock) do
+        layerFarm:addChild(pBlock)
+    end
 
-        -- handing touch events
-        local touchBeginPoint = nil
+    -- handing touch events
+    local touchBeginPoint = nil
+    local touchMoveStartPoint = nil
 
-        local function onTouchBegan(x, y)
-            cclog("onTouchBegan: %0.2f, %0.2f", x, y)
-            local nX, nY = layerFarm:getPosition()
-            local nLogicX, nLogicY = x - nX, y - nY
-            nLogicX = math.floor(nLogicX / 20)
-            nLogicY = math.floor(nLogicY / 20)
-            local nCol = nLogicX + 21
-            local nRow = nLogicY + 16
-            if nRow <= 21 then
-                Maze.tbData[nRow][nCol] = 1
-                local pBlock = Maze.tbBlock[nRow][nCol]
-                pBlock:setVisible(false)
-                Maze:Save()
+    local function onTouchBegan(x, y)
+        cclog("onTouchBegan: %0.2f, %0.2f", x, y)
+        --cclog("Logic: %d, %d", nLogicX, nLogicY)
+        touchBeginPoint = {x = x, y = y}
+        touchMoveStartPoint = {x = x, y = y}
+        
+        --spriteDog.isPaused = true
+        -- CCTOUCHBEGAN event must return true
+        return true
+    end
+
+    local function onTouchMoved(x, y)
+        --cclog("onTouchMoved: %0.2f, %0.2f", x, y)
+        if touchBeginPoint then
+            local cx, cy = layerFarm:getPosition()
+            local nNewX, nNewY = cx + x - touchBeginPoint.x, cy + y - touchBeginPoint.y
+            local tbSize = bg:getTextureRect().size
+            local nMinX, nMaxX = 0, tbSize.width - tbVisibleSize.width
+            local nMinY, nMaxY = tbSize.height / 2 * -1, 0
+            if nNewX < nOffsetX then
+                nNewX = nOffsetX
+            elseif nNewX > tbSize.width / 2 then
+                nNewX = tbSize.width / 2
             end
-             cclog("Logic: %d, %d", nLogicX, nLogicY)
+
+            if nNewY < nOffsetY then
+                nNewY = nOffsetY
+            elseif nNewY > tbSize.height / 2 then
+                nNewY = tbSize.height / 2
+            end
+            layerFarm:setPosition(nNewX, nNewY)
             touchBeginPoint = {x = x, y = y}
-            --spriteDog.isPaused = true
-            -- CCTOUCHBEGAN event must return true
-            return true
+            --cclog("layerFarm: %0.2f, %0.2f", nNewX, nNewY)
         end
-
-        local function onTouchMoved(x, y)
-            --cclog("onTouchMoved: %0.2f, %0.2f", x, y)
-            if touchBeginPoint then
-                local cx, cy = layerFarm:getPosition()
-                local nNewX, nNewY = cx + x - touchBeginPoint.x, cy + y - touchBeginPoint.y
-                local tbSize = bg:getTextureRect().size
-                local nMinX, nMaxX = 0, tbSize.width - tbVisibleSize.width
-                local nMinY, nMaxY = tbSize.height / 2 * -1, 0
-                if nNewX < nOffsetX then
-                    nNewX = nOffsetX
-                elseif nNewX > tbSize.width / 2 then
-                    nNewX = tbSize.width / 2
-                end
-
-                if nNewY < nOffsetY then
-                    nNewY = nOffsetY
-                elseif nNewY > tbSize.height / 2 then
-                    nNewY = tbSize.height / 2
-                end
-                layerFarm:setPosition(nNewX, nNewY)
-                touchBeginPoint = {x = x, y = y}
-                --cclog("layerFarm: %0.2f, %0.2f", nNewX, nNewY)
-            end
-        end
-
-        local function onTouchEnded(x, y)
-            --cclog("onTouchEnded: %0.2f, %0.2f", x, y)
-            touchBeginPoint = nil
-            --spriteDog.isPaused = false
-        end
-
-        local function onTouch(eventType, x, y)
-            if eventType == "began" then   
-                return onTouchBegan(x, y)
-            elseif eventType == "moved" then
-                return onTouchMoved(x, y)
-            else
-                --cclog("Type:%s X:%d Y:%d", eventType, x, y)
-                return onTouchEnded(x, y)
-            end
-        end
-
-        layerFarm:registerScriptTouchHandler(onTouch)
-        layerFarm:setTouchEnabled(true)
-
-        return layerFarm
     end
 
-
-    -- create menu
-    local function createLayerMenu()
-        local layerMenu = CCLayer:create()
-
-        local menuPopup, menuTools, effectID
-
-        local function menuCallbackClosePopup()
-            -- stop test sound effect
-            SimpleAudioEngine:sharedEngine():stopEffect(effectID)
-            menuPopup:setVisible(false)
-        end
-
-        local function menuCallbackOpenPopup()
-            -- loop test sound effect
-            local effectPath = CCFileUtils:sharedFileUtils():fullPathForFilename("effect1.wav")
-            effectID = SimpleAudioEngine:sharedEngine():playEffect(effectPath)
-            menuPopup:setVisible(true)
-        end
-
-        -- add a popup menu
-        local menuPopupItem = CCMenuItemImage:create("menu2.png", "menu2.png")
-        menuPopupItem:setPosition(0, 0)
-        menuPopupItem:registerScriptTapHandler(menuCallbackClosePopup)
-        menuPopup = CCMenu:createWithItem(menuPopupItem)
-        menuPopup:setPosition(tbOrigin.x + tbVisibleSize.width / 2, tbOrigin.y + tbVisibleSize.height / 2)
-        menuPopup:setVisible(false)
-        layerMenu:addChild(menuPopup)
-
-        -- add the left-bottom "tools" menu to invoke menuPopup
-        local menuToolsItem = CCMenuItemImage:create("menu1.png", "menu1.png")
-        menuToolsItem:setPosition(0, 0)
-        menuToolsItem:registerScriptTapHandler(menuCallbackOpenPopup)
-        menuTools = CCMenu:createWithItem(menuToolsItem)
-        local itemWidth = menuToolsItem:getContentSize().width
-        local itemHeight = menuToolsItem:getContentSize().height
-        menuTools:setPosition(tbOrigin.x + itemWidth/2, tbOrigin.y + itemHeight/2)
-        layerMenu:addChild(menuTools)
-
-        return layerMenu
+    local function onTouchEnded(x, y)
+        cclog("onTouchEnded: %0.2f, %0.2f", x, y)
+        if x == touchMoveStartPoint.x and y == touchMoveStartPoint.y then
+	        local nX, nY = layerFarm:getPosition()
+	        local nLogicX, nLogicY = x - nX, y - nY
+	        nLogicX = math.floor(nLogicX / 20)
+	        nLogicY = math.floor(nLogicY / 20)
+	        local nCol = nLogicX + 21
+	        local nRow = nLogicY + 16
+	        if nRow <= 21 then
+	            Maze.tbData[nRow][nCol] = 1
+	            local pBlock = Maze.tbBlock[nRow][nCol]
+	            pBlock:setVisible(false)
+	        end
+	    end
+        touchBeginPoint = nil
+        --spriteDog.isPaused = false
     end
+
+    local function onTouch(eventType, x, y)
+        if eventType == "began" then   
+            return onTouchBegan(x, y)
+        elseif eventType == "moved" then
+            return onTouchMoved(x, y)
+        else
+            --cclog("Type:%s X:%d Y:%d", eventType, x, y)
+            return onTouchEnded(x, y)
+        end
+    end
+
+    layerFarm:registerScriptTouchHandler(onTouch)
+    layerFarm:setTouchEnabled(true)
+
+    return layerFarm
+end
+
+-- create menu
+local function createMenu()
+    local layerMenu = CCLayer:create()
+
+    local menuPopup, menuTools, effectID
+
+    local function menuCallbackSave()
+        -- stop test sound effect
+        --SimpleAudioEngine:sharedEngine():stopEffect(effectID)
+        --menuPopup:setVisible(false)
+        Maze:Save()
+    end
+
+    local function menuCallbackReset()
+        -- loop test sound effect
+        --local effectPath = CCFileUtils:sharedFileUtils():fullPathForFilename("effect1.wav")
+        --effectID = SimpleAudioEngine:sharedEngine():playEffect(effectPath)
+        --menuPopup:setVisible(true)
+        Maze:Reset()
+        
+    end
+	
+	--[[
+    -- add a popup menu
+    local menuPopupItem = CCMenuItemImage:create("menu2.png", "menu2.png")
+    menuPopupItem:setPosition(0, 0)
+    menuPopupItem:registerScriptTapHandler(menuCallbackClosePopup)
+    menuPopup = CCMenu:createWithItem(menuPopupItem)
+    menuPopup:setPosition(tbOrigin.x + tbVisibleSize.width / 2, tbOrigin.y + tbVisibleSize.height / 2)
+    menuPopup:setVisible(false)
+    layerMenu:addChild(menuPopup)
+    --]]
+
+	local menuArray = CCArray:create()
+	
+    -- add the left-bottom "tools" menu to invoke menuPopup
+    local menuReset = CCMenuItemImage:create("menu1.png", "menu1.png")
+    menuReset:registerScriptTapHandler(menuCallbackReset)    
+    local itemWidth = menuReset:getContentSize().width
+    local itemHeight = menuReset:getContentSize().height
+    menuReset:setPosition(itemWidth / 2, itemHeight / 2)
+    menuArray:addObject(menuReset)
+    
+    local menuSave = CCMenuItemImage:create("menu1.png", "menu1.png")
+    menuSave:registerScriptTapHandler(menuCallbackSave)    
+    menuSave:setPosition(itemWidth / 2, itemHeight * 3 / 2)
+    menuArray:addObject(menuSave)
+    
+    menuTools = CCMenu:createWithArray(menuArray)
+    menuTools:setPosition(tbOrigin.x, tbOrigin.y)
+    layerMenu:addChild(menuTools)    
+
+    return layerMenu
+end
+    
+local function main()
+    -- avoid memory leak
+    collectgarbage("setpause", 100)
+    collectgarbage("setstepmul", 5000)
 
     -- play background music, preload effect
 
@@ -252,15 +267,17 @@ local function main()
 
     math.randomseed(os.time())
     math.random(100)
-    Maze:Init(40, 21)
+    Maze:Init(Def.MAZE_COL_COUNT, Def.MAZE_ROW_COUNT)
     Maze:Load()
 
     -- run
     local sceneGame = CCScene:create()
-    sceneGame:addChild(createLayerFarm())
-    --sceneGame:addChild(createLayerMenu())
-    sharedDirector:runWithScene(sceneGame)
+    local layerBG = createLayerFarm()
+    sceneGame:addChild(layerBG)
     
+    local layerMenu = createMenu()
+    sceneGame:addChild(layerMenu)
+    sharedDirector:runWithScene(sceneGame)    
 end
 
 xpcall(main, __G__TRACKBACK__)

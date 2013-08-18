@@ -8,6 +8,10 @@
 
 local Def = _G.Def
 
+Def.MAZE_ROW_COUNT = 21
+Def.MAZE_COL_COUNT = 40
+
+
 Def.szHeroFile = "dog.png"
 Def.szMonsterFile = "icon.pnf"
 Def.szBlockImg = "block.png"
