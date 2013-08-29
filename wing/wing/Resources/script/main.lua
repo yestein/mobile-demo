@@ -80,12 +80,8 @@ local function createLayerFarm()
     -- add in farm background
     local bg = CCSprite:create(Def.szBGImg)
     local tbSize = bg:getTextureRect().size
-    if tbSize.width / 2 < tbVisibleSize.width then
-        nOffsetX = tbVisibleSize.width - tbSize.width / 2
-    end
-    if tbSize.height / 2 < tbVisibleSize.height then
-        nOffsetY = tbVisibleSize.height - tbSize.height / 2
-    end
+    nOffsetX = tbVisibleSize.width / 2
+    nOffsetY = tbVisibleSize.height / 2
     bg:setPosition(tbOrigin.x, tbOrigin.y)
     layerFarm:setPosition(nOffsetX, nOffsetY)
     layerFarm:addChild(bg)
@@ -141,18 +137,18 @@ local function createLayerFarm()
             local cx, cy = layerFarm:getPosition()
             local nNewX, nNewY = cx + x - touchBeginPoint.x, cy + y - touchBeginPoint.y
             local tbSize = bg:getTextureRect().size
-            local nMinX, nMaxX = 0, tbSize.width - tbVisibleSize.width
-            local nMinY, nMaxY = tbSize.height / 2 * -1, 0
-            if nNewX < nOffsetX then
-                nNewX = nOffsetX
-            elseif nNewX > tbSize.width / 2 then
-                nNewX = tbSize.width / 2
+            local nMinX, nMaxX = tbVisibleSize.width - tbSize.width / 2, tbSize.width / 2
+            local nMinY, nMaxY = tbVisibleSize.height - tbSize.height / 2,  tbSize.height / 2
+            if nNewX < nMinX then
+                nNewX = nMinX
+            elseif nNewX > nMaxX then
+                nNewX = nMaxX
             end
 
-            if nNewY < nOffsetY then
-                nNewY = nOffsetY
-            elseif nNewY > tbSize.height / 2 then
-                nNewY = tbSize.height / 2
+            if nNewY < nMinY then
+                nNewY = nMinY
+            elseif nNewY > nMaxY then
+                nNewY = nMaxY
             end
             layerFarm:setPosition(nNewX, nNewY)
             touchBeginPoint = {x = x, y = y}
@@ -165,14 +161,18 @@ local function createLayerFarm()
         if x == touchMoveStartPoint.x and y == touchMoveStartPoint.y then
 	        local nX, nY = layerFarm:getPosition()
 	        local nLogicX, nLogicY = x - nX, y - nY
-	        nLogicX = math.floor(nLogicX / 20)
-	        nLogicY = math.floor(nLogicY / 20)
-	        local nCol = nLogicX + 21
-	        local nRow = nLogicY + 16
-	        if nRow <= 21 then
+	        nLogicX = math.floor(nLogicX / Def.BLOCK_WIDTH)
+	        nLogicY = math.floor(nLogicY / Def.BLOCK_HEIGHT)
+
+            local tbSize = bg:getTextureRect().size
+	        local nCol = nLogicX + Def.MAZE_COL_COUNT / 2 + 1
+	        local nRow = nLogicY + math.floor(tbSize.height / Def.BLOCK_HEIGHT / 2) + 1
+	        if nRow <= Def.MAZE_ROW_COUNT then
 	            Maze.tbData[nRow][nCol] = 1
 	            local pBlock = Maze.tbBlock[nRow][nCol]
-	            pBlock:setVisible(false)
+                if pBlock then
+	               pBlock:setVisible(false)
+               end
 	        end
 	    end
         touchBeginPoint = nil

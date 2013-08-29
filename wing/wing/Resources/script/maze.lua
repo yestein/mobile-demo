@@ -13,7 +13,7 @@ local sharedTextureCache = CCTextureCache:sharedTextureCache()
 
 function Maze:Save()
 	print("Maze:Save")
-	Lib:Reload()
+	--Lib:Reload()
     local szPath = CCFileUtils:sharedFileUtils():getWritablePath()
 	local file = assert(io.open(szPath.."savemap.lua", "w"))
 	file:write("Maze:Entry{\n")
@@ -81,25 +81,22 @@ function Maze:RandomMaze()
 end
 
 function Maze:GenBlock(pBg)
-	local frameWidth = 20
-    local frameHeight = 20
 
     local textureDog = sharedTextureCache:addImage(Def.szBlockImg)
-    local rect = CCRectMake(0, 0, frameWidth, frameHeight)
+    local rect = CCRectMake(0, 0, Def.BLOCK_WIDTH, Def.BLOCK_HEIGHT)
     local frame0 = CCSpriteFrame:createWithTexture(textureDog, rect)
 
     local tbSprite = {}
     self.tbBlock = {}
     local tbSize = pBg:getTextureRect().size
-    local nX, nY = pBg:getPosition()
-    local nStartX = -tbSize.width / 2 + frameWidth / 2
-    local nStartY = -tbSize.height / 2 + frameHeight / 2
+    local nStartX = -tbSize.width / 2 + Def.BLOCK_WIDTH / 2
+    local nStartY = -tbSize.height / 2 + Def.BLOCK_HEIGHT / 2
     for nRow, tbRow in ipairs(self.tbData) do
     	self.tbBlock[nRow] = {}
 		for nColumn, nData in ipairs(tbRow) do
 			local pSprite = CCSprite:createWithSpriteFrame(frame0)
 			self.tbBlock[nRow][nColumn] = pSprite
-    		pSprite:setPosition(nStartX + (nColumn - 1) * frameWidth, nStartY + (nRow - 1) * frameHeight)
+    		pSprite:setPosition(nStartX + (nColumn - 1) * Def.BLOCK_WIDTH, nStartY + (nRow - 1) * Def.BLOCK_HEIGHT)
     		tbSprite[#tbSprite + 1] = pSprite
 			if nData == MAP_FREE then
 				pSprite:setVisible(false)

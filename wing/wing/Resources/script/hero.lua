@@ -12,10 +12,10 @@ Hero.DIR_LEFT = 3
 Hero.DIR_RIGHT = 4
 
 Hero.tbMove = {
-	[Hero.DIR_UP] = {0, 1}
-	[Hero.DIR_DOWN] = {0, -1}
-	[Hero.DIR_LEFT] = {-1, 0}
-	[Hero.DIR_RIGHT] = {1, 0}
+	[Hero.DIR_UP] = {0, 1},
+	[Hero.DIR_DOWN] = {0, -1},
+	[Hero.DIR_LEFT] = {-1, 0},
+	[Hero.DIR_RIGHT] = {1, 0},
 }
 
 function Hero:Init(pSprite, tbProperty)

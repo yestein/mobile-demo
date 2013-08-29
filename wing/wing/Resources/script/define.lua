@@ -10,6 +10,8 @@ local Def = _G.Def
 
 Def.MAZE_ROW_COUNT = 21
 Def.MAZE_COL_COUNT = 40
+Def.BLOCK_WIDTH = 32
+Def.BLOCK_HEIGHT = 48
 
 
 Def.szHeroFile = "dog.png"
