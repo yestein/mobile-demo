@@ -33,6 +33,14 @@ function Hero:Init(pSprite, tbProperty)
 	for k, v in pairs(tbProperty) do
 		self:SetProperty(k, v)
 	end
+	
+	-- moving Hero at every frame
+	local function tick()
+	    if pSprite.isPaused then
+	    	return
+	    end
+	end
+	CCDirector:sharedDirector():getScheduler():scheduleScriptFunc(tick, 0, false)
 end
 
 function Hero:SetProperty(Key, Value)
@@ -41,6 +49,10 @@ function Hero:SetProperty(Key, Value)
 		return 1
 	end
 	return 0
+end
+
+function Hero:Goto(nDir)
+	
 end
 
 function Hero:Move(nDir)
@@ -56,5 +68,6 @@ function Hero:Move(nDir)
         x = x + 1
     end
 
-    spriteDog:setPositionX(x)
+    self.pSprite:setPositionX(x)
 end
+    

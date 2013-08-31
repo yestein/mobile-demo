@@ -30,47 +30,41 @@ function cclog(...)
     print(string.format(...))
 end
 
--- add the moving dog
-local function creatDog()
-    local frameWidth = 105
-    local frameHeight = 95
+-- add the moving Hero
+local function createHero(pBg)
+    local frameWidth = 36
+    local frameHeight = 48
 
     -- create dog animate
-    local textureDog = sharedTextureCache:addImage(Def.szHeroFile)
+    local textureHero = sharedTextureCache:addImage(Def.szHeroFile)
     local rect = CCRectMake(0, 0, frameWidth, frameHeight)
-    local frame0 = CCSpriteFrame:createWithTexture(textureDog, rect)
+    local frame0 = CCSpriteFrame:createWithTexture(textureHero, rect)
     rect = CCRectMake(frameWidth, 0, frameWidth, frameHeight)
-    local frame1 = CCSpriteFrame:createWithTexture(textureDog, rect)
+    local frame1 = CCSpriteFrame:createWithTexture(textureHero, rect)
+    rect = CCRectMake(2 * frameWidth, 0, frameWidth, frameHeight)
+    local frame2 = CCSpriteFrame:createWithTexture(textureHero, rect)
+    rect = CCRectMake(3 * frameWidth, 0, frameWidth, frameHeight)
+    local frame3 = CCSpriteFrame:createWithTexture(textureHero, rect)
 
-    local spriteDog = CCSprite:createWithSpriteFrame(frame0)
-    spriteDog.isPaused = false
-    spriteDog:setPosition(tbOrigin.x, tbOrigin.y + tbVisibleSize.height / 4 * 3)
+    local spriteHero = CCSprite:createWithSpriteFrame(frame0)
+    spriteHero.isPaused = false
+    local tbSize = pBg:getTextureRect().size
+    local nStartX = -tbSize.width / 2 + Def.BLOCK_WIDTH / 2
+    local nStartY = -tbSize.height / 2 + Def.BLOCK_HEIGHT / 2
+    spriteHero:setPosition(nStartX + (Def.MAZE_COL_COUNT / 2 - 1) * Def.BLOCK_WIDTH, nStartY + Def.MAZE_ROW_COUNT * Def.BLOCK_HEIGHT)
 
     local animFrames = CCArray:create()
 
     animFrames:addObject(frame0)
     animFrames:addObject(frame1)
+    animFrames:addObject(frame2)
+    animFrames:addObject(frame3)
 
-    local animation = CCAnimation:createWithSpriteFrames(animFrames, 0.5)
-    local animate = CCAnimate:create(animation);
-    spriteDog:runAction(CCRepeatForever:create(animate))
-
-    -- moving dog at every frame
-    local function tick()
-        if spriteDog.isPaused then return end
-        local x, y = spriteDog:getPosition()
-        if x > tbOrigin.x + tbVisibleSize.width then
-            x = tbOrigin.x
-        else
-            x = x + 1
-        end
-
-        spriteDog:setPositionX(x)
-    end
-
-    sharedDirector:getScheduler():scheduleScriptFunc(tick, 0, false)
-
-    return spriteDog
+    local animation = CCAnimation:createWithSpriteFrames(animFrames, 0.15)
+    local animate = CCAnimate:create(animation)
+    spriteHero:runAction(CCRepeatForever:create(animate))
+    
+    return spriteHero
 end
 
  -- create farm
@@ -84,32 +78,13 @@ local function createLayerFarm()
     nOffsetY = tbVisibleSize.height / 2
     bg:setPosition(tbOrigin.x, tbOrigin.y)
     layerFarm:setPosition(nOffsetX, nOffsetY)
+    Maze:SetSize(bg:getTextureRect().size)
     layerFarm:addChild(bg)
 
-        --[[
-        -- add land sprite
-        for i = 0, 3 do
-            for j = 0, 1 do
-                local spriteLand = CCSprite:create("land.png")
-                spriteLand:setPosition(200 + j * 180 - i % 2 * 90, 10 + i * 95 / 2)
-                layerFarm:addChild(spriteLand)
-            end
-        end
-
-        -- add crop
-        local frameCrop = CCSpriteFrame:create("crop.png", CCRectMake(0, 0, 105, 95))
-        for i = 0, 3 do
-            for j = 0, 1 do
-                local spriteCrop = CCSprite:createWithSpriteFrame(frameCrop);
-                spriteCrop:setPosition(10 + 200 + j * 180 - i % 2 * 90, 30 + 10 + i * 95 / 2)
-                layerFarm:addChild(spriteCrop)
-            end
-        end
-        --]]
-
-        -- add moving dog
-        --local spriteDog = creatDog()
-        --layerFarm:addChild(spriteDog)
+    -- add moving hero
+    local spriteHero = createHero(bg)
+    Hero:Init(spriteHero, {})
+    layerFarm:addChild(spriteHero)
 
     local tbBlock = Maze:GenBlock(bg)
     for _, pBlock in ipairs(tbBlock) do
@@ -121,12 +96,12 @@ local function createLayerFarm()
     local touchMoveStartPoint = nil
 
     local function onTouchBegan(x, y)
-        cclog("onTouchBegan: %0.2f, %0.2f", x, y)
+        --cclog("onTouchBegan: %0.2f, %0.2f", x, y)
         --cclog("Logic: %d, %d", nLogicX, nLogicY)
         touchBeginPoint = {x = x, y = y}
         touchMoveStartPoint = {x = x, y = y}
         
-        --spriteDog.isPaused = true
+        --spriteHero.isPaused = true
         -- CCTOUCHBEGAN event must return true
         return true
     end
@@ -152,12 +127,11 @@ local function createLayerFarm()
             end
             layerFarm:setPosition(nNewX, nNewY)
             touchBeginPoint = {x = x, y = y}
-            --cclog("layerFarm: %0.2f, %0.2f", nNewX, nNewY)
-        end
+		end
     end
 
     local function onTouchEnded(x, y)
-        cclog("onTouchEnded: %0.2f, %0.2f", x, y)
+        --cclog("onTouchEnded: %0.2f, %0.2f", x, y)
         if x == touchMoveStartPoint.x and y == touchMoveStartPoint.y then
 	        local nX, nY = layerFarm:getPosition()
 	        local nLogicX, nLogicY = x - nX, y - nY
@@ -167,16 +141,11 @@ local function createLayerFarm()
             local tbSize = bg:getTextureRect().size
 	        local nCol = nLogicX + Def.MAZE_COL_COUNT / 2 + 1
 	        local nRow = nLogicY + math.floor(tbSize.height / Def.BLOCK_HEIGHT / 2) + 1
-	        if nRow <= Def.MAZE_ROW_COUNT then
-	            Maze.tbData[nRow][nCol] = 1
-	            local pBlock = Maze.tbBlock[nRow][nCol]
-                if pBlock then
-	               pBlock:setVisible(false)
-               end
-	        end
+	        local bRet = Maze:Dig(nRow, nCol)
+	        
 	    end
         touchBeginPoint = nil
-        --spriteDog.isPaused = false
+        --spriteHero.isPaused = false
     end
 
     local function onTouch(eventType, x, y)
@@ -217,6 +186,14 @@ local function createMenu()
         Maze:Reset()
         
     end
+    
+     local function menuCallbackUndo()
+        Maze:UnDoDig()        
+    end
+    
+     local function menuCallbackRedo()
+        Maze:ReDoDig()        
+    end
 	
 	--[[
     -- add a popup menu
@@ -232,17 +209,27 @@ local function createMenu()
 	local menuArray = CCArray:create()
 	
     -- add the left-bottom "tools" menu to invoke menuPopup
-    local menuReset = CCMenuItemImage:create("menu1.png", "menu1.png")
+    local menuReset = CCMenuItemImage:create("reset.png", "reset.png")
     menuReset:registerScriptTapHandler(menuCallbackReset)    
     local itemWidth = menuReset:getContentSize().width
     local itemHeight = menuReset:getContentSize().height
-    menuReset:setPosition(itemWidth / 2, itemHeight / 2)
+    menuReset:setPosition(tbVisibleSize.width - itemWidth / 2, itemHeight / 2)
     menuArray:addObject(menuReset)
     
-    local menuSave = CCMenuItemImage:create("menu1.png", "menu1.png")
+    local menuSave = CCMenuItemImage:create("switch.png", "switch.png")
     menuSave:registerScriptTapHandler(menuCallbackSave)    
-    menuSave:setPosition(itemWidth / 2, itemHeight * 3 / 2)
+    menuSave:setPosition(tbVisibleSize.width - itemWidth / 2, itemHeight * 3 / 2)
     menuArray:addObject(menuSave)
+    
+    local menuUndo = CCMenuItemImage:create("undo.png", "undo.png")
+    menuUndo:registerScriptTapHandler(menuCallbackUndo)    
+    menuUndo:setPosition(tbVisibleSize.width - itemWidth / 2, itemHeight * 5 / 2)
+    menuArray:addObject(menuUndo)
+    
+    local menuRedo = CCMenuItemImage:create("redo.png", "redo.png")
+    menuRedo:registerScriptTapHandler(menuCallbackRedo)    
+    menuRedo:setPosition(tbVisibleSize.width - itemWidth / 2, itemHeight * 7 / 2)
+    menuArray:addObject(menuRedo)
     
     menuTools = CCMenu:createWithArray(menuArray)
     menuTools:setPosition(tbOrigin.x, tbOrigin.y)
@@ -281,3 +268,17 @@ local function main()
 end
 
 xpcall(main, __G__TRACKBACK__)
+
+
+local function DoTest()
+	local nX , nY = Maze:GetPositionByRowCol(1, 1)
+	assert(nX == -702)
+	assert(nY == -696)
+	
+	nX , nY = Maze:GetPositionByRowCol(21, 40)
+	assert(nX == 702)
+	assert(nY == 264)
+end
+
+DoTest()
+
