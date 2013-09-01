@@ -51,6 +51,11 @@ function Maze:Save()
 		self:SetState(STATE_NORMAL)
 		self:ClearRecordOP()
 	elseif nState == STATE_NORMAL then
+		print("Start Hero Battle")
+		self:SetState(STATE_BATTLE)
+		Hero:Start()
+	elseif nState == STATE_BATTLE then
+		Hero:Reset()
 		print("Start Edit Maze")
 		self:SetState(STATE_EDIT)
 		self:InitRecordOP()
@@ -263,8 +268,7 @@ function Maze:GenBlock()
 	return tbSprite
 end
 
-function Maze:GetRowColByPos(pSprite)
-	local nX, nY = pSprite:getPosition()
+function Maze:GetRowColByPos(nX, nY)
 	local tbSize = Maze:GetSize()
 	local nLogicX = math.floor(nX / Def.BLOCK_WIDTH)
 	local nLogicY = math.floor(nY / Def.BLOCK_HEIGHT)
@@ -280,4 +284,16 @@ function Maze:GetPositionByRowCol(nRow, nCol)
 	local nY = (nRow - math.floor(tbSize.height / Def.BLOCK_HEIGHT / 2) - 0.5) * Def.BLOCK_HEIGHT
 	
 	return nX, nY
+end
+
+function Maze:CanMove(nX, nY)
+	local nRow, nCol = self:GetRowColByPos(nX, nY)
+	if nRow > Def.MAZE_ROW_COUNT then
+		return 0
+	end
+	if self.tbData[nRow][nCol] == MAP_BLOCK then
+		return 0
+	end
+	return 1
+
 end

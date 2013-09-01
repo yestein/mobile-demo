@@ -37,32 +37,15 @@ local function createHero(pBg)
 
     -- create dog animate
     local textureHero = sharedTextureCache:addImage(Def.szHeroFile)
-    local rect = CCRectMake(0, 0, frameWidth, frameHeight)
+    local rect = CCRectMake(0, frameHeight, frameWidth, frameHeight)
     local frame0 = CCSpriteFrame:createWithTexture(textureHero, rect)
-    rect = CCRectMake(frameWidth, 0, frameWidth, frameHeight)
-    local frame1 = CCSpriteFrame:createWithTexture(textureHero, rect)
-    rect = CCRectMake(2 * frameWidth, 0, frameWidth, frameHeight)
-    local frame2 = CCSpriteFrame:createWithTexture(textureHero, rect)
-    rect = CCRectMake(3 * frameWidth, 0, frameWidth, frameHeight)
-    local frame3 = CCSpriteFrame:createWithTexture(textureHero, rect)
 
     local spriteHero = CCSprite:createWithSpriteFrame(frame0)
-    spriteHero.isPaused = false
+    spriteHero.isPaused = true
     local tbSize = pBg:getTextureRect().size
     local nStartX = -tbSize.width / 2 + Def.BLOCK_WIDTH / 2
     local nStartY = -tbSize.height / 2 + Def.BLOCK_HEIGHT / 2
-    spriteHero:setPosition(nStartX + (Def.MAZE_COL_COUNT / 2 - 1) * Def.BLOCK_WIDTH, nStartY + Def.MAZE_ROW_COUNT * Def.BLOCK_HEIGHT)
-
-    local animFrames = CCArray:create()
-
-    animFrames:addObject(frame0)
-    animFrames:addObject(frame1)
-    animFrames:addObject(frame2)
-    animFrames:addObject(frame3)
-
-    local animation = CCAnimation:createWithSpriteFrames(animFrames, 0.15)
-    local animate = CCAnimate:create(animation)
-    spriteHero:runAction(CCRepeatForever:create(animate))
+    spriteHero:setPosition(nStartX + (Def.MAZE_COL_COUNT / 2 - 1) * Def.BLOCK_WIDTH, nStartY + (Def.MAZE_ROW_COUNT - 1) * Def.BLOCK_HEIGHT)
     
     return spriteHero
 end
@@ -77,13 +60,13 @@ local function createLayerFarm()
     nOffsetX = tbVisibleSize.width / 2
     nOffsetY = tbVisibleSize.height / 2
     bg:setPosition(tbOrigin.x, tbOrigin.y)
-    layerFarm:setPosition(nOffsetX, nOffsetY)
+    layerFarm:setPosition(nOffsetX, nOffsetY - 200)
     Maze:SetSize(bg:getTextureRect().size)
     layerFarm:addChild(bg)
 
     -- add moving hero
     local spriteHero = createHero(bg)
-    Hero:Init(spriteHero, {})
+    Hero:Init(spriteHero, {Speed = 3})
     layerFarm:addChild(spriteHero)
 
     local tbBlock = Maze:GenBlock(bg)
@@ -100,8 +83,7 @@ local function createLayerFarm()
         --cclog("Logic: %d, %d", nLogicX, nLogicY)
         touchBeginPoint = {x = x, y = y}
         touchMoveStartPoint = {x = x, y = y}
-        
-        --spriteHero.isPaused = true
+
         -- CCTOUCHBEGAN event must return true
         return true
     end
@@ -133,6 +115,15 @@ local function createLayerFarm()
     local function onTouchEnded(x, y)
         --cclog("onTouchEnded: %0.2f, %0.2f", x, y)
         if x == touchMoveStartPoint.x and y == touchMoveStartPoint.y then
+
+            if Maze:GetState() == Maze.STATE_BATTLE then
+                if spriteHero.isPaused == true then
+                    spriteHero.isPaused = false
+                else
+                    spriteHero.isPaused = true
+                end
+            end
+
 	        local nX, nY = layerFarm:getPosition()
 	        local nLogicX, nLogicY = x - nX, y - nY
 	        nLogicX = math.floor(nLogicX / Def.BLOCK_WIDTH)

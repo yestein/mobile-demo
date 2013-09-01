@@ -276,6 +276,12 @@
 		342F8C9217B0BEE300450B82 /* preload.lua in Resources */ = {isa = PBXBuildFile; fileRef = 342F8C7A17B0BEE300450B82 /* preload.lua */; };
 		342F8C9317B0BEE300450B82 /* background.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 342F8C7C17B0BEE300450B82 /* background.mp3 */; };
 		342F8C9417B0BEE300450B82 /* effect1.wav in Resources */ = {isa = PBXBuildFile; fileRef = 342F8C7D17B0BEE300450B82 /* effect1.wav */; };
+		348DD53B17D3455100202EA7 /* redo.png in Resources */ = {isa = PBXBuildFile; fileRef = 348DD53517D3455100202EA7 /* redo.png */; };
+		348DD53C17D3455100202EA7 /* reset.png in Resources */ = {isa = PBXBuildFile; fileRef = 348DD53617D3455100202EA7 /* reset.png */; };
+		348DD53D17D3455100202EA7 /* soldier.png in Resources */ = {isa = PBXBuildFile; fileRef = 348DD53717D3455100202EA7 /* soldier.png */; };
+		348DD53E17D3455100202EA7 /* switch.png in Resources */ = {isa = PBXBuildFile; fileRef = 348DD53817D3455100202EA7 /* switch.png */; };
+		348DD53F17D3455100202EA7 /* undo.png in Resources */ = {isa = PBXBuildFile; fileRef = 348DD53917D3455100202EA7 /* undo.png */; };
+		348DD54017D3455100202EA7 /* wizard.png in Resources */ = {isa = PBXBuildFile; fileRef = 348DD53A17D3455100202EA7 /* wizard.png */; };
 		34EB8B3717B20E8400B41539 /* hero.lua in Resources */ = {isa = PBXBuildFile; fileRef = 34EB8B3317B20E8400B41539 /* hero.lua */; };
 		34EB8B3817B20E8400B41539 /* lib.lua in Resources */ = {isa = PBXBuildFile; fileRef = 34EB8B3417B20E8400B41539 /* lib.lua */; };
 		34EB8B3917B20E8400B41539 /* maze.lua in Resources */ = {isa = PBXBuildFile; fileRef = 34EB8B3517B20E8400B41539 /* maze.lua */; };
@@ -838,6 +844,12 @@
 		342F8C7A17B0BEE300450B82 /* preload.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = preload.lua; sourceTree = "<group>"; };
 		342F8C7C17B0BEE300450B82 /* background.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = background.mp3; sourceTree = "<group>"; };
 		342F8C7D17B0BEE300450B82 /* effect1.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = effect1.wav; sourceTree = "<group>"; };
+		348DD53517D3455100202EA7 /* redo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = redo.png; sourceTree = "<group>"; };
+		348DD53617D3455100202EA7 /* reset.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = reset.png; sourceTree = "<group>"; };
+		348DD53717D3455100202EA7 /* soldier.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = soldier.png; sourceTree = "<group>"; };
+		348DD53817D3455100202EA7 /* switch.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = switch.png; sourceTree = "<group>"; };
+		348DD53917D3455100202EA7 /* undo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = undo.png; sourceTree = "<group>"; };
+		348DD53A17D3455100202EA7 /* wizard.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = wizard.png; sourceTree = "<group>"; };
 		34EB8B3317B20E8400B41539 /* hero.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = hero.lua; sourceTree = "<group>"; };
 		34EB8B3417B20E8400B41539 /* lib.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = lib.lua; sourceTree = "<group>"; };
 		34EB8B3517B20E8400B41539 /* maze.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = maze.lua; sourceTree = "<group>"; };
@@ -1969,6 +1981,12 @@
 		342F8C6417B0BEE300450B82 /* image */ = {
 			isa = PBXGroup;
 			children = (
+				348DD53517D3455100202EA7 /* redo.png */,
+				348DD53617D3455100202EA7 /* reset.png */,
+				348DD53717D3455100202EA7 /* soldier.png */,
+				348DD53817D3455100202EA7 /* switch.png */,
+				348DD53917D3455100202EA7 /* undo.png */,
+				348DD53A17D3455100202EA7 /* wizard.png */,
 				342F8C6517B0BEE300450B82 /* background.png */,
 				342F8C6617B0BEE300450B82 /* block.png */,
 				342F8C6717B0BEE300450B82 /* CloseNormal.png */,
@@ -2099,6 +2117,12 @@
 				34EB8B3817B20E8400B41539 /* lib.lua in Resources */,
 				34EB8B3917B20E8400B41539 /* maze.lua in Resources */,
 				34EB8B3A17B20E8400B41539 /* player.lua in Resources */,
+				348DD53B17D3455100202EA7 /* redo.png in Resources */,
+				348DD53C17D3455100202EA7 /* reset.png in Resources */,
+				348DD53D17D3455100202EA7 /* soldier.png in Resources */,
+				348DD53E17D3455100202EA7 /* switch.png in Resources */,
+				348DD53F17D3455100202EA7 /* undo.png in Resources */,
+				348DD54017D3455100202EA7 /* wizard.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
