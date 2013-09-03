@@ -118,6 +118,10 @@ function Maze:Dig(nRow, nCol)
    return 1
 end
 
+function Maze:PutMonster(nRow, nCol, pSprite)
+	
+end
+
 function Maze:UnDoDig()
 	if self:GetState() ~= STATE_EDIT then
 		return 0

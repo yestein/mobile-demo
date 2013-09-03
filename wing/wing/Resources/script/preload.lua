@@ -26,8 +26,13 @@ if not _G.Lib then
 	_G.Lib = {}
 end
 
+if not _G.Monster then
+	_G.Monster = {}
+end
+
 require("define")
 require("lib")
 require("maze")
 require("player")
 require("hero")
+require("monster")
