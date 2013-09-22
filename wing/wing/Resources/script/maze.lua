@@ -6,8 +6,10 @@
 -- Modify       :
 --===================================================
 
+
 local MAP_FREE = 1
 local MAP_BLOCK = 2
+local MAP_MONSTER = 3
 
 local STATE_NORMAL = 1
 local STATE_EDIT = 2
@@ -247,9 +249,11 @@ end
 
 function Maze:GenBlock()
 
-    local textureDog = sharedTextureCache:addImage(Def.szBlockImg)
+    local textureBlock = sharedTextureCache:addImage(Def.szBlockImg)
+    local textureMonster = sharedTextureCache:addImage(Def.szMonsterFile)
     local rect = CCRectMake(0, 0, Def.BLOCK_WIDTH, Def.BLOCK_HEIGHT)
-    local frame0 = CCSpriteFrame:createWithTexture(textureDog, rect)
+    local frame0 = CCSpriteFrame:createWithTexture(textureBlock, rect)
+    local MonsterFrame0 = CCSpriteFrame:createWithTexture(textureMonster, rect)
 
     local tbSprite = {}
     self.tbBlock = {}
@@ -263,8 +267,37 @@ function Maze:GenBlock()
 			self.tbBlock[nRow][nColumn] = pSprite
     		pSprite:setPosition(nStartX + (nColumn - 1) * Def.BLOCK_WIDTH, nStartY + (nRow - 1) * Def.BLOCK_HEIGHT)
     		tbSprite[#tbSprite + 1] = pSprite
-			if nData == MAP_FREE then
+			if nData ~= MAP_BLOCK then
 				pSprite:setVisible(false)
+	    	end
+	    	
+	    	if nData == MAP_MONSTER then
+	    		local pMonster = CCSprite:createWithSpriteFrame(MonsterFrame0)
+	    		pMonster:setPosition(nStartX + (nColumn - 1) * Def.BLOCK_WIDTH, nStartY + (nRow - 1) * Def.BLOCK_HEIGHT)
+	    		
+	    		local frameWidth = 36
+		    	local frameHeight = 48
+		    	local nDirection = Def.DIR_DOWN
+				local rect = CCRectMake(0, frameHeight * Def.tbTextureRow[nDirection], frameWidth, frameHeight)
+			    local frame0 = CCSpriteFrame:createWithTexture(textureMonster, rect)
+			    rect = CCRectMake(frameWidth, frameHeight * Def.tbTextureRow[nDirection], frameWidth, frameHeight)
+			    local frame1 = CCSpriteFrame:createWithTexture(textureMonster, rect)
+			    rect = CCRectMake(2 * frameWidth, frameHeight * Def.tbTextureRow[nDirection], frameWidth, frameHeight)
+			    local frame2 = CCSpriteFrame:createWithTexture(textureMonster, rect)
+			    rect = CCRectMake(3 * frameWidth, frameHeight * Def.tbTextureRow[nDirection], frameWidth, frameHeight)
+			    local frame3 = CCSpriteFrame:createWithTexture(textureMonster, rect)
+				local animFrames = CCArray:create()
+		
+			    animFrames:addObject(frame0)
+			    animFrames:addObject(frame1)
+			    animFrames:addObject(frame2)
+			    animFrames:addObject(frame3)
+		
+			    local animation = CCAnimation:createWithSpriteFrames(animFrames, 0.15)
+			    local animate = CCAnimate:create(animation)
+			    pMonster:stopAllActions()
+			    pMonster:runAction(CCRepeatForever:create(animate))
+	    		tbSprite[#tbSprite + 1] = pMonster
 	    	end
 		end
 	end
@@ -300,4 +333,11 @@ function Maze:CanMove(nX, nY)
 	end
 	return 1
 
+end
+
+function Maze:IsFree(nRow, nCol)
+	if self.tbData[nRow][nCol] == MAP_FREE then
+		return 1
+	end
+	return 0
 end

@@ -66,13 +66,16 @@ local function createLayerFarm()
 
     -- add moving hero
     local spriteHero = createHero(bg)
-    Hero:Init(spriteHero, {Speed = 3})
     layerFarm:addChild(spriteHero)
+    Hero:NewHero(spriteHero, {Speed = 3})    
 
     local tbBlock = Maze:GenBlock(bg)
     for _, pBlock in ipairs(tbBlock) do
         layerFarm:addChild(pBlock)
     end
+    
+    local spriteBullet = Bullet:Init()
+    layerFarm:addChild(spriteBullet)
 
     -- handing touch events
     local touchBeginPoint = nil
@@ -123,7 +126,7 @@ local function createLayerFarm()
                     spriteHero.isPaused = true
                 end
             end
-
+            
 	        local nX, nY = layerFarm:getPosition()
 	        local nLogicX, nLogicY = x - nX, y - nY
 	        nLogicX = math.floor(nLogicX / Def.BLOCK_WIDTH)
@@ -245,6 +248,7 @@ local function main()
 
     math.randomseed(os.time())
     math.random(100)
+    Hero:Init()
     Maze:Init(Def.MAZE_COL_COUNT, Def.MAZE_ROW_COUNT)
     Maze:Load()
 
