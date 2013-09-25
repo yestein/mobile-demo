@@ -33,6 +33,7 @@ Def.szBGImg = "background.png"
 Def.szMonsterFile = "monster.png"
 Def.szBulletFile = "bullet.png"
 
+Def.DIR_START = Accumulate(0)
 Def.DIR_DOWN = Accumulate()
 Def.DIR_RIGHT = Accumulate()
 Def.DIR_UP = Accumulate()

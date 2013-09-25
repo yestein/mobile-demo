@@ -56,8 +56,10 @@ function Maze:Save()
 		print("Start Hero Battle")
 		self:SetState(STATE_BATTLE)
 		Hero:Start()
+		Monster:Start()
 	elseif nState == STATE_BATTLE then
 		Hero:Reset()
+		Monster:Reset()
 		print("Start Edit Maze")
 		self:SetState(STATE_EDIT)
 		self:InitRecordOP()
@@ -250,10 +252,9 @@ end
 function Maze:GenBlock()
 
     local textureBlock = sharedTextureCache:addImage(Def.szBlockImg)
-    local textureMonster = sharedTextureCache:addImage(Def.szMonsterFile)
     local rect = CCRectMake(0, 0, Def.BLOCK_WIDTH, Def.BLOCK_HEIGHT)
     local frame0 = CCSpriteFrame:createWithTexture(textureBlock, rect)
-    local MonsterFrame0 = CCSpriteFrame:createWithTexture(textureMonster, rect)
+    
 
     local tbSprite = {}
     self.tbBlock = {}
@@ -272,31 +273,8 @@ function Maze:GenBlock()
 	    	end
 	    	
 	    	if nData == MAP_MONSTER then
-	    		local pMonster = CCSprite:createWithSpriteFrame(MonsterFrame0)
-	    		pMonster:setPosition(nStartX + (nColumn - 1) * Def.BLOCK_WIDTH, nStartY + (nRow - 1) * Def.BLOCK_HEIGHT)
+	    		local tbMonster, pMonster = Monster:NewMonster(nStartX + (nColumn - 1) * Def.BLOCK_WIDTH, nStartY + (nRow - 1) * Def.BLOCK_HEIGHT)
 	    		
-	    		local frameWidth = 36
-		    	local frameHeight = 48
-		    	local nDirection = Def.DIR_DOWN
-				local rect = CCRectMake(0, frameHeight * Def.tbTextureRow[nDirection], frameWidth, frameHeight)
-			    local frame0 = CCSpriteFrame:createWithTexture(textureMonster, rect)
-			    rect = CCRectMake(frameWidth, frameHeight * Def.tbTextureRow[nDirection], frameWidth, frameHeight)
-			    local frame1 = CCSpriteFrame:createWithTexture(textureMonster, rect)
-			    rect = CCRectMake(2 * frameWidth, frameHeight * Def.tbTextureRow[nDirection], frameWidth, frameHeight)
-			    local frame2 = CCSpriteFrame:createWithTexture(textureMonster, rect)
-			    rect = CCRectMake(3 * frameWidth, frameHeight * Def.tbTextureRow[nDirection], frameWidth, frameHeight)
-			    local frame3 = CCSpriteFrame:createWithTexture(textureMonster, rect)
-				local animFrames = CCArray:create()
-		
-			    animFrames:addObject(frame0)
-			    animFrames:addObject(frame1)
-			    animFrames:addObject(frame2)
-			    animFrames:addObject(frame3)
-		
-			    local animation = CCAnimation:createWithSpriteFrames(animFrames, 0.15)
-			    local animate = CCAnimate:create(animation)
-			    pMonster:stopAllActions()
-			    pMonster:runAction(CCRepeatForever:create(animate))
 	    		tbSprite[#tbSprite + 1] = pMonster
 	    	end
 		end
@@ -305,26 +283,8 @@ function Maze:GenBlock()
 	return tbSprite
 end
 
-function Maze:GetRowColByPos(nX, nY)
-	local tbSize = Maze:GetSize()
-	local nLogicX = math.floor(nX / Def.BLOCK_WIDTH)
-	local nLogicY = math.floor(nY / Def.BLOCK_HEIGHT)
-
-	local nCol = nLogicX + Def.MAZE_COL_COUNT / 2 + 1
-	local nRow = nLogicY + math.floor(tbSize.height / Def.BLOCK_HEIGHT / 2) + 1
-	return nRow, nCol
-end
-
-function Maze:GetPositionByRowCol(nRow, nCol)
-	local tbSize = Maze:GetSize()
-	local nX = (nCol - Def.MAZE_COL_COUNT / 2 - 0.5) * Def.BLOCK_WIDTH
-	local nY = (nRow - math.floor(tbSize.height / Def.BLOCK_HEIGHT / 2) - 0.5) * Def.BLOCK_HEIGHT
-	
-	return nX, nY
-end
-
 function Maze:CanMove(nX, nY)
-	local nRow, nCol = self:GetRowColByPos(nX, nY)
+	local nRow, nCol = Lib:GetRowColByPos(nX, nY)
 	if nRow > Def.MAZE_ROW_COUNT then
 		return 0
 	end

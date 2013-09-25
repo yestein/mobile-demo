@@ -60,3 +60,21 @@ function Lib:Reload()
 	dofile("script/hero.lua")
 end
 
+function Lib:GetRowColByPos(nX, nY)
+	local tbSize = Maze:GetSize()
+	local nLogicX = math.floor(nX / Def.BLOCK_WIDTH)
+	local nLogicY = math.floor(nY / Def.BLOCK_HEIGHT)
+
+	local nCol = nLogicX + Def.MAZE_COL_COUNT / 2 + 1
+	local nRow = nLogicY + math.floor(tbSize.height / Def.BLOCK_HEIGHT / 2) + 1
+	return nRow, nCol
+end
+
+function Lib:GetPositionByRowCol(nRow, nCol)
+	local tbSize = Maze:GetSize()
+	local nX = (nCol - Def.MAZE_COL_COUNT / 2 - 0.5) * Def.BLOCK_WIDTH
+	local nY = (nRow - math.floor(tbSize.height / Def.BLOCK_HEIGHT / 2) - 0.5) * Def.BLOCK_HEIGHT
+	
+	return nX, nY
+end
+

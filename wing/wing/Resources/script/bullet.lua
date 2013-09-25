@@ -29,7 +29,7 @@ function Bullet:Init()
 			local nX, nY = unpack(tbPosOffset)
 			local x, y = pSprite:getPosition()
 			local nNewX, nNewY = x + nX * 4, y + nY * 4
-			local nRow, nCol = Maze:GetRowColByPos(nNewX, nNewY)
+			local nRow, nCol = Lib:GetRowColByPos(nNewX, nNewY)
 			if Maze:IsFree(nRow, nCol) == 1 then
 				pSprite:setPosition(nNewX, nNewY)
 			else

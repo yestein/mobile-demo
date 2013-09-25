@@ -20,14 +20,17 @@ function Character:Init(pSprite, tbProperty, tbAI)
 		CurMP = 100,
 		MaxMP = 100,
 		Attack = 5,
+		AttackRange = 1,
 		Defence = 5,
 		Magic = 5,
-		Speed = 1,
+		Speed = 1,		
 	}
 	self.tbAIDirection = tbAI or {Def.DIR_DOWN, Def.DIR_RIGHT, Def.DIR_UP, Def.DIR_LEFT}
-	for k, v in pairs(tbProperty) do
-		if self:SetProperty(k, v) ~= 1 then
-			print(k, v)
+	if tbProperty then
+		for k, v in pairs(tbProperty) do
+			if self:SetProperty(k, v) ~= 1 then
+				print(k, v)
+			end
 		end
 	end
 	
@@ -56,6 +59,7 @@ function Character:Reset()
 	self.pSprite.isPaused = true
 
     self.pSprite:setPosition(self.tbOrigin.x, self.tbOrigin.y)
+    self:SetDirection(Def.DIR_DOWN)
 end
 
 function Character:SetProperty(Key, Value)
@@ -121,15 +125,15 @@ function Character:SetDirection(nDirection)
 		local frameWidth = 36
     	local frameHeight = 48
 
-    	local textureHero = self.pSprite:getTexture()
+    	local Texture = self.pSprite:getTexture()
 		local rect = CCRectMake(0, frameHeight * Def.tbTextureRow[nDirection], frameWidth, frameHeight)
-	    local frame0 = CCSpriteFrame:createWithTexture(textureHero, rect)
+	    local frame0 = CCSpriteFrame:createWithTexture(Texture, rect)
 	    rect = CCRectMake(frameWidth, frameHeight * Def.tbTextureRow[nDirection], frameWidth, frameHeight)
-	    local frame1 = CCSpriteFrame:createWithTexture(textureHero, rect)
+	    local frame1 = CCSpriteFrame:createWithTexture(Texture, rect)
 	    rect = CCRectMake(2 * frameWidth, frameHeight * Def.tbTextureRow[nDirection], frameWidth, frameHeight)
-	    local frame2 = CCSpriteFrame:createWithTexture(textureHero, rect)
+	    local frame2 = CCSpriteFrame:createWithTexture(Texture, rect)
 	    rect = CCRectMake(3 * frameWidth, frameHeight * Def.tbTextureRow[nDirection], frameWidth, frameHeight)
-	    local frame3 = CCSpriteFrame:createWithTexture(textureHero, rect)
+	    local frame3 = CCSpriteFrame:createWithTexture(Texture, rect)
 		local animFrames = CCArray:create()
 
 	    animFrames:addObject(frame0)
@@ -142,4 +146,42 @@ function Character:SetDirection(nDirection)
 	    self.pSprite:stopAllActions()
 	    self.pSprite:runAction(CCRepeatForever:create(animate))
 	end
+end
+
+function Character:AutoMove()
+	local x, y = self.pSprite:getPosition()
+	local function IsArriveTarget()
+		if not self.nDirection or not self.tbTarget then
+			return 1
+		end
+		if x == self.tbTarget.x and y == self.tbTarget.y then
+			return 1
+		end
+		return 0
+	end
+
+	if IsArriveTarget() == 1 then
+		local nNextDir = math.random(Def.DIR_START + 1, Def.DIR_END - 1)
+		local tbPosOffset = Def.tbMove[nNextDir]
+		if not tbPosOffset then
+			return 0
+		end			
+		local nX, nY = unpack(tbPosOffset)
+		local nNewX, nNewY = x + self.tbSize.width * nX + nX, y + self.tbSize.height * nY
+		if self:TryGoto(nNewX, nNewY) == 0 then
+			return
+		end
+		self:Goto(x, y, nNextDir)
+	end
+
+	local nDirection = self.nDirection
+	self:Move(nDirection)
+end
+
+function Character:TryGoto(nNewX, nNewY)
+	if Maze:CanMove(nNewX, nNewY) ~= 1 then
+		return 0
+	end
+	
+    return 1
 end

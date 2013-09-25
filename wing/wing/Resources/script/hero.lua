@@ -6,6 +6,14 @@
 -- Modify       :
 --===================================================
 
+local frameWidth = 36
+local frameHeight = 48
+
+-- create hero animate
+local textureHero = CCTextureCache:sharedTextureCache():addImage(Def.szHeroFile)
+local rect = CCRectMake(0, frameHeight, frameWidth, frameHeight)
+local frame0 = CCSpriteFrame:createWithTexture(textureHero, rect)
+    
 if not Hero.tbHeroClass then
 	Hero.tbHeroClass = Lib:NewClass(Character)
 end
@@ -34,12 +42,16 @@ function Hero:Reset()
 	end
 end
 
-function Hero:NewHero(pSprite, tbProperty, tbAI)
+function Hero:NewHero(nStartX, nStartY, tbProperty, tbAI)
 	local tbNewHero = Lib:NewClass(tbHeroClass)
-	tbNewHero:Init(pSprite, tbProperty, tbAI)
+    local pHero = CCSprite:createWithSpriteFrame(frame0)
+    pHero:setPosition(nStartX, nStartY)
+    pHero.isPaused = true
+	tbNewHero:Init(pHero, tbProperty, tbAI)		
+	
 	tbNewHero.dwId = Accumulator()
 	self.tbHero[#self.tbHero + 1] = tbNewHero
-	return tbNewHero
+	return tbNewHero, pHero
 end
 
 function tbHeroClass:AutoMove()
@@ -93,8 +105,14 @@ function tbHeroClass:AutoMove()
 	self:Move(nDirection)
 end
 
+function tbHeroClass:TryFindMonster()
+	local nFindRange = 3
+	local nX, nY = self.pSprite:getPosition()
+	local nRow, nCol = Lib:GetRowColByPos(nX, nY)
+end
+
 function tbHeroClass:Attack()
-	local nX, nY = spriteHero:getPosition()
+	local nX, nY = self.pSprite:getPosition()
 	Bullet:AddBullet(nX, nY, self.nDirection)
 end
 

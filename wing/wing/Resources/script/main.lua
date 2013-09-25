@@ -30,28 +30,8 @@ function cclog(...)
     print(string.format(...))
 end
 
--- add the moving Hero
-local function createHero(pBg)
-    local frameWidth = 36
-    local frameHeight = 48
-
-    -- create dog animate
-    local textureHero = sharedTextureCache:addImage(Def.szHeroFile)
-    local rect = CCRectMake(0, frameHeight, frameWidth, frameHeight)
-    local frame0 = CCSpriteFrame:createWithTexture(textureHero, rect)
-
-    local spriteHero = CCSprite:createWithSpriteFrame(frame0)
-    spriteHero.isPaused = true
-    local tbSize = pBg:getTextureRect().size
-    local nStartX = -tbSize.width / 2 + Def.BLOCK_WIDTH / 2
-    local nStartY = -tbSize.height / 2 + Def.BLOCK_HEIGHT / 2
-    spriteHero:setPosition(nStartX + (Def.MAZE_COL_COUNT / 2 - 1) * Def.BLOCK_WIDTH, nStartY + (Def.MAZE_ROW_COUNT - 1) * Def.BLOCK_HEIGHT)
-    
-    return spriteHero
-end
-
- -- create farm
-local function createLayerFarm()
+-- create farm
+local function createLayerMaze()
     local layerFarm = CCLayer:create()
 
     -- add in farm background
@@ -64,10 +44,16 @@ local function createLayerFarm()
     Maze:SetSize(bg:getTextureRect().size)
     layerFarm:addChild(bg)
 
-    -- add moving hero
-    local spriteHero = createHero(bg)
-    layerFarm:addChild(spriteHero)
-    Hero:NewHero(spriteHero, {Speed = 3})    
+    local nStartX = -tbSize.width / 2 + Def.BLOCK_WIDTH / 2
+    local nStartY = -tbSize.height / 2 + Def.BLOCK_HEIGHT / 2
+    nStartX = nStartX + (Def.MAZE_COL_COUNT / 2 - 1) * Def.BLOCK_WIDTH
+    nStartY = nStartY + (Def.MAZE_ROW_COUNT - 1) * Def.BLOCK_HEIGHT
+    local tbProperty = {
+    	AttackRange = 3,
+    	Speed = 3,
+    }
+    local tbHero, pSpriteHero = Hero:NewHero(nStartX, nStartY, {Speed = 3})    
+    layerFarm:addChild(pSpriteHero)
 
     local tbBlock = Maze:GenBlock(bg)
     for _, pBlock in ipairs(tbBlock) do
@@ -82,8 +68,6 @@ local function createLayerFarm()
     local touchMoveStartPoint = nil
 
     local function onTouchBegan(x, y)
-        --cclog("onTouchBegan: %0.2f, %0.2f", x, y)
-        --cclog("Logic: %d, %d", nLogicX, nLogicY)
         touchBeginPoint = {x = x, y = y}
         touchMoveStartPoint = {x = x, y = y}
 
@@ -92,7 +76,7 @@ local function createLayerFarm()
     end
 
     local function onTouchMoved(x, y)
-        --cclog("onTouchMoved: %0.2f, %0.2f", x, y)
+
         if touchBeginPoint then
             local cx, cy = layerFarm:getPosition()
             local nNewX, nNewY = cx + x - touchBeginPoint.x, cy + y - touchBeginPoint.y
@@ -116,7 +100,6 @@ local function createLayerFarm()
     end
 
     local function onTouchEnded(x, y)
-        --cclog("onTouchEnded: %0.2f, %0.2f", x, y)
         if x == touchMoveStartPoint.x and y == touchMoveStartPoint.y then
 
             if Maze:GetState() == Maze.STATE_BATTLE then
@@ -139,7 +122,6 @@ local function createLayerFarm()
 	        
 	    end
         touchBeginPoint = nil
-        --spriteHero.isPaused = false
     end
 
     local function onTouch(eventType, x, y)
@@ -148,7 +130,6 @@ local function createLayerFarm()
         elseif eventType == "moved" then
             return onTouchMoved(x, y)
         else
-            --cclog("Type:%s X:%d Y:%d", eventType, x, y)
             return onTouchEnded(x, y)
         end
     end
@@ -248,13 +229,15 @@ local function main()
 
     math.randomseed(os.time())
     math.random(100)
+    
     Hero:Init()
+    Monster:Init()
     Maze:Init(Def.MAZE_COL_COUNT, Def.MAZE_ROW_COUNT)
     Maze:Load()
 
     -- run
     local sceneGame = CCScene:create()
-    local layerBG = createLayerFarm()
+    local layerBG = createLayerMaze()
     sceneGame:addChild(layerBG)
     
     local layerMenu = createMenu()
@@ -266,11 +249,11 @@ xpcall(main, __G__TRACKBACK__)
 
 
 local function DoTest()
-	local nX , nY = Maze:GetPositionByRowCol(1, 1)
+	local nX , nY = Lib:GetPositionByRowCol(1, 1)
 	assert(nX == -702)
 	assert(nY == -696)
 	
-	nX , nY = Maze:GetPositionByRowCol(21, 40)
+	nX , nY = Lib:GetPositionByRowCol(21, 40)
 	assert(nX == 702)
 	assert(nY == 264)
 end
