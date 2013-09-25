@@ -11,8 +11,11 @@ function Character:Init(pSprite, tbProperty, tbAI)
 	self.pSprite = pSprite
 	local nOriginX, nOriginY = pSprite:getPosition()
 	self.tbOrigin = {x = nOriginX, y = nOriginY}
+	local nRow, nCol = Lib:GetRowColByPos(nOriginX, nOriginY)
+	self.tbLogicPos = {nRow = nRow, nCol = nCol}
 	self.tbSize = {width = 36, height = 48}
 	self.tbStack = {}
+	self.nWaitFrame = 0
 	self.tbRecordPos = {}
 	self.tbProperty = {
 		CurHP = 100,
@@ -40,9 +43,17 @@ function Character:Init(pSprite, tbProperty, tbAI)
 	    if pSprite.isPaused then
 	    	return
 	    end
+	    if self.nWaitFrame > 0 then
+	    	self.nWaitFrame = self.nWaitFrame - 1
+	    	return
+	    end
 	    self:AutoMove()
 	end
 	CCDirector:sharedDirector():getScheduler():scheduleScriptFunc(tick, 0, false)
+end
+
+function Character:Wait(nFrame)
+	self.nWaitFrame = nFrame
 end
 
 function Character:Start()
@@ -113,6 +124,8 @@ function Character:Goto(x, y, nDir)
 		return 0
 	end
 	local nX, nY = unpack(tbPosOffset)
+	self.tbLogicPos.nRow = self.tbLogicPos.nRow + nY
+	self.tbLogicPos.nCol = self.tbLogicPos.nCol + nX
 	local nNewX, nNewY = x + self.tbSize.width * nX + nX, y + self.tbSize.height * nY
 	self:SetDirection(nDir)
     self.tbTarget = {x = nNewX, y = nNewY}
@@ -184,4 +197,8 @@ function Character:TryGoto(nNewX, nNewY)
 	end
 	
     return 1
+end
+
+function Character:GetLogicPos()
+	return self.tbLogicPos.nRow, self.tbLogicPos.nCol
 end

@@ -296,6 +296,9 @@ function Maze:CanMove(nX, nY)
 end
 
 function Maze:IsFree(nRow, nCol)
+	if nRow > Def.MAZE_ROW_COUNT then
+		return 0
+	end
 	if self.tbData[nRow][nCol] == MAP_FREE then
 		return 1
 	end

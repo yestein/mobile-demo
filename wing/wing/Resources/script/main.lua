@@ -49,10 +49,10 @@ local function createLayerMaze()
     nStartX = nStartX + (Def.MAZE_COL_COUNT / 2 - 1) * Def.BLOCK_WIDTH
     nStartY = nStartY + (Def.MAZE_ROW_COUNT - 1) * Def.BLOCK_HEIGHT
     local tbProperty = {
-    	AttackRange = 3,
+    	AttackRange = 6,
     	Speed = 3,
     }
-    local tbHero, pSpriteHero = Hero:NewHero(nStartX, nStartY, {Speed = 3})    
+    local tbHero, pSpriteHero = Hero:NewHero(nStartX, nStartY, tbProperty)    
     layerFarm:addChild(pSpriteHero)
 
     local tbBlock = Maze:GenBlock(bg)

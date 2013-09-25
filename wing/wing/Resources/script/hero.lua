@@ -69,9 +69,9 @@ function tbHeroClass:AutoMove()
 
 	if IsArriveTarget() == 1 then
 		self:RecordPos(x, y)
-		
-		if self:TryFindMonster() == 1 then
-			self:SetDirection(nDir)
+		local tbMonster, nDirection = self:TryFindMonster()
+		if tbMonster then
+			self:SetDirection(nDirection)
 			self:Attack()
 			return 0
 		end
@@ -97,7 +97,6 @@ function tbHeroClass:AutoMove()
 				self.tbTarget = nil
 			end
 		end
-
 		self:Goto(x, y, nNextDir)
 	end
 
@@ -106,14 +105,39 @@ function tbHeroClass:AutoMove()
 end
 
 function tbHeroClass:TryFindMonster()
-	local nFindRange = 3
-	local nX, nY = self.pSprite:getPosition()
-	local nRow, nCol = Lib:GetRowColByPos(nX, nY)
+	local nFindRange = self.tbProperty.AttackRange
+	local nRow, nCol = self:GetLogicPos()
+	local tbMonsterList = Monster:GetAllMonster()
+	for dwId, tbMonster in pairs(tbMonsterList) do
+		local nMonsterRow, nMonsterCol = tbMonster:GetLogicPos()
+		if nMonsterRow == nRow then
+			local nDistance = math.abs(nCol - nMonsterCol)
+			if nDistance <= nFindRange then
+			 	if nCol < nMonsterCol then
+			 		return tbMonster, Def.DIR_RIGHT
+			 	else
+			 		return tbMonster, Def.DIR_LEFT
+			 	end
+			end
+		end
+		
+		if nCol == nMonsterCol then
+			local nDistance = math.abs(nRow - nMonsterRow)
+			if nDistance <= nFindRange then
+			 	if nRow < nMonsterRow then
+			 		return tbMonster, Def.DIR_UP
+			 	else
+			 		return tbMonster, Def.DIR_DOWN
+			 	end
+			end
+		end
+	end
 end
 
 function tbHeroClass:Attack()
 	local nX, nY = self.pSprite:getPosition()
 	Bullet:AddBullet(nX, nY, self.nDirection)
+	self:Wait(60)
 end
 
 function tbHeroClass:TryGoto(nNewX, nNewY)
@@ -131,7 +155,7 @@ function tbHeroClass:RecordPos(nX, nY)
 	if not self.tbRecordPos[nX] then
 		self.tbRecordPos[nX] = {}
 	end
-
+ 
 	self.tbRecordPos[nX][nY] = 1
 end
 
