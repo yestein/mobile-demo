@@ -10,6 +10,10 @@ if not _G.Def then
 	_G.Def = {}
 end
 
+if not _G.GameMgr then
+	_G.GameMgr = {}
+end
+
 if not _G.Maze then
 	_G.Maze = {}
 end
@@ -40,6 +44,7 @@ end
 
 require("define")
 require("lib")
+require("game_mgr")
 require("maze")
 require("player")
 require("character")

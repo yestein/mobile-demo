@@ -78,3 +78,11 @@ function Lib:GetPositionByRowCol(nRow, nCol)
 	return nX, nY
 end
 
+function Lib:IsHero(dwId)
+	if dwId <= 100 then
+		return 1
+	else
+		return 0
+	end
+end
+

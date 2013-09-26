@@ -9,7 +9,7 @@
 local tbBulletClass = {}
 
 local Id = 0
-function Accumulator()
+local function Accumulator()
 	Id = Id + 1
 	return Id
 end
@@ -30,9 +30,19 @@ function Bullet:Init()
 			local x, y = pSprite:getPosition()
 			local nNewX, nNewY = x + nX * 4, y + nY * 4
 			local nRow, nCol = Lib:GetRowColByPos(nNewX, nNewY)
-			if Maze:IsFree(nRow, nCol) == 1 then
+			local dwId = Maze:GetUnit(nRow, nCol)
+			if Maze:IsFree(nRow, nCol) == 1 and dwId == 0 then
 				pSprite:setPosition(nNewX, nNewY)
+				return 0
 			else
+				if dwId > 0 then
+					local tbCharacter = GameMgr:GetCharacterById(dwId)
+					if Lib:IsHero(dwId) == 1 then
+						tbCharacter:BeAttacked(tbBullet)
+					else
+						tbCharacter:BeAttacked(tbBullet)
+					end
+				end
 				tbBullet:Uninit()
 				self.tbBulletList[dwBulletId] = nil
 			end			
@@ -43,20 +53,28 @@ function Bullet:Init()
 	return bulletNode
 end
 
-function Bullet:AddBullet(nX, nY, nDirection)
+function Bullet:AddBullet(nX, nY, nDirection, tbProperty)
 	local tbBullet = Lib:NewClass(tbBulletClass)
 	local dwId = Accumulator()
 	tbBullet.dwId = dwId
-	tbBullet:Init(nX, nY)
+	tbBullet:Init(nX, nY, tbProperty)
 	tbBullet.nDirection = nDirection
 	self.tbBulletList[dwId] = tbBullet
 end
 
-function tbBulletClass:Init(nX, nY)
+function tbBulletClass:Init(nX, nY, tbProperty)
 	local pSprite = CCSprite:createWithTexture(Bullet.bulletNode:getTexture())
 	pSprite:setPosition(nX, nY)
 	Bullet.bulletNode:addChild(pSprite)
 	self.pSprite = pSprite
+	self.tbProperty = tbProperty
+end
+
+function tbBulletClass:CalcDamage(tbCharacter)
+	local nCurHP = tbCharacter:GetProperty("CurHP")
+	local nNewHP = nCurHP - self.tbProperty.Damage
+	cclog(nCurHP.."->"..nNewHP)
+	return nNewHP
 end
 
 function tbBulletClass:Uninit()

@@ -13,8 +13,8 @@ local TextureMonster = CCTextureCache:sharedTextureCache():addImage(Def.szMonste
 local InitRect = CCRectMake(0, 0, Def.BLOCK_WIDTH, Def.BLOCK_HEIGHT)
 local MonsterFrame0 = CCSpriteFrame:createWithTexture(TextureMonster, InitRect)
 
-local Id = 0
-function Accumulator()
+local Id = 100
+local function Accumulator()
 	Id = Id + 1
 	return Id
 end
@@ -25,36 +25,15 @@ end
 
 local tbMonsterClass = Monster.tbMonsterClass
 
-function Monster:Init()
-	self.tbMonster = {}
-end
-
-function Monster:NewMonster(nStartX, nStartY)
+function Monster:NewMonster(nStartX, nStartY, tbProperty)
 	
 	local tbNewMonster = Lib:NewClass(tbMonsterClass)
 	local pMonster = CCSprite:createWithSpriteFrame(MonsterFrame0)
 	pMonster.isPaused = true
 	pMonster:setPosition(nStartX, nStartY)
-    tbNewMonster:Init(pMonster, tbProperty, tbAI)
 	tbNewMonster.dwId = Accumulator()
-	self.tbMonster[#self.tbMonster + 1] = tbNewMonster	
-	
+    tbNewMonster:Init(pMonster, tbProperty, tbAI)	
+    GameMgr:AddCharacter(tbNewMonster.dwId, tbNewMonster)
 	
 	return tbNewMonster, pMonster
-end
-
-function Monster:GetAllMonster()
-	return self.tbMonster
-end
-
-function Monster:Start()
-	for dwId, tbMonster in pairs(self.tbMonster) do
-		tbMonster:Start()
-	end
-end
-
-function Monster:Reset()
-	for dwId, tbMonster in pairs(self.tbMonster) do
-		tbMonster:Reset()
-	end
 end

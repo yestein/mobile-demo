@@ -13,6 +13,8 @@ function Character:Init(pSprite, tbProperty, tbAI)
 	self.tbOrigin = {x = nOriginX, y = nOriginY}
 	local nRow, nCol = Lib:GetRowColByPos(nOriginX, nOriginY)
 	self.tbLogicPos = {nRow = nRow, nCol = nCol}
+	Maze:SetUnit(nRow, nCol, self.dwId)
+	
 	self.tbSize = {width = 36, height = 48}
 	self.tbStack = {}
 	self.nWaitFrame = 0
@@ -49,7 +51,39 @@ function Character:Init(pSprite, tbProperty, tbAI)
 	    end
 	    self:AutoMove()
 	end
-	CCDirector:sharedDirector():getScheduler():scheduleScriptFunc(tick, 0, false)
+	self.nRegId = CCDirector:sharedDirector():getScheduler():scheduleScriptFunc(tick, 0, false)
+end
+
+function Character:Uninit()
+	CCDirector:sharedDirector():getScheduler():unscheduleScriptEntry(self.nRegId)
+end
+
+function Character:Attack()
+	local nX, nY = self.pSprite:getPosition()
+	local tbBulletProperty = {
+		Damage = self:GetProperty("Attack"),
+	}
+	local tbPosOffset = Def.tbMove[self.nDirection]
+	local nOffsetX, nOffsetY = unpack(tbPosOffset)
+	nOffsetX = nOffsetX * 36
+	nOffsetY = nOffsetY * 48
+	Bullet:AddBullet(nX + nOffsetX, nY + nOffsetY, self.nDirection, tbBulletProperty)
+	self:Wait(60)
+end
+
+function Character:BeAttacked(tbBullet)
+	local nCurHP = self:GetProperty("CurHP")
+	local nNewHP = tbBullet:CalcDamage(self)
+	self:SetProperty("CurHP", nNewHP)
+	if nNewHP <= 0 then
+		self:Die()
+	end
+end
+
+function Character:Die()
+	Maze:ClearUnit(self.tbLogicPos.nRow, self.tbLogicPos.nCol)
+	GameMgr:RemoveCharacter(self.dwId)
+	self:Uninit()
 end
 
 function Character:Wait(nFrame)
@@ -73,17 +107,20 @@ function Character:Reset()
     self:SetDirection(Def.DIR_DOWN)
 end
 
+function Character:GetProperty(Key)
+	if not self.tbProperty[Key] then
+		return -1
+	else
+		return self.tbProperty[Key]
+	end
+end
+
 function Character:SetProperty(Key, Value)
 	if self.tbProperty[Key] then
 		self.tbProperty[Key] = Value
 		return 1
 	end
 	return 0
-end
-
-function Character:Attack()
-	local nX, nY = spriteCharacter:getPosition()
-	Bullet:AddBullet(nX, nY, self.nDirection)
 end
 
 function Character:GetOppositeDirection(nDir)
@@ -124,8 +161,10 @@ function Character:Goto(x, y, nDir)
 		return 0
 	end
 	local nX, nY = unpack(tbPosOffset)
+	Maze:ClearUnit(self.tbLogicPos.nRow, self.tbLogicPos.nCol)
 	self.tbLogicPos.nRow = self.tbLogicPos.nRow + nY
 	self.tbLogicPos.nCol = self.tbLogicPos.nCol + nX
+	Maze:SetUnit(self.tbLogicPos.nRow, self.tbLogicPos.nCol, self.dwId)
 	local nNewX, nNewY = x + self.tbSize.width * nX + nX, y + self.tbSize.height * nY
 	self:SetDirection(nDir)
     self.tbTarget = {x = nNewX, y = nNewY}

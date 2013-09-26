@@ -214,35 +214,39 @@ local function createMenu()
 end
     
 local function main()
-    -- avoid memory leak
-    collectgarbage("setpause", 100)
-    collectgarbage("setstepmul", 5000)
+	-- avoid memory leak
+	collectgarbage("setpause", 100)
+	collectgarbage("setstepmul", 5000)
+	
+	-- play background music, preload effect
+	
+	-- uncomment below for the BlackBerry version
+	-- local bgMusicPath = sharedFileUtils:fullPathForFilename("background.ogg")
+	-- local bgMusicPath = sharedFileUtils:fullPathForFilename("background.mp3")
+	-- sharedEngine:playBackgroundMusic(bgMusicPath, true)
+	local effectPath = sharedFileUtils:fullPathForFilename("effect1.wav")
+	sharedEngine:preloadEffect(effectPath)
+	
+	math.randomseed(os.time())
+	math.random(100)
+	
+	GameMgr:Init()
+	Maze:Init(Def.MAZE_COL_COUNT, Def.MAZE_ROW_COUNT)
+	Maze:Load()
 
-    -- play background music, preload effect
+	-- run
+	local sceneGame = CCScene:create()
+	local layerBG = createLayerMaze()
+	sceneGame:addChild(layerBG)
+	
+	local layerMenu = createMenu()
+	sceneGame:addChild(layerMenu)
+	
+	GameMgr.sceneGame = sceneGame
+	GameMgr.layerBG = layerBG
+	GameMgr.layerMenu = layerMenu
 
-    -- uncomment below for the BlackBerry version
-    -- local bgMusicPath = sharedFileUtils:fullPathForFilename("background.ogg")
-    -- local bgMusicPath = sharedFileUtils:fullPathForFilename("background.mp3")
-    -- sharedEngine:playBackgroundMusic(bgMusicPath, true)
-    local effectPath = sharedFileUtils:fullPathForFilename("effect1.wav")
-    sharedEngine:preloadEffect(effectPath)
-
-    math.randomseed(os.time())
-    math.random(100)
-    
-    Hero:Init()
-    Monster:Init()
-    Maze:Init(Def.MAZE_COL_COUNT, Def.MAZE_ROW_COUNT)
-    Maze:Load()
-
-    -- run
-    local sceneGame = CCScene:create()
-    local layerBG = createLayerMaze()
-    sceneGame:addChild(layerBG)
-    
-    local layerMenu = createMenu()
-    sceneGame:addChild(layerMenu)
-    sharedDirector:runWithScene(sceneGame)    
+	sharedDirector:runWithScene(sceneGame)
 end
 
 xpcall(main, __G__TRACKBACK__)

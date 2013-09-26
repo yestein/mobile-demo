@@ -55,11 +55,9 @@ function Maze:Save()
 	elseif nState == STATE_NORMAL then
 		print("Start Hero Battle")
 		self:SetState(STATE_BATTLE)
-		Hero:Start()
-		Monster:Start()
+		GameMgr:Start()
 	elseif nState == STATE_BATTLE then
-		Hero:Reset()
-		Monster:Reset()
+		GameMgr:Reset()
 		print("Start Edit Maze")
 		self:SetState(STATE_EDIT)
 		self:InitRecordOP()
@@ -92,12 +90,15 @@ end
 
 function Maze:Init(nWidth, nHeight)
 	self.tbData = {}
+	self.tbUnit = {}
 	self.tbRecord = {}
 	self:SetState(STATE_NORMAL)
 	for i = 1, nHeight do
 		self.tbData[i] = {}
+		self.tbUnit[i] = {}
 		for j = 1, nWidth do
 			self.tbData[i][j] = MAP_BLOCK
+			self.tbUnit[i][j] = 0
 		end
 	end
 end
@@ -266,15 +267,15 @@ function Maze:GenBlock()
 		for nColumn, nData in ipairs(tbRow) do
 			local pSprite = CCSprite:createWithSpriteFrame(frame0)
 			self.tbBlock[nRow][nColumn] = pSprite
-    		pSprite:setPosition(nStartX + (nColumn - 1) * Def.BLOCK_WIDTH, nStartY + (nRow - 1) * Def.BLOCK_HEIGHT)
+			local nX, nY = nStartX + (nColumn - 1) * Def.BLOCK_WIDTH, nStartY + (nRow - 1) * Def.BLOCK_HEIGHT
+    		pSprite:setPosition(nX, nY)
     		tbSprite[#tbSprite + 1] = pSprite
 			if nData ~= MAP_BLOCK then
 				pSprite:setVisible(false)
 	    	end
 	    	
 	    	if nData == MAP_MONSTER then
-	    		local tbMonster, pMonster = Monster:NewMonster(nStartX + (nColumn - 1) * Def.BLOCK_WIDTH, nStartY + (nRow - 1) * Def.BLOCK_HEIGHT)
-	    		
+	    		local tbMonster, pMonster = Monster:NewMonster(nX, nY, {CurHP = 15})
 	    		tbSprite[#tbSprite + 1] = pMonster
 	    	end
 		end
@@ -285,21 +286,34 @@ end
 
 function Maze:CanMove(nX, nY)
 	local nRow, nCol = Lib:GetRowColByPos(nX, nY)
-	if nRow > Def.MAZE_ROW_COUNT then
+	if self:IsFree(nRow, nCol) ~= 1 then
 		return 0
 	end
-	if self.tbData[nRow][nCol] == MAP_BLOCK then
+	
+	if self:GetUnit(nRow, nCol) > 0 then
 		return 0
 	end
 	return 1
 
 end
 
+function Maze:ClearUnit(nRow, nCol)
+	self.tbUnit[nRow][nCol] = 0
+end
+
+function Maze:SetUnit(nRow, nCol, dwId)
+	self.tbUnit[nRow][nCol] = dwId
+end
+
+function Maze:GetUnit(nRow, nCol)
+	return self.tbUnit[nRow][nCol]
+end
+
 function Maze:IsFree(nRow, nCol)
 	if nRow > Def.MAZE_ROW_COUNT then
 		return 0
 	end
-	if self.tbData[nRow][nCol] == MAP_FREE then
+	if self.tbData[nRow][nCol] ~= MAP_BLOCK then
 		return 1
 	end
 	return 0

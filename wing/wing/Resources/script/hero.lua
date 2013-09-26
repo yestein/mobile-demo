@@ -19,38 +19,21 @@ if not Hero.tbHeroClass then
 end
 
 local Id = 0
-function Accumulator()
+local function Accumulator()
 	Id = Id + 1
 	return Id
 end
 
 local tbHeroClass = Hero.tbHeroClass
 
-function Hero:Init()
-	self.tbHero = {}
-end
-
-function Hero:Start()
-	for dwId, tbHero in pairs(self.tbHero) do
-		tbHero:Start()
-	end
-end
-
-function Hero:Reset()
-	for dwId, tbHero in pairs(self.tbHero) do
-		tbHero:Reset()
-	end
-end
-
 function Hero:NewHero(nStartX, nStartY, tbProperty, tbAI)
 	local tbNewHero = Lib:NewClass(tbHeroClass)
     local pHero = CCSprite:createWithSpriteFrame(frame0)
     pHero:setPosition(nStartX, nStartY)
     pHero.isPaused = true
-	tbNewHero:Init(pHero, tbProperty, tbAI)		
-	
-	tbNewHero.dwId = Accumulator()
-	self.tbHero[#self.tbHero + 1] = tbNewHero
+    tbNewHero.dwId = Accumulator()
+	tbNewHero:Init(pHero, tbProperty, tbAI)
+	GameMgr:AddCharacter(tbNewHero.dwId, tbNewHero)
 	return tbNewHero, pHero
 end
 
@@ -107,37 +90,27 @@ end
 function tbHeroClass:TryFindMonster()
 	local nFindRange = self.tbProperty.AttackRange
 	local nRow, nCol = self:GetLogicPos()
-	local tbMonsterList = Monster:GetAllMonster()
-	for dwId, tbMonster in pairs(tbMonsterList) do
-		local nMonsterRow, nMonsterCol = tbMonster:GetLogicPos()
-		if nMonsterRow == nRow then
-			local nDistance = math.abs(nCol - nMonsterCol)
-			if nDistance <= nFindRange then
-			 	if nCol < nMonsterCol then
-			 		return tbMonster, Def.DIR_RIGHT
-			 	else
-			 		return tbMonster, Def.DIR_LEFT
-			 	end
-			end
+	
+	for nDirection = Def.DIR_START + 1, Def.DIR_END - 1 do
+		local tbPosOffset = Def.tbMove[nDirection]
+		if not tbPosOffset then
+			return
 		end
-		
-		if nCol == nMonsterCol then
-			local nDistance = math.abs(nRow - nMonsterRow)
-			if nDistance <= nFindRange then
-			 	if nRow < nMonsterRow then
-			 		return tbMonster, Def.DIR_UP
-			 	else
-			 		return tbMonster, Def.DIR_DOWN
-			 	end
+		for i = 1, nFindRange do
+			local nX, nY = unpack(tbPosOffset)
+			nX = nX * i
+			nY = nY * i
+			local nCheckRow, nCheckCol = nRow + nY, nCol + nX
+			if Maze:IsFree(nCheckRow, nCheckCol) ~= 1 then
+				break
+			end
+			local dwId = Maze:GetUnit(nCheckRow, nCheckCol)
+			if dwId > 0 and Lib:IsHero(dwId) ~= 1 then
+				cclog("find Monster")
+				return GameMgr:GetCharacterById(dwId), nDirection
 			end
 		end
 	end
-end
-
-function tbHeroClass:Attack()
-	local nX, nY = self.pSprite:getPosition()
-	Bullet:AddBullet(nX, nY, self.nDirection)
-	self:Wait(60)
 end
 
 function tbHeroClass:TryGoto(nNewX, nNewY)
