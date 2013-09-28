@@ -275,7 +275,7 @@ function Maze:GenBlock()
 	    	end
 	    	
 	    	if nData == MAP_MONSTER then
-	    		local tbMonster, pMonster = Monster:NewMonster(nX, nY, {CurHP = 15})
+	    		local tbMonster, pMonster = Monster:NewMonster(nX, nY, {CurHP = 15, AttackRange = 3})
 	    		tbSprite[#tbSprite + 1] = pMonster
 	    	end
 		end

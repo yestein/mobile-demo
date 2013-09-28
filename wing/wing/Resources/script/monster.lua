@@ -37,3 +37,41 @@ function Monster:NewMonster(nStartX, nStartY, tbProperty)
 	
 	return tbNewMonster, pMonster
 end
+
+function tbMonsterClass:AutoMove()
+	local x, y = self.pSprite:getPosition()
+	local function IsArriveTarget()
+		if not self.nDirection or not self.tbTarget then
+			return 1
+		end
+		if x == self.tbTarget.x and y == self.tbTarget.y then
+			return 1
+		end
+		return 0
+	end
+
+	if IsArriveTarget() == 1 then
+		cclog("Try find hero")
+		local tbHero, nDirection = self:TryFindHero()
+		if tbHero then
+			cclog("find hero")
+			self:SetDirection(nDirection)
+			self:Attack()
+			return 0
+		end
+		local nNextDir = math.random(Def.DIR_START + 1, Def.DIR_END - 1)
+		local tbPosOffset = Def.tbMove[nNextDir]
+		if not tbPosOffset then
+			return 0
+		end			
+		local nX, nY = unpack(tbPosOffset)
+		local nNewX, nNewY = x + self.tbSize.width * nX + nX, y + self.tbSize.height * nY
+		if self:TryGoto(nNewX, nNewY) == 0 then
+			return
+		end
+		self:Goto(x, y, nNextDir)
+	end
+
+	local nDirection = self.nDirection
+	self:Move(nDirection)
+end

@@ -241,3 +241,38 @@ end
 function Character:GetLogicPos()
 	return self.tbLogicPos.nRow, self.tbLogicPos.nCol
 end
+
+function Character:TryFindUnit(bHero)
+	local nFindRange = self.tbProperty.AttackRange
+	local nRow, nCol = self:GetLogicPos()
+	
+	for nDirection = Def.DIR_START + 1, Def.DIR_END - 1 do
+		local tbPosOffset = Def.tbMove[nDirection]
+		if not tbPosOffset then
+			return
+		end
+		for i = 1, nFindRange do
+			local nX, nY = unpack(tbPosOffset)
+			nX = nX * i
+			nY = nY * i
+			local nCheckRow, nCheckCol = nRow + nY, nCol + nX
+			if Maze:IsFree(nCheckRow, nCheckCol) ~= 1 then
+				break
+			end
+			local dwId = Maze:GetUnit(nCheckRow, nCheckCol)
+			if dwId > 0 and Lib:IsHero(dwId) == bHero then
+				return GameMgr:GetCharacterById(dwId), nDirection
+			end
+		end
+	end
+end
+
+function Character:TryFindMonster()
+	return self:TryFindUnit(0)
+end
+
+function Character:TryFindHero()
+	return self:TryFindUnit(1)
+end
+
+
