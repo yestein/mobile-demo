@@ -42,6 +42,18 @@ if not _G.Bullet then
 	_G.Bullet = {}
 end
 
+if not _G.Algorithm then
+	_G.Algorithm = {}
+end
+
+if not _G.MenuMgr then
+	_G.MenuMgr = {}
+end
+
+if not _G.SceneMgr then
+	_G.SceneMgr = {}
+end
+
 require("define")
 require("lib")
 require("game_mgr")
@@ -51,3 +63,10 @@ require("character")
 require("hero")
 require("monster")
 require("bullet")
+require("findpath")
+require("menu")
+require("scene_mgr")
+require("title")
+require("scene_base")
+require("game_scene")
+require("character_mgr")

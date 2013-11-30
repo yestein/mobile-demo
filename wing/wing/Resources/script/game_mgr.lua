@@ -1,29 +1,44 @@
 --=======================================================================
--- ÎÄ¼þÃû¡¡£ºgame_mgr.lua
--- ´´½¨Õß¡¡£ºyulei(yulei1@kingsoft.com)
--- ´´½¨Ê±¼ä£º2013-09-26 13:40:31
--- ¹¦ÄÜÃèÊö£º
--- ÐÞ¸ÄÁÐ±í£º
+-- File Name    : game_mgr.lua
+-- Creator      : yestein(yestein86@gmail.com)
+-- Date         : 2013-09-26 13:40:31
+-- Description  :
+-- Modify       :
 --=======================================================================
+
+GameMgr.STATE_NORMAL = 1
+GameMgr.STATE_EDIT   = 2
+GameMgr.STATE_BATTLE = 3
+
+GameMgr.STATE_COUNT = 3
+
+GameMgr.tbStateDesc = {
+	[GameMgr.STATE_NORMAL] = "æ™®é€š",
+	[GameMgr.STATE_EDIT]   = "ç¼–è¾‘ä¸­",
+	[GameMgr.STATE_BATTLE] = "æˆ˜æ–—ä¸­",
+}
 
 function GameMgr:Init()
 	self.tbCharacterMap = {}
+	self.nState = self.STATE_NORMAL
 end
 
-function GameMgr:AddCharacter(dwId, tbCharacter)
-	self.tbCharacterMap[dwId] = tbCharacter
+function GameMgr:SetState(nState)
+	self.nState = nState
+	cclog("switch to %s", self.tbStateDesc[nState])
+	GameMgr:UpdateTitle()
+	local func = self.fnState[nState]
+	if func then
+		func(self)
+	end
 end
 
-function GameMgr:GetCharacterById(dwId)
-	return self.tbCharacterMap[dwId]
+function GameMgr:GetState()
+	return self.nState
 end
 
-function GameMgr:RemoveCharacter(dwId)
-	local pSprite = self.tbCharacterMap[dwId].pSprite
-	if pSprite then
-		self:RemoveSpriteFromBg(pSprite)
-	end	
-	self.tbCharacterMap[dwId] = nil
+function GameMgr:GetStateDesc()
+	return self.tbStateDesc[self.nState]
 end
 
 function GameMgr:Start()
@@ -38,19 +53,31 @@ function GameMgr:Reset()
 	end
 end
 
-
-function GameMgr:GetGameScene()
-	return self.sceneGame	
+function GameMgr:Switch()
+	local nState = self:GetState()
+	local nNewState = nState + 1
+	if nNewState > self.STATE_COUNT then
+		nNewState = nNewState - self.STATE_COUNT
+	end
+	self:SetState(nNewState)
 end
 
-function GameMgr:GetLayerBg()
-	return self.layerBG	
+
+function GameMgr:OnSwitch_Normal()
+	Maze:Save()
 end
 
-function GameMgr:GetLayerMenu()
-	return self.layerMenu
+function GameMgr:OnSwitch_Edit()
+	self:Reset()
+	Maze:InitRecordOP()
 end
 
-function GameMgr:RemoveSpriteFromBg(pSprite)
-	self.layerBG:removeChild(pSprite, true)
+function GameMgr:OnSwitch_Battle()
+	self:Start()
 end
+
+GameMgr.fnState = {
+	[GameMgr.STATE_NORMAL] = GameMgr.OnSwitch_Normal,
+	[GameMgr.STATE_EDIT]   = GameMgr.OnSwitch_Edit,
+	[GameMgr.STATE_BATTLE] = GameMgr.OnSwitch_Battle,
+}

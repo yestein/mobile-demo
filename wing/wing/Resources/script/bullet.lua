@@ -1,9 +1,9 @@
 --=======================================================================
--- 文件名　：bullet.lua
--- 创建者　：yestein (yestein86@gmail.com)
--- 创建时间：2013-09-22 15:39:32
--- 功能描述：
--- 修改列表：
+-- File Name    : bullet.lua
+-- Creator      : yestein (yestein86@gmail.com)
+-- Date         : 2013-09-22 15:39:32
+-- Description  :
+-- Modify       :
 --=======================================================================
 
 local tbBulletClass = {}

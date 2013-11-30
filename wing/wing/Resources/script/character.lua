@@ -1,9 +1,9 @@
 --=======================================================================
--- 文件名　：character.lua
--- 创建者　：yulei(yulei1@kingsoft.com)
--- 创建时间：2013-09-22 19:57:43
--- 功能描述：
--- 修改列表：
+-- File Name    : character.lua
+-- Creator      : yestein(yestein86@gmail.com)
+-- Date         : 2013-09-22 19:57:43
+-- Description  :
+-- Modify       :
 --=======================================================================
 
 
@@ -20,15 +20,16 @@ function Character:Init(pSprite, tbProperty, tbAI)
 	self.nWaitFrame = 0
 	self.tbRecordPos = {}
 	self.tbProperty = {
-		CurHP = 100,
-		MaxHP = 100,
-		CurMP = 100,
-		MaxMP = 100,
-		Attack = 5,
+		ViewRange   = 3,
+		CurHP       = 100,
+		MaxHP       = 100,
+		CurMP       = 100,
+		MaxMP       = 100,
+		Attack      = 5,
 		AttackRange = 1,
-		Defence = 5,
-		Magic = 5,
-		Speed = 1,		
+		Defence     = 5,
+		Magic       = 5,
+		Speed       = 1,
 	}
 	self.tbAIDirection = tbAI or {Def.DIR_DOWN, Def.DIR_RIGHT, Def.DIR_UP, Def.DIR_LEFT}
 	if tbProperty then
@@ -82,7 +83,7 @@ end
 
 function Character:Die()
 	Maze:ClearUnit(self.tbLogicPos.nRow, self.tbLogicPos.nCol)
-	GameMgr:RemoveCharacter(self.dwId)
+	GameMgr:RemoveCharacter("GameScene", self.dwId)
 	self:Uninit()
 end
 
@@ -170,33 +171,37 @@ function Character:Goto(x, y, nDir)
     self.tbTarget = {x = nNewX, y = nNewY}
 end
 
+function Character:SetSpriteDirection(pSprite, nDirection)
+	local frameWidth = 36
+	local frameHeight = 48
+
+	local Texture = pSprite:getTexture()
+	local rect = CCRectMake(0, frameHeight * Def.tbTextureRow[nDirection], frameWidth, frameHeight)
+    local frame0 = CCSpriteFrame:createWithTexture(Texture, rect)
+    rect = CCRectMake(frameWidth, frameHeight * Def.tbTextureRow[nDirection], frameWidth, frameHeight)
+    local frame1 = CCSpriteFrame:createWithTexture(Texture, rect)
+    rect = CCRectMake(2 * frameWidth, frameHeight * Def.tbTextureRow[nDirection], frameWidth, frameHeight)
+    local frame2 = CCSpriteFrame:createWithTexture(Texture, rect)
+    rect = CCRectMake(3 * frameWidth, frameHeight * Def.tbTextureRow[nDirection], frameWidth, frameHeight)
+    local frame3 = CCSpriteFrame:createWithTexture(Texture, rect)
+	local animFrames = CCArray:create()
+
+    animFrames:addObject(frame0)
+    animFrames:addObject(frame1)
+    animFrames:addObject(frame2)
+    animFrames:addObject(frame3)
+
+    local animation = CCAnimation:createWithSpriteFrames(animFrames, 0.15)
+    local animate = CCAnimate:create(animation)
+    pSprite:stopAllActions()
+    pSprite:runAction(CCRepeatForever:create(animate))
+end
+
 function Character:SetDirection(nDirection)
 	if self.nDirection ~= nDirection then
 		self.nDirection = nDirection
 		
-		local frameWidth = 36
-    	local frameHeight = 48
-
-    	local Texture = self.pSprite:getTexture()
-		local rect = CCRectMake(0, frameHeight * Def.tbTextureRow[nDirection], frameWidth, frameHeight)
-	    local frame0 = CCSpriteFrame:createWithTexture(Texture, rect)
-	    rect = CCRectMake(frameWidth, frameHeight * Def.tbTextureRow[nDirection], frameWidth, frameHeight)
-	    local frame1 = CCSpriteFrame:createWithTexture(Texture, rect)
-	    rect = CCRectMake(2 * frameWidth, frameHeight * Def.tbTextureRow[nDirection], frameWidth, frameHeight)
-	    local frame2 = CCSpriteFrame:createWithTexture(Texture, rect)
-	    rect = CCRectMake(3 * frameWidth, frameHeight * Def.tbTextureRow[nDirection], frameWidth, frameHeight)
-	    local frame3 = CCSpriteFrame:createWithTexture(Texture, rect)
-		local animFrames = CCArray:create()
-
-	    animFrames:addObject(frame0)
-	    animFrames:addObject(frame1)
-	    animFrames:addObject(frame2)
-	    animFrames:addObject(frame3)
-
-	    local animation = CCAnimation:createWithSpriteFrames(animFrames, 0.15)
-	    local animate = CCAnimate:create(animation)
-	    self.pSprite:stopAllActions()
-	    self.pSprite:runAction(CCRepeatForever:create(animate))
+		Character:SetSpriteDirection(self.pSprite, nDirection)
 	end
 end
 

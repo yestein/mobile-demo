@@ -7,60 +7,23 @@
 --===================================================
 
 
-local MAP_FREE = 1
-local MAP_BLOCK = 2
-local MAP_MONSTER = 3
-
-local STATE_NORMAL = 1
-local STATE_EDIT = 2
-local STATE_BATTLE = 3
+local MAP_FREE     = 1
+local MAP_BLOCK    = 2
+local MAP_MONSTER  = 3
 
 local sharedTextureCache = CCTextureCache:sharedTextureCache()
 
-function Maze:GetSize()
-	return self.tbSize
-end
-
-function Maze:SetSize(tbSize)
-	self.tbSize = {width = tbSize.width, height = tbSize.height}
-end
-
-function Maze:SetState(nState)
-	self.nState = nState
-end
-
-function Maze:GetState()
-	return self.nState
-end
-
-function Maze:Save()
-	local nState = self:GetState()
-	if nState == STATE_EDIT then
-		print("Save Maze")
-		--Lib:Reload()
-	    local szPath = CCFileUtils:sharedFileUtils():getWritablePath()
-		local file = assert(io.open(szPath.."savemap.lua", "w"))
-		file:write("Maze:Entry{\n")
-		for nRow, tbRow in ipairs(self.tbData) do
-			file:write("{")
-			for nColumn, nData in ipairs(tbRow) do
-				file:write(string.format("%d, ", nData))
-			end
-			file:write("},\n")
+function Maze:Init(nWidth, nHeight)
+	self.tbData = {}
+	self.tbUnit = {}
+	self.tbRecord = {}
+	for i = 1, nHeight do
+		self.tbData[i] = {}
+		self.tbUnit[i] = {}
+		for j = 1, nWidth do
+			self.tbData[i][j] = MAP_BLOCK
+			self.tbUnit[i][j] = 0
 		end
-		file:write("}")
-		file:close()
-		self:SetState(STATE_NORMAL)
-		self:ClearRecordOP()
-	elseif nState == STATE_NORMAL then
-		print("Start Hero Battle")
-		self:SetState(STATE_BATTLE)
-		GameMgr:Start()
-	elseif nState == STATE_BATTLE then
-		GameMgr:Reset()
-		print("Start Edit Maze")
-		self:SetState(STATE_EDIT)
-		self:InitRecordOP()
 	end
 end
 
@@ -78,38 +41,46 @@ function Maze:GetData()
 end
 
 function Maze:Load()
-	print("Maze:Load")
+	cclog("Load Maze ...")
 	local szPath = CCFileUtils:sharedFileUtils():getWritablePath()
 	local file = io.open(szPath.."savemap.lua", "r")
 	if not file then
 		return
 	end
-	--print(file:read("*all"))
 	local t = dofile(szPath.."savemap.lua")
+	cclog("Success!")
 end
 
-function Maze:Init(nWidth, nHeight)
-	self.tbData = {}
-	self.tbUnit = {}
-	self.tbRecord = {}
-	self:SetState(STATE_NORMAL)
-	for i = 1, nHeight do
-		self.tbData[i] = {}
-		self.tbUnit[i] = {}
-		for j = 1, nWidth do
-			self.tbData[i][j] = MAP_BLOCK
-			self.tbUnit[i][j] = 0
+function Maze:GetSize()
+	return self.tbSize
+end
+
+function Maze:SetSize(tbSize)
+	self.tbSize = {width = tbSize.width, height = tbSize.height}
+end
+
+function Maze:Save()
+	cclog("Save Maze ...")
+	--Lib:Reload()
+    local szPath = CCFileUtils:sharedFileUtils():getWritablePath()
+	local file = assert(io.open(szPath.."savemap.lua", "w"))
+	file:write("Maze:Entry{\n")
+	for nRow, tbRow in ipairs(self.tbData) do
+		file:write("{")
+		for nColumn, nData in ipairs(tbRow) do
+			file:write(string.format("%d, ", nData))
 		end
+		file:write("},\n")
 	end
+	file:write("}")
+	file:close()
+	cclog("Success!")
+	self:ClearRecordOP()
 end
 
 function Maze:Dig(nRow, nCol)
-	if self:GetState() ~= STATE_EDIT then
-		return 0
-	end
-	
 	if self:CheckCanDig(nRow, nCol) ~= 1 then
-		print("Can not Dig", nRow, nCol)
+		cclog("Can not Dig Row[%d] Col[%d]", nRow, nCol)
 		return 0
 	end	
 	local pBlock = self.tbBlock[nRow][nCol]
@@ -128,10 +99,6 @@ function Maze:PutMonster(nRow, nCol, pSprite)
 end
 
 function Maze:UnDoDig()
-	if self:GetState() ~= STATE_EDIT then
-		return 0
-	end
-	
 	local tbPos, _ = self:GetLastPos()
 	if not tbPos then
 		return 0
@@ -146,15 +113,11 @@ function Maze:UnDoDig()
     self.tbData[nRow][nCol] = MAP_BLOCK
     
     pBlock:setVisible(true)
-    print("Undo Dig")
+    cclog("Undo Dig")
    return 1
 end
 
 function Maze:ReDoDig()
-	if self:GetState() ~= STATE_EDIT then
-		return 0
-	end
-	
 	if self:PushUndoPos() ~= 1 then
 		return 0
 	end
@@ -171,7 +134,7 @@ function Maze:ReDoDig()
     self.tbData[nRow][nCol] = MAP_FREE
     
     pBlock:setVisible(false)
-    print("Redo Dig")
+    cclog("Redo Dig")
    return 1
 end
 
@@ -230,7 +193,7 @@ function Maze:CheckCanDig(nRow, nCol)
 	return 0
 end
 function Maze:Reset()
-	print("Maze:Rest")
+	cclog("Maze:Rest")
 	for nRow , tbRow in ipairs(self.tbData) do
 		for nCol, _ in ipairs(tbRow) do
 			self.tbData[nRow][nCol] = MAP_BLOCK
