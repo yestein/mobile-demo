@@ -9,7 +9,7 @@
 
 local MAP_FREE     = 1
 local MAP_BLOCK    = 2
-local MAP_MONSTER  = 3
+Maze.MAP_MONSTER_START  = 3
 
 local sharedTextureCache = CCTextureCache:sharedTextureCache()
 
@@ -75,7 +75,6 @@ function Maze:Save()
 	file:write("}")
 	file:close()
 	cclog("Success!")
-	self:ClearRecordOP()
 end
 
 function Maze:Dig(nRow, nCol)
@@ -92,10 +91,6 @@ function Maze:Dig(nRow, nCol)
     pBlock:setVisible(false)
     self:PushUndoPos(nRow, nCol)
    return 1
-end
-
-function Maze:PutMonster(nRow, nCol, pSprite)
-	
 end
 
 function Maze:UnDoDig()
@@ -137,6 +132,24 @@ function Maze:ReDoDig()
     cclog("Redo Dig")
    return 1
 end
+
+function Maze:PutMonster(nRow, nCol, nMonsterTemplate)
+	if self.tbBlock[nRow][nCol] ~= MAP_FREE then
+		return 0
+	end
+	self.tbBlock[nRow][nCol] = nMonsterTemplate
+	return 1
+end
+
+function Maze:MoveMonster(nRow, nCol, nNewRow, nNewCol)
+	if self.tbBlock[nRow][nCol] < self.MAP_MONSTER_START then
+		return 0
+	end
+	self.tbBlock[nNewRow][nNewCol] = self.tbBlock[nRow][nCol]
+	self.tbBlock[nRow][nCol] = MAP_FREE
+	return 1
+end
+
 
 function Maze:InitRecordOP()
 	self.tbRecordPos = {}
@@ -192,6 +205,7 @@ function Maze:CheckCanDig(nRow, nCol)
 	end
 	return 0
 end
+
 function Maze:Reset()
 	cclog("Maze:Rest")
 	for nRow , tbRow in ipairs(self.tbData) do
@@ -211,40 +225,6 @@ function Maze:RandomMaze()
 			tbRow[nColumn] = math.random(1, 2)
 		end
 	end
-end
-
-function Maze:GenBlock()
-
-    local textureBlock = sharedTextureCache:addImage(Def.szBlockImg)
-    local rect = CCRectMake(0, 0, Def.BLOCK_WIDTH, Def.BLOCK_HEIGHT)
-    local frame0 = CCSpriteFrame:createWithTexture(textureBlock, rect)
-    
-
-    local tbSprite = {}
-    self.tbBlock = {}
-    local tbSize = self:GetSize()
-    local nStartX = -tbSize.width / 2 + Def.BLOCK_WIDTH / 2
-    local nStartY = -tbSize.height / 2 + Def.BLOCK_HEIGHT / 2
-    for nRow, tbRow in ipairs(self.tbData) do
-    	self.tbBlock[nRow] = {}
-		for nColumn, nData in ipairs(tbRow) do
-			local pSprite = CCSprite:createWithSpriteFrame(frame0)
-			self.tbBlock[nRow][nColumn] = pSprite
-			local nX, nY = nStartX + (nColumn - 1) * Def.BLOCK_WIDTH, nStartY + (nRow - 1) * Def.BLOCK_HEIGHT
-    		pSprite:setPosition(nX, nY)
-    		tbSprite[#tbSprite + 1] = pSprite
-			if nData ~= MAP_BLOCK then
-				pSprite:setVisible(false)
-	    	end
-	    	
-	    	if nData == MAP_MONSTER then
-	    		local tbMonster, pMonster = Monster:NewMonster(nX, nY, {CurHP = 15, AttackRange = 3})
-	    		tbSprite[#tbSprite + 1] = pMonster
-	    	end
-		end
-	end
-
-	return tbSprite
 end
 
 function Maze:CanMove(nX, nY)
@@ -280,4 +260,30 @@ function Maze:IsFree(nRow, nCol)
 		return 1
 	end
 	return 0
+end
+
+--Render Maze
+
+function Maze:GenBlock()
+	local BlockNode = CCSpriteBatchNode:create(Def.szBlockImg)
+    local tbSprite = {}
+    self.tbBlock = {}
+    local tbSize = self:GetSize()
+    local nStartX = -tbSize.width / 2 + Def.BLOCK_WIDTH / 2
+    local nStartY = -tbSize.height / 2 + Def.BLOCK_HEIGHT / 2
+    for nRow, tbRow in ipairs(self.tbData) do
+    	self.tbBlock[nRow] = {}
+		for nColumn, nData in ipairs(tbRow) do
+			local pSprite = CCSprite:createWithTexture(BlockNode:getTexture())
+			self.tbBlock[nRow][nColumn] = pSprite
+			local nX, nY = nStartX + (nColumn - 1) * Def.BLOCK_WIDTH, nStartY + (nRow - 1) * Def.BLOCK_HEIGHT
+    		pSprite:setPosition(nX, nY)
+    		tbSprite[#tbSprite + 1] = pSprite
+			if nData ~= MAP_BLOCK then
+				pSprite:setVisible(false)
+	    	end
+		end
+	end
+
+	return tbSprite
 end

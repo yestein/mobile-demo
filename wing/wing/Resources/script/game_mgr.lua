@@ -24,12 +24,16 @@ function GameMgr:Init()
 end
 
 function GameMgr:SetState(nState)
+	local funcEnd = self.fnEndState[self.nState]
+	if funcEnd then
+		funcEnd(self)
+	end
 	self.nState = nState
 	cclog("switch to %s", self.tbStateDesc[nState])
 	GameMgr:UpdateTitle()
-	local func = self.fnState[nState]
-	if func then
-		func(self)
+	local funcStart = self.fnStartState[nState]
+	if funcStart then
+		funcStart(self)
 	end
 end
 
@@ -63,21 +67,46 @@ function GameMgr:Switch()
 end
 
 
-function GameMgr:OnSwitch_Normal()
-	Maze:Save()
+function GameMgr:OnStart_Normal()
+
+end
+function GameMgr:OnEnd_Normal()
+
 end
 
-function GameMgr:OnSwitch_Edit()
-	self:Reset()
+function GameMgr:OnStart_Edit()
 	Maze:InitRecordOP()
+	local tbScene = SceneMgr:GetScene("GameScene")
+	if tbScene then
+		tbScene:GenMonster()
+	end
+end
+function GameMgr:OnEnd_Edit()
+	Maze:Save()
+	Maze:ClearRecordOP()
 end
 
-function GameMgr:OnSwitch_Battle()
+function GameMgr:OnStart_Battle()
+	local tbScene = SceneMgr:GetScene("GameScene")
+	if tbScene then
+		tbScene:GenHero()
+	end
 	self:Start()
 end
+function GameMgr:OnEnd_Battle()
+	self:Reset()
+	Hero:ClearAll()
+	Monster:ClearAll()
+end
 
-GameMgr.fnState = {
-	[GameMgr.STATE_NORMAL] = GameMgr.OnSwitch_Normal,
-	[GameMgr.STATE_EDIT]   = GameMgr.OnSwitch_Edit,
-	[GameMgr.STATE_BATTLE] = GameMgr.OnSwitch_Battle,
+GameMgr.fnStartState = {
+	[GameMgr.STATE_NORMAL] = GameMgr.OnStart_Normal,
+	[GameMgr.STATE_EDIT]   = GameMgr.OnStart_Edit,
+	[GameMgr.STATE_BATTLE] = GameMgr.OnStart_Battle,
+}
+
+GameMgr.fnEndState = {
+	[GameMgr.STATE_NORMAL] = GameMgr.OnEnd_Normal,
+	[GameMgr.STATE_EDIT]   = GameMgr.OnEnd_Edit,
+	[GameMgr.STATE_BATTLE] = GameMgr.OnEnd_Battle,
 }

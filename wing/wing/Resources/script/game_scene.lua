@@ -29,18 +29,6 @@ function GameScene:Create()
 
     Maze:SetSize(ccspMaze:getTextureRect().size)
 
-    local nStartX = -tbSize.width / 2 + Def.BLOCK_WIDTH / 2
-    local nStartY = -tbSize.height / 2 + Def.BLOCK_HEIGHT / 2
-    nStartX = nStartX + (Def.MAZE_COL_COUNT / 2 - 1) * Def.BLOCK_WIDTH
-    nStartY = nStartY + (Def.MAZE_ROW_COUNT - 1) * Def.BLOCK_HEIGHT
-
-    local tbProperty = {
-    	AttackRange = 3,
-    	Speed = 3,
-    }
-    local tbHero, pSpriteHero = Hero:NewHero(nStartX, nStartY, tbProperty)    
-    layerMaze:addChild(pSpriteHero, 0, tbHero.dwId)
-
     local tbBlock = Maze:GenBlock(ccspMaze)
     for _, pBlock in ipairs(tbBlock) do
         layerMaze:addChild(pBlock)
@@ -124,9 +112,41 @@ function GameScene:Create()
     layerMaze:setTouchEnabled(true)
 
     self.layerMaze = layerMaze
+    self.spriteMaze = ccspMaze
     return layerMaze
 end
 
 function GameScene:RemoveSprite(pSprite)
 	self.layerMaze:removeChild(pSprite, true)
+end
+
+function GameScene:GenMonster()
+    local tbSize = Maze:GetSize()
+    local nStartX = -tbSize.width / 2 + Def.BLOCK_WIDTH / 2
+    local nStartY = -tbSize.height / 2 + Def.BLOCK_HEIGHT / 2
+    for nRow, tbRow in ipairs(Maze:GetData()) do
+        for nColumn, nData in ipairs(tbRow) do
+            local nX, nY = nStartX + (nColumn - 1) * Def.BLOCK_WIDTH, nStartY + (nRow - 1) * Def.BLOCK_HEIGHT
+            if nData >= Maze.MAP_MONSTER_START then
+                local nMonsterTemplateId = nData - Maze.MAP_MONSTER_START + 1
+                local tbMonster, pMonster = Monster:NewMonster(nMonsterTemplateId, nX, nY)
+                self.layerMaze:addChild(pMonster)
+            end
+        end
+    end
+end
+
+function GameScene:GenHero()
+    local tbSize = self.spriteMaze:getTextureRect().size
+    local nStartX = -tbSize.width / 2 + Def.BLOCK_WIDTH / 2
+    local nStartY = -tbSize.height / 2 + Def.BLOCK_HEIGHT / 2
+    nStartX = nStartX + (Def.MAZE_COL_COUNT / 2 - 1) * Def.BLOCK_WIDTH
+    nStartY = nStartY + (Def.MAZE_ROW_COUNT - 1) * Def.BLOCK_HEIGHT
+
+    local tbProperty = {
+        AttackRange = 3,
+        Speed = 3,
+    }
+    local tbHero, pSpriteHero = Hero:NewHero(nStartX, nStartY, tbProperty)    
+    self.layerMaze:addChild(pSpriteHero, 0, tbHero.dwId)
 end

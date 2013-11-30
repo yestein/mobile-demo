@@ -29,11 +29,12 @@ function GameMgr:InitTitle()
 
     local pHero = CCSprite:createWithSpriteFrame(frame0)
     Character:SetSpriteDirection(pHero, Def.DIR_DOWN)
+    pHero:setScale(0.7)
     local tbHeroSize = pHero:getTextureRect().size
-    pHero:setPosition(10 + tbTitleSize.width + tbHeroSize.width / 2, tbVisibleSize.height - tbHeroSize.height / 2)
+    pHero:setPosition(10 + tbTitleSize.width + tbHeroSize.width / 2, tbVisibleSize.height - (tbHeroSize.height * 0.7 / 2 ))
     layerTitle:addChild(pHero)
 
-    local cclfHP = CCLabelTTF:create("100 / 100", "Microsoft Yahei", 24)
+    local cclfHP = CCLabelTTF:create("100 / 100", "Microsoft Yahei", 16)
     layerTitle:addChild(cclfHP)
     local tbHPSize = cclfHP:getTextureRect().size
     cclfHP:setPosition(15 + tbTitleSize.width + tbHeroSize.width +  tbHPSize.width / 2, tbVisibleSize.height - tbHPSize.height / 2 - 10)
@@ -44,6 +45,10 @@ function GameMgr:InitTitle()
     self.tbTitle["Head"] = pHero
     self.tbTitle["HP"] = cclfHP
     self:UpdateTitle()
+end
+
+function GameMgr:UpdateHP()
+
 end
 
 function GameMgr:UpdateTitle()

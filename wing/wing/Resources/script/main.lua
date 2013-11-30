@@ -49,6 +49,8 @@ local function main()
 	GameMgr:Init()
     SceneMgr:Init()
     MenuMgr:Init()
+    Hero:Init()
+    Monster:Init()
     
 	Maze:Init(Def.MAZE_COL_COUNT, Def.MAZE_ROW_COUNT)
 	Maze:Load()

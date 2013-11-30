@@ -9,32 +9,62 @@
 local frameWidth = 36
 local frameHeight = 48
 
--- create hero animate
-local textureHero = CCTextureCache:sharedTextureCache():addImage(Def.szHeroFile)
-local rect = CCRectMake(0, frameHeight, frameWidth, frameHeight)
-local frame0 = CCSpriteFrame:createWithTexture(textureHero, rect)
-    
 if not Hero.tbHeroClass then
 	Hero.tbHeroClass = Lib:NewClass(Character)
 end
 
-local Id = 0
-local function Accumulator()
-	Id = Id + 1
-	return Id
-end
-
 local tbHeroClass = Hero.tbHeroClass
 
+function Hero:Init()
+	self.nOrginId = 1
+	self.nNextId = self.nOrginId 
+end
+
+function Hero:Uninit()
+	self.nOrginId = 1
+	self.nNextId = self.nOrginId 
+end
+
+function Hero:GenerateId()
+	local nRetId = self.nNextId
+	self.nNextId = self.nNextId + 1
+	return nRetId
+end
+
 function Hero:NewHero(nStartX, nStartY, tbProperty, tbAI)
+	-- create hero animate
+	local textureHero = CCTextureCache:sharedTextureCache():addImage(Def.szHeroFile)
+	local rect = CCRectMake(0, frameHeight, frameWidth, frameHeight)
+	local frame0 = CCSpriteFrame:createWithTexture(textureHero, rect)
 	local tbNewHero = Lib:NewClass(tbHeroClass)
     local pHero = CCSprite:createWithSpriteFrame(frame0)
     pHero:setPosition(nStartX, nStartY)
     pHero.isPaused = true
-    tbNewHero.dwId = Accumulator()
+    tbNewHero.dwId = self:GenerateId()
 	tbNewHero:Init(pHero, tbProperty, tbAI)
 	GameMgr:AddCharacter(tbNewHero.dwId, tbNewHero)
 	return tbNewHero, pHero
+end
+
+function Hero:ClearAll()
+	for dwId = self.nOrginId, self.nNextId - 1 do
+		local tbHero = GameMgr:GetCharacterById(dwId)
+		if tbHero then
+			tbHero:Die()
+		end
+	end
+	self.nNextId = self.nOrginId 
+end
+
+function Hero:GetList()
+	local tbRet = {}
+	for dwId = self.nOrginId, self.nNextId - 1 do
+		local tbHero = GameMgr:GetCharacterById(dwId)
+		if tbHero then
+			tbRet[dwId] = tbHero
+		end
+	end
+	return tbRet
 end
 
 function tbHeroClass:AutoMove()

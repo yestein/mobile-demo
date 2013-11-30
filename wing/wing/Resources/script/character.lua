@@ -92,8 +92,10 @@ function Character:Wait(nFrame)
 end
 
 function Character:Start()
+	cclog("%d Start Move", self.dwId)
 	self.tbStack = {}
 	self.tbRecordPos = {}
+	self.pSprite:setVisible(true)
 	self.pSprite.isPaused = false
 end
 

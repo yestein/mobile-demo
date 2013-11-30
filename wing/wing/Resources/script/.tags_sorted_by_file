@@ -1,0 +1,130 @@
+Accumulator	bullet.lua	/^local function Accumulator()$/;"	f
+Bullet:AddBullet	bullet.lua	/^function Bullet:AddBullet(nX, nY, nDirection, tbProperty)$/;"	f
+Bullet:Init	bullet.lua	/^function Bullet:Init()$/;"	f
+tbBulletClass:CalcDamage	bullet.lua	/^function tbBulletClass:CalcDamage(tbCharacter)$/;"	f
+tbBulletClass:Init	bullet.lua	/^function tbBulletClass:Init(nX, nY, tbProperty)$/;"	f
+tbBulletClass:Uninit	bullet.lua	/^function tbBulletClass:Uninit()$/;"	f
+tick	bullet.lua	/^	local function tick()$/;"	f
+Character:Attack	character.lua	/^function Character:Attack()$/;"	f
+Character:AutoMove	character.lua	/^function Character:AutoMove()$/;"	f
+Character:BeAttacked	character.lua	/^function Character:BeAttacked(tbBullet)$/;"	f
+Character:Die	character.lua	/^function Character:Die()$/;"	f
+Character:GetLogicPos	character.lua	/^function Character:GetLogicPos()$/;"	f
+Character:GetOppositeDirection	character.lua	/^function Character:GetOppositeDirection(nDir)$/;"	f
+Character:GetProperty	character.lua	/^function Character:GetProperty(Key)$/;"	f
+Character:Goto	character.lua	/^function Character:Goto(x, y, nDir)$/;"	f
+Character:Init	character.lua	/^function Character:Init(pSprite, tbProperty, tbAI)$/;"	f
+Character:Move	character.lua	/^function Character:Move(nDirection)$/;"	f
+Character:Reset	character.lua	/^function Character:Reset()$/;"	f
+Character:SetDirection	character.lua	/^function Character:SetDirection(nDirection)$/;"	f
+Character:SetProperty	character.lua	/^function Character:SetProperty(Key, Value)$/;"	f
+Character:SetSpriteDirection	character.lua	/^function Character:SetSpriteDirection(pSprite, nDirection)$/;"	f
+Character:Start	character.lua	/^function Character:Start()$/;"	f
+Character:TryFindHero	character.lua	/^function Character:TryFindHero()$/;"	f
+Character:TryFindMonster	character.lua	/^function Character:TryFindMonster()$/;"	f
+Character:TryFindUnit	character.lua	/^function Character:TryFindUnit(bHero)$/;"	f
+Character:TryGoto	character.lua	/^function Character:TryGoto(nNewX, nNewY)$/;"	f
+Character:Uninit	character.lua	/^function Character:Uninit()$/;"	f
+Character:Wait	character.lua	/^function Character:Wait(nFrame)$/;"	f
+IsArriveTarget	character.lua	/^	local function IsArriveTarget()$/;"	f
+tick	character.lua	/^	local function tick()$/;"	f
+GameMgr:AddCharacter	character_mgr.lua	/^function GameMgr:AddCharacter(dwId, tbCharacter)$/;"	f
+GameMgr:GetCharacterById	character_mgr.lua	/^function GameMgr:GetCharacterById(dwId)$/;"	f
+GameMgr:RemoveCharacter	character_mgr.lua	/^function GameMgr:RemoveCharacter(szSceneName, dwId)$/;"	f
+GameMgr:RemoveSprite	character_mgr.lua	/^function GameMgr:RemoveSprite(szSceneName, pSprite)$/;"	f
+Accumulate	define.lua	/^local function Accumulate(nId)$/;"	f
+GameMgr:GetState	game_mgr.lua	/^function GameMgr:GetState()$/;"	f
+GameMgr:GetStateDesc	game_mgr.lua	/^function GameMgr:GetStateDesc()$/;"	f
+GameMgr:Init	game_mgr.lua	/^function GameMgr:Init()$/;"	f
+GameMgr:OnSwitch_Battle	game_mgr.lua	/^function GameMgr:OnSwitch_Battle()$/;"	f
+GameMgr:OnSwitch_Edit	game_mgr.lua	/^function GameMgr:OnSwitch_Edit()$/;"	f
+GameMgr:OnSwitch_Normal	game_mgr.lua	/^function GameMgr:OnSwitch_Normal()$/;"	f
+GameMgr:Reset	game_mgr.lua	/^function GameMgr:Reset()$/;"	f
+GameMgr:SetState	game_mgr.lua	/^function GameMgr:SetState(nState)$/;"	f
+GameMgr:Start	game_mgr.lua	/^function GameMgr:Start()$/;"	f
+GameMgr:Switch	game_mgr.lua	/^function GameMgr:Switch()$/;"	f
+GameScene:Create	game_scene.lua	/^function GameScene:Create()$/;"	f
+GameScene:RemoveSprite	game_scene.lua	/^function GameScene:RemoveSprite(pSprite)$/;"	f
+onTouch	game_scene.lua	/^    local function onTouch(eventType, x, y)$/;"	f
+onTouchBegan	game_scene.lua	/^    local function onTouchBegan(x, y)$/;"	f
+onTouchEnded	game_scene.lua	/^    local function onTouchEnded(x, y)$/;"	f
+onTouchMoved	game_scene.lua	/^    local function onTouchMoved(x, y)$/;"	f
+Accumulator	hero.lua	/^local function Accumulator()$/;"	f
+Hero:NewHero	hero.lua	/^function Hero:NewHero(nStartX, nStartY, tbProperty, tbAI)$/;"	f
+IsArriveTarget	hero.lua	/^	local function IsArriveTarget()$/;"	f
+tbHeroClass:AutoMove	hero.lua	/^function tbHeroClass:AutoMove()$/;"	f
+tbHeroClass:IsExplored	hero.lua	/^function tbHeroClass:IsExplored(nX, nY)$/;"	f
+tbHeroClass:PopPos	hero.lua	/^function tbHeroClass:PopPos()$/;"	f
+tbHeroClass:PushPos	hero.lua	/^function tbHeroClass:PushPos(nDir)$/;"	f
+tbHeroClass:RecordPos	hero.lua	/^function tbHeroClass:RecordPos(nX, nY)$/;"	f
+tbHeroClass:TryGoto	hero.lua	/^function tbHeroClass:TryGoto(nNewX, nNewY)$/;"	f
+Lib:GetPositionByRowCol	lib.lua	/^function Lib:GetPositionByRowCol(nRow, nCol)$/;"	f
+Lib:GetRowColByPos	lib.lua	/^function Lib:GetRowColByPos(nX, nY)$/;"	f
+Lib:IsHero	lib.lua	/^function Lib:IsHero(dwId)$/;"	f
+Lib:NewClass	lib.lua	/^function Lib:NewClass(tbBase)$/;"	f
+Lib:Reload	lib.lua	/^function Lib:Reload()$/;"	f
+Lib:ShowTB1	lib.lua	/^function Lib:ShowTB1(tb)$/;"	f
+Lib:ShowTBN	lib.lua	/^function Lib:ShowTBN(tb, n)$/;"	f
+__index 	lib.lua	/^	__index = function(table, key)$/;"	f
+showTB	lib.lua	/^	local function showTB(tbValue, nDeepth, nMaxDeep)$/;"	f
+DoTest	main.lua	/^local function DoTest()$/;"	f
+__G__TRACKBACK__	main.lua	/^function __G__TRACKBACK__(msg)$/;"	f
+cclog	main.lua	/^function cclog(...)$/;"	f
+fnCallBack 	main.lua	/^            fnCallBack = function()$/;"	f
+main	main.lua	/^local function main()$/;"	f
+Maze:CanMove	maze.lua	/^function Maze:CanMove(nX, nY)$/;"	f
+Maze:CheckCanDig	maze.lua	/^function Maze:CheckCanDig(nRow, nCol)	$/;"	f
+Maze:ClearRecordOP	maze.lua	/^function Maze:ClearRecordOP()$/;"	f
+Maze:ClearUnit	maze.lua	/^function Maze:ClearUnit(nRow, nCol)$/;"	f
+Maze:Dig	maze.lua	/^function Maze:Dig(nRow, nCol)$/;"	f
+Maze:Entry	maze.lua	/^function Maze:Entry(tbData)$/;"	f
+Maze:GenBlock	maze.lua	/^function Maze:GenBlock()$/;"	f
+Maze:GetData	maze.lua	/^function Maze:GetData()$/;"	f
+Maze:GetLastPos	maze.lua	/^function Maze:GetLastPos()$/;"	f
+Maze:GetSize	maze.lua	/^function Maze:GetSize()$/;"	f
+Maze:GetUnit	maze.lua	/^function Maze:GetUnit(nRow, nCol)$/;"	f
+Maze:Init	maze.lua	/^function Maze:Init(nWidth, nHeight)$/;"	f
+Maze:InitRecordOP	maze.lua	/^function Maze:InitRecordOP()$/;"	f
+Maze:IsFree	maze.lua	/^function Maze:IsFree(nRow, nCol)$/;"	f
+Maze:Load	maze.lua	/^function Maze:Load()$/;"	f
+Maze:MoveMonster	maze.lua	/^function Maze:MoveMonster(nRow, nCol, nNewRow, nNewCol)$/;"	f
+Maze:PopUndoPos	maze.lua	/^function Maze:PopUndoPos()$/;"	f
+Maze:PushUndoPos	maze.lua	/^function Maze:PushUndoPos(nRow, nCol)$/;"	f
+Maze:PutMonster	maze.lua	/^function Maze:PutMonster(nRow, nCol, nMonsterTemplate)$/;"	f
+Maze:RandomMaze	maze.lua	/^function Maze:RandomMaze()$/;"	f
+Maze:ReDoDig	maze.lua	/^function Maze:ReDoDig()$/;"	f
+Maze:Reset	maze.lua	/^function Maze:Reset()$/;"	f
+Maze:Save	maze.lua	/^function Maze:Save()$/;"	f
+Maze:SetSize	maze.lua	/^function Maze:SetSize(tbSize)$/;"	f
+Maze:SetUnit	maze.lua	/^function Maze:SetUnit(nRow, nCol, dwId)$/;"	f
+Maze:UnDoDig	maze.lua	/^function Maze:UnDoDig()$/;"	f
+MenuMgr:AddElement	menu.lua	/^function MenuMgr:AddElement(szName, tbElementList)$/;"	f
+MenuMgr:CreateMenu	menu.lua	/^function MenuMgr:CreateMenu(szName)$/;"	f
+MenuMgr:GetMenu	menu.lua	/^function MenuMgr:GetMenu(szName)$/;"	f
+MenuMgr:Init	menu.lua	/^function MenuMgr:Init()$/;"	f
+MenuMgr:Uninit	menu.lua	/^function MenuMgr:Uninit()$/;"	f
+Accumulator	monster.lua	/^local function Accumulator()$/;"	f
+IsArriveTarget	monster.lua	/^	local function IsArriveTarget()$/;"	f
+Monster:NewMonster	monster.lua	/^function Monster:NewMonster(nMonsterTemplateId, nStartX, nStartY)$/;"	f
+tbMonsterClass:AutoMove	monster.lua	/^function tbMonsterClass:AutoMove()$/;"	f
+SceneBase:Create	scene_base.lua	/^function SceneBase:Create()$/;"	f
+SceneBase:GetCCObj	scene_base.lua	/^function SceneBase:GetCCObj()$/;"	f
+SceneBase:GetClassName	scene_base.lua	/^function SceneBase:GetClassName()$/;"	f
+SceneBase:GetName	scene_base.lua	/^function SceneBase:GetName()$/;"	f
+SceneBase:Init	scene_base.lua	/^function SceneBase:Init(szName, ccSceneObj)$/;"	f
+SceneBase:RemoveSprite	scene_base.lua	/^function SceneBase:RemoveSprite(pSprite)$/;"	f
+SceneMgr:CreateScene	scene_mgr.lua	/^function SceneMgr:CreateScene(szName, szClassName)$/;"	f
+SceneMgr:GetClass	scene_mgr.lua	/^function SceneMgr:GetClass(szClassName, bCreate)$/;"	f
+SceneMgr:GetScene	scene_mgr.lua	/^function SceneMgr:GetScene(szName)$/;"	f
+SceneMgr:GetSceneObj	scene_mgr.lua	/^function SceneMgr:GetSceneObj(szName)$/;"	f
+SceneMgr:Init	scene_mgr.lua	/^function SceneMgr:Init()$/;"	f
+SceneMgr:Uninit	scene_mgr.lua	/^function SceneMgr:Uninit()$/;"	f
+GameMgr:InitTitle	title.lua	/^function GameMgr:InitTitle()$/;"	f
+GameMgr:UpdateHP	title.lua	/^function GameMgr:UpdateHP()$/;"	f
+GameMgr:UpdateTitle	title.lua	/^function GameMgr:UpdateTitle()$/;"	f
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_PROGRAM_VERSION	5.8	//
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/

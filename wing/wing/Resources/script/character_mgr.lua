@@ -16,11 +16,15 @@ function GameMgr:GetCharacterById(dwId)
 end
 
 function GameMgr:RemoveCharacter(szSceneName, dwId)
+	if not self.tbCharacterMap[dwId] then
+		return 0
+	end
 	local pSprite = self.tbCharacterMap[dwId].pSprite
 	if pSprite then
 		self:RemoveSprite(szSceneName, pSprite)
 	end	
 	self.tbCharacterMap[dwId] = nil
+	return 1
 end
 
 function GameMgr:RemoveSprite(szSceneName, pSprite)

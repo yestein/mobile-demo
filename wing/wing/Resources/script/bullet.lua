@@ -37,10 +37,12 @@ function Bullet:Init()
 			else
 				if dwId > 0 then
 					local tbCharacter = GameMgr:GetCharacterById(dwId)
-					if Lib:IsHero(dwId) == 1 then
-						tbCharacter:BeAttacked(tbBullet)
-					else
-						tbCharacter:BeAttacked(tbBullet)
+					if tbCharacter then
+						if Lib:IsHero(dwId) == 1 then
+							tbCharacter:BeAttacked(tbBullet)
+						else
+							tbCharacter:BeAttacked(tbBullet)
+						end
 					end
 				end
 				tbBullet:Uninit()
