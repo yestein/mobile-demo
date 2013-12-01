@@ -76,23 +76,23 @@ function GameScene:Create()
     local function onTouchEnded(x, y)
         if x == touchMoveStartPoint.x and y == touchMoveStartPoint.y then
 
-            if Maze:GetState() == Maze.STATE_BATTLE then
+            if GameMgr:GetState() == GameMgr.STATE_BATTLE then
                 if spriteHero.isPaused == true then
                     spriteHero.isPaused = false
                 else
                     spriteHero.isPaused = true
                 end
-            end
-            
-	        local nX, nY = layerMaze:getPosition()
-	        local nLogicX, nLogicY = x - nX, y - nY
-	        nLogicX = math.floor(nLogicX / Def.BLOCK_WIDTH)
-	        nLogicY = math.floor(nLogicY / Def.BLOCK_HEIGHT)
+            elseif GameMgr:GetState() == GameMgr.STATE_EDIT then
+    	        local nX, nY = layerMaze:getPosition()
+    	        local nLogicX, nLogicY = x - nX, y - nY
+    	        nLogicX = math.floor(nLogicX / Def.BLOCK_WIDTH)
+    	        nLogicY = math.floor(nLogicY / Def.BLOCK_HEIGHT)
 
-            local tbSize = ccspMaze:getTextureRect().size
-	        local nCol = nLogicX + Def.MAZE_COL_COUNT / 2 + 1
-	        local nRow = nLogicY + math.floor(tbSize.height / Def.BLOCK_HEIGHT / 2) + 1
-	        local bRet = Maze:Dig(nRow, nCol)
+                local tbSize = ccspMaze:getTextureRect().size
+    	        local nCol = nLogicX + Def.MAZE_COL_COUNT / 2 + 1
+    	        local nRow = nLogicY + math.floor(tbSize.height / Def.BLOCK_HEIGHT / 2) + 1
+    	        local bRet = Maze:Dig(nRow, nCol)
+            end
 	        
 	    end
         touchBeginPoint = nil
@@ -145,7 +145,7 @@ function GameScene:GenHero()
 
     local tbProperty = {
         AttackRange = 3,
-        Speed = 3,
+        Speed = 6,
     }
     local tbHero, pSpriteHero = Hero:NewHero(nStartX, nStartY, tbProperty)    
     self.layerMaze:addChild(pSpriteHero, 0, tbHero.dwId)

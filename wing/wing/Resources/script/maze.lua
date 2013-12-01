@@ -30,7 +30,11 @@ end
 function Maze:Entry(tbData)
 	for nRow, tbRow in ipairs(tbData) do
 		for nCol, nData in ipairs(tbRow) do
-			self.tbData[nRow][nCol] = nData
+			if nRow == Def.MAZE_ROW_COUNT and nCol == Def.MAZE_COL_COUNT / 2 then
+				self.tbData[nRow][nCol] = MAP_FREE
+			else
+				self.tbData[nRow][nCol] = nData
+			end
 		end
 	end
 	return 1

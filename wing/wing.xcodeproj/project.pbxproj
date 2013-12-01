@@ -270,6 +270,18 @@
 		342F8C9217B0BEE300450B82 /* preload.lua in Resources */ = {isa = PBXBuildFile; fileRef = 342F8C7A17B0BEE300450B82 /* preload.lua */; };
 		342F8C9317B0BEE300450B82 /* background.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 342F8C7C17B0BEE300450B82 /* background.mp3 */; };
 		342F8C9417B0BEE300450B82 /* effect1.wav in Resources */ = {isa = PBXBuildFile; fileRef = 342F8C7D17B0BEE300450B82 /* effect1.wav */; };
+		345A9188184A59830056CAAE /* putmonster_normal.png in Resources */ = {isa = PBXBuildFile; fileRef = 345A9183184A59830056CAAE /* putmonster_normal.png */; };
+		345A9189184A59830056CAAE /* redo_normal.png in Resources */ = {isa = PBXBuildFile; fileRef = 345A9184184A59830056CAAE /* redo_normal.png */; };
+		345A918A184A59830056CAAE /* reset_normal.png in Resources */ = {isa = PBXBuildFile; fileRef = 345A9185184A59830056CAAE /* reset_normal.png */; };
+		345A918B184A59830056CAAE /* switch_normal.png in Resources */ = {isa = PBXBuildFile; fileRef = 345A9186184A59830056CAAE /* switch_normal.png */; };
+		345A918C184A59830056CAAE /* undo_normal.png in Resources */ = {isa = PBXBuildFile; fileRef = 345A9187184A59830056CAAE /* undo_normal.png */; };
+		345A9194184A599C0056CAAE /* character_mgr.lua in Resources */ = {isa = PBXBuildFile; fileRef = 345A918D184A599C0056CAAE /* character_mgr.lua */; };
+		345A9195184A599C0056CAAE /* findpath.lua in Resources */ = {isa = PBXBuildFile; fileRef = 345A918E184A599C0056CAAE /* findpath.lua */; };
+		345A9196184A599C0056CAAE /* game_scene.lua in Resources */ = {isa = PBXBuildFile; fileRef = 345A918F184A599C0056CAAE /* game_scene.lua */; };
+		345A9197184A599C0056CAAE /* menu.lua in Resources */ = {isa = PBXBuildFile; fileRef = 345A9190184A599C0056CAAE /* menu.lua */; };
+		345A9198184A599C0056CAAE /* scene_base.lua in Resources */ = {isa = PBXBuildFile; fileRef = 345A9191184A599C0056CAAE /* scene_base.lua */; };
+		345A9199184A599C0056CAAE /* scene_mgr.lua in Resources */ = {isa = PBXBuildFile; fileRef = 345A9192184A599C0056CAAE /* scene_mgr.lua */; };
+		345A919A184A599C0056CAAE /* title.lua in Resources */ = {isa = PBXBuildFile; fileRef = 345A9193184A599C0056CAAE /* title.lua */; };
 		348DD53B17D3455100202EA7 /* redo.png in Resources */ = {isa = PBXBuildFile; fileRef = 348DD53517D3455100202EA7 /* redo.png */; };
 		348DD53C17D3455100202EA7 /* reset.png in Resources */ = {isa = PBXBuildFile; fileRef = 348DD53617D3455100202EA7 /* reset.png */; };
 		348DD53D17D3455100202EA7 /* soldier.png in Resources */ = {isa = PBXBuildFile; fileRef = 348DD53717D3455100202EA7 /* soldier.png */; };
@@ -839,6 +851,18 @@
 		342F8C7A17B0BEE300450B82 /* preload.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = preload.lua; sourceTree = "<group>"; };
 		342F8C7C17B0BEE300450B82 /* background.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = background.mp3; sourceTree = "<group>"; };
 		342F8C7D17B0BEE300450B82 /* effect1.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = effect1.wav; sourceTree = "<group>"; };
+		345A9183184A59830056CAAE /* putmonster_normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = putmonster_normal.png; sourceTree = "<group>"; };
+		345A9184184A59830056CAAE /* redo_normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = redo_normal.png; sourceTree = "<group>"; };
+		345A9185184A59830056CAAE /* reset_normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = reset_normal.png; sourceTree = "<group>"; };
+		345A9186184A59830056CAAE /* switch_normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = switch_normal.png; sourceTree = "<group>"; };
+		345A9187184A59830056CAAE /* undo_normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = undo_normal.png; sourceTree = "<group>"; };
+		345A918D184A599C0056CAAE /* character_mgr.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = character_mgr.lua; sourceTree = "<group>"; };
+		345A918E184A599C0056CAAE /* findpath.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = findpath.lua; sourceTree = "<group>"; };
+		345A918F184A599C0056CAAE /* game_scene.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = game_scene.lua; sourceTree = "<group>"; };
+		345A9190184A599C0056CAAE /* menu.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = menu.lua; sourceTree = "<group>"; };
+		345A9191184A599C0056CAAE /* scene_base.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = scene_base.lua; sourceTree = "<group>"; };
+		345A9192184A599C0056CAAE /* scene_mgr.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = scene_mgr.lua; sourceTree = "<group>"; };
+		345A9193184A599C0056CAAE /* title.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = title.lua; sourceTree = "<group>"; };
 		348DD53517D3455100202EA7 /* redo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = redo.png; sourceTree = "<group>"; };
 		348DD53617D3455100202EA7 /* reset.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = reset.png; sourceTree = "<group>"; };
 		348DD53717D3455100202EA7 /* soldier.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = soldier.png; sourceTree = "<group>"; };
@@ -1983,6 +2007,11 @@
 		342F8C6417B0BEE300450B82 /* image */ = {
 			isa = PBXGroup;
 			children = (
+				345A9183184A59830056CAAE /* putmonster_normal.png */,
+				345A9184184A59830056CAAE /* redo_normal.png */,
+				345A9185184A59830056CAAE /* reset_normal.png */,
+				345A9186184A59830056CAAE /* switch_normal.png */,
+				345A9187184A59830056CAAE /* undo_normal.png */,
 				34942428180ECEFF00BE7BCB /* bullet.png */,
 				34D00A5417F1F72C00EE531E /* monster.png */,
 				34D00A5517F1F72C00EE531E /* putmonster.png */,
@@ -2012,6 +2041,13 @@
 		342F8C7717B0BEE300450B82 /* script */ = {
 			isa = PBXGroup;
 			children = (
+				345A918D184A599C0056CAAE /* character_mgr.lua */,
+				345A918E184A599C0056CAAE /* findpath.lua */,
+				345A918F184A599C0056CAAE /* game_scene.lua */,
+				345A9190184A599C0056CAAE /* menu.lua */,
+				345A9191184A599C0056CAAE /* scene_base.lua */,
+				345A9192184A599C0056CAAE /* scene_mgr.lua */,
+				345A9193184A599C0056CAAE /* title.lua */,
 				34942426180ECED900BE7BCB /* game_mgr.lua */,
 				34D00A4E17F1F70900EE531E /* bullet.lua */,
 				34D00A4F17F1F70900EE531E /* character.lua */,
@@ -2091,14 +2127,19 @@
 				342F891117B0BE2F00450B82 /* iTunesArtwork in Resources */,
 				342F89AD17B0BE3200450B82 /* ChangeLog in Resources */,
 				342F8B1717B0BE3900450B82 /* project.pbxproj in Resources */,
+				345A918B184A59830056CAAE /* switch_normal.png in Resources */,
 				342F8BC317B0BE3B00450B82 /* cocos2dx-ext.mkf in Resources */,
 				342F8BC517B0BE3B00450B82 /* cocos2dx-ext_public.defines.txt in Resources */,
 				342F8C7E17B0BEE300450B82 /* background.png in Resources */,
 				342F8C7F17B0BEE300450B82 /* block.png in Resources */,
 				342F8C8017B0BEE300450B82 /* CloseNormal.png in Resources */,
 				342F8C8117B0BEE300450B82 /* CloseSelected.png in Resources */,
+				345A9199184A599C0056CAAE /* scene_mgr.lua in Resources */,
+				345A919A184A599C0056CAAE /* title.lua in Resources */,
+				345A9195184A599C0056CAAE /* findpath.lua in Resources */,
 				342F8C8317B0BEE300450B82 /* Default.png in Resources */,
 				342F8C8617B0BEE300450B82 /* HelloWorld.png in Resources */,
+				345A9197184A599C0056CAAE /* menu.lua in Resources */,
 				342F8C8717B0BEE300450B82 /* Icon-72.png in Resources */,
 				342F8C8817B0BEE300450B82 /* Icon-Small-50.png in Resources */,
 				342F8C8917B0BEE300450B82 /* Icon-Small.png in Resources */,
@@ -2107,6 +2148,7 @@
 				342F8C8C17B0BEE300450B82 /* Icon@2x.png in Resources */,
 				342F8C9017B0BEE300450B82 /* define.lua in Resources */,
 				342F8C9117B0BEE300450B82 /* main.lua in Resources */,
+				345A918C184A59830056CAAE /* undo_normal.png in Resources */,
 				342F8C9217B0BEE300450B82 /* preload.lua in Resources */,
 				342F8C9317B0BEE300450B82 /* background.mp3 in Resources */,
 				342F8C9417B0BEE300450B82 /* effect1.wav in Resources */,
@@ -2114,13 +2156,19 @@
 				34EB8B3817B20E8400B41539 /* lib.lua in Resources */,
 				34EB8B3917B20E8400B41539 /* maze.lua in Resources */,
 				34EB8B3A17B20E8400B41539 /* player.lua in Resources */,
+				345A918A184A59830056CAAE /* reset_normal.png in Resources */,
 				348DD53B17D3455100202EA7 /* redo.png in Resources */,
+				345A9189184A59830056CAAE /* redo_normal.png in Resources */,
+				345A9198184A599C0056CAAE /* scene_base.lua in Resources */,
 				348DD53C17D3455100202EA7 /* reset.png in Resources */,
+				345A9194184A599C0056CAAE /* character_mgr.lua in Resources */,
 				348DD53D17D3455100202EA7 /* soldier.png in Resources */,
 				348DD53E17D3455100202EA7 /* switch.png in Resources */,
 				348DD53F17D3455100202EA7 /* undo.png in Resources */,
 				348DD54017D3455100202EA7 /* wizard.png in Resources */,
 				34D00A5117F1F70900EE531E /* bullet.lua in Resources */,
+				345A9196184A599C0056CAAE /* game_scene.lua in Resources */,
+				345A9188184A59830056CAAE /* putmonster_normal.png in Resources */,
 				34D00A5217F1F70900EE531E /* character.lua in Resources */,
 				34D00A5317F1F70900EE531E /* monster.lua in Resources */,
 				34D00A5617F1F72C00EE531E /* monster.png in Resources */,
