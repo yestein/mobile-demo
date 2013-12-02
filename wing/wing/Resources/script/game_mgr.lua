@@ -68,7 +68,16 @@ end
 
 
 function GameMgr:OnStart_Normal()
-
+	local tbElement = {
+        {
+            szNormalImg = "switch_normal.png",
+            szPressedImg = "switch.png", 
+            fnCallBack = function()
+                GameMgr:Switch()
+            end
+        },
+    }
+    MenuMgr:AddElement("MainMenu", tbElement)
 end
 function GameMgr:OnEnd_Normal()
 
@@ -76,6 +85,50 @@ end
 
 function GameMgr:OnStart_Edit()
 	Maze:InitRecordOP()
+	local tbElement = {
+		{
+			szNormalImg = "putmonster_normal.png",
+			szPressedImg = "putmonster.png",
+			fnCallBack = function ()
+				local tbMenu = MenuMgr:GetMenu("PutMonster")
+				if not tbMenu then
+					cclog("CreateMenu[PutMonster] is not Exists")
+					return 0
+				end
+				local layerMenu = tbMenu.ccmenuObj
+				layerMenu:setVisible(true)
+			end
+		},
+        {
+            szNormalImg = "undo_normal.png",
+            szPressedImg = "undo.png", 
+            fnCallBack = function()
+                 Maze:UnDoDig()
+            end
+        },
+        {
+            szNormalImg = "redo_normal.png",
+            szPressedImg = "redo.png", 
+            fnCallBack = function()
+                Maze:ReDoDig()
+            end
+        },
+        {
+            szNormalImg = "reset_normal.png",
+            szPressedImg = "reset.png", 
+            fnCallBack = function()
+                Maze:Reset()
+            end
+        },
+        {
+            szNormalImg = "switch_normal.png",
+            szPressedImg = "switch.png", 
+            fnCallBack = function()
+                GameMgr:Switch()
+            end
+        },
+    }
+    MenuMgr:AddElement("MainMenu", tbElement)
 	local tbScene = SceneMgr:GetScene("GameScene")
 	if tbScene then
 		tbScene:GenMonster()
@@ -87,6 +140,16 @@ function GameMgr:OnEnd_Edit()
 end
 
 function GameMgr:OnStart_Battle()
+	local tbElement = {
+        {
+            szNormalImg = "switch_normal.png",
+            szPressedImg = "switch.png", 
+            fnCallBack = function()
+                GameMgr:Switch()
+            end
+        },
+    }
+    MenuMgr:AddElement("MainMenu", tbElement)
 	local tbScene = SceneMgr:GetScene("GameScene")
 	if tbScene then
 		tbScene:GenHero()

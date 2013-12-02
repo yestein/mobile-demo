@@ -39,7 +39,7 @@ function GameMgr:InitTitle()
     local tbHPSize = cclfHP:getTextureRect().size
     cclfHP:setPosition(15 + tbTitleSize.width + tbHeroSize.width +  tbHPSize.width / 2, tbVisibleSize.height - tbHPSize.height / 2 - 10)
 
-    sceneGame:addChild(layerTitle)
+    sceneGame:addChild(layerTitle, 10)
 
     self.tbTitle["State"] = cclf
     self.tbTitle["Head"] = pHero

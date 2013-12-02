@@ -22,7 +22,7 @@ function MenuMgr:CreateMenu(szName)
 
 	local layerMenu = CCLayer:create()   
 
-	self.tbMenu[szName] ={ ccmenuObj = layerMenu, tbChild = {}, }
+	self.tbMenu[szName] ={ ccmenuObj = layerMenu, }
 
     return layerMenu
 end
@@ -33,21 +33,28 @@ function MenuMgr:AddElement(szName, tbElementList)
 		cclog("CreateMenu[%s] is not Exists", szName)
 		return 0
 	end
+	
 	local menuArray = CCArray:create()
 	local layerMenu = tbMenu.ccmenuObj
+	if layerMenu:getChildByTag(1) then
+		layerMenu:removeChildByTag(1, true)
+	end
+
 	local tbVisibleSize = CCDirector:sharedDirector():getVisibleSize()
-	for nIndex, tbElement in ipairs(tbElementList) do
+	local nCount = 0
+	for nIndex = #tbElementList, 1, -1 do
+		nCount = nCount + 1
+		local tbElement = tbElementList[nIndex]
 		local menu = CCMenuItemImage:create(tbElement.szNormalImg, tbElement.szPressedImg)
 		menu:registerScriptTapHandler(tbElement.fnCallBack) 
 		local itemWidth = menu:getContentSize().width
     	local itemHeight = menu:getContentSize().height
-    	menu:setPosition(tbVisibleSize.width - itemWidth / 2, itemHeight * (nIndex * 2 - 1) / 2)
+    	menu:setPosition(tbVisibleSize.width - itemWidth / 2, itemHeight * (nCount * 2 - 1) / 2)
     	menuArray:addObject(menu)
 	end
 	local menuTools = CCMenu:createWithArray(menuArray)
     menuTools:setPosition(0, 0)
-    layerMenu:addChild(menuTools)
-    tbMenu.tbChild[#tbMenu.tbChild + 1] = menuTools
+    layerMenu:addChild(menuTools, 1, 1)
 
     return 1
 end

@@ -58,25 +58,16 @@ local function main()
 
 	-- run
 	local tbScene = SceneMgr:CreateScene("GameScene", "GameScene")
-    local layerWorld = tbScene:Create()
     local sceneGame = tbScene:GetCCObj()
-	
-	sceneGame:addChild(layerWorld)
-    GameMgr.layerWorld = layerWorld
 
-    GameMgr:InitTitle()
-    
-	
-	local layerMenu = MenuMgr:CreateMenu("MainMenu")
-    sceneGame:addChild(layerMenu)
+    local layerMenu = MenuMgr:CreateMenu("MainMenu")
+    sceneGame:addChild(layerMenu, 5)
+
+    local layerMonsterMenu = MenuMgr:CreateMenu("PutMonster")
+    sceneGame:addChild(layerMonsterMenu, 6)
+    layerMonsterMenu:setVisible(false)
+    layerMonsterMenu:setPosition(100, 100)
     local tbElement = {
-        {
-            szNormalImg = "reset_normal.png",
-            szPressedImg = "reset.png", 
-            fnCallBack = function()
-                Maze:Reset()
-            end
-        },
         {
             szNormalImg = "switch_normal.png",
             szPressedImg = "switch.png", 
@@ -84,23 +75,16 @@ local function main()
                 GameMgr:Switch()
             end
         },
-        {
-            szNormalImg = "undo_normal.png",
-            szPressedImg = "undo.png", 
-            fnCallBack = function()
-                 Maze:UnDoDig()
-            end
-        },
-        {
-            szNormalImg = "redo_normal.png",
-            szPressedImg = "redo.png", 
-            fnCallBack = function()
-                Maze:ReDoDig()
-            end
-        },
     }
-    MenuMgr:AddElement("MainMenu", tbElement)	
+    MenuMgr:AddElement("PutMonster", tbElement)
 
+    local layerWorld = tbScene:Create()
+	sceneGame:addChild(layerWorld, 1)
+    GameMgr.layerWorld = layerWorld
+
+    GameMgr:InitTitle()
+    GameMgr:SetState(GameMgr.STATE_NORMAL)
+		
 	sharedDirector:runWithScene(sceneGame)
 end
 
