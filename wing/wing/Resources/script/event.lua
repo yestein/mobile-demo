@@ -8,6 +8,8 @@
 
 function Event:Preload()
 	self.tbGlobalEvent = {}
+
+	Event:Test()
 end
 
 function Event:ReigseterEvent(szEvent, fnCallBack, ...)
@@ -15,46 +17,43 @@ function Event:ReigseterEvent(szEvent, fnCallBack, ...)
 		self.tbGlobalEvent[szEvent] = {}
 	end
 	local tbCallBack = self.tbGlobalEvent[szEvent]
-	tbCallBack[#tbCallBack + 1] = {fnCallBack, arg}
-	local nRegisterId = #tbCallBack
+	local nRegisterId = #tbCallBack + 1
+	tbCallBack[nRegisterId] = {fnCallBack, {...}}
 	return nRegisterId
 end
 
 function Event:UnReigseterEvent(szEvent, nRegisterId)
-	
+	if not self.tbGlobalEvent[szEvent] then
+		return 0
+	end
+	local tbCallBack = self.tbGlobalEvent[szEvent]
+	if not tbCallBack[nRegisterId] then
+		return 0
+	end
+	tbCallBack[nRegisterId] = nil
+	return 1
 end
 
 function Event:FireEvent(szEvent, ...)
-	self:CallBack(self.tbGlobalEvent[szEvent], arg);
+	self:CallBack(self.tbGlobalEvent[szEvent], ...);
 end
 
-Event.nRunTime = 0;
-function Event:CallBack(tbEvent, tbArg)
---local nTime = KGRLInterface.GetTickCount();	
-	if (not tbEvent) then
-		return;
+
+function Event:CallBack(tbEvent, ...)
+	if not tbEvent then
+		return
 	end
-	--为了防止循环中出现新注册导致出错，采用Copy方式
-	for nRegisterId, tbCallFunc in pairs(Lib:CopyTB1(tbEvent)) do
-		if (tbEvent[nRegisterId]) then	-- 检测是否未被删除
-			local varCallBack	= tbCallFunc[1];
-			local varParam	= tbCallFunc[2];
-			local tbCallBack	= nil;
-			if (varParam.n ~= 0) then		-- 如果传入了自定义的参数
-				tbCallBack	= {varCallBack, unpack(varParam)};
-				Lib:MergeTable(tbCallBack, tbArg);
+	local tbCopyEvent = Lib:CopyTB1(tbEvent)
+	for nRegisterId, tbCallFunc in pairs(tbCopyEvent) do
+		if tbEvent[nRegisterId] then
+			local fnCallBack = tbCallFunc[1]
+			local tbPackArg = tbCallFunc[2]
+			if #tbPackArg > 0 then
+				Lib:MergeTable(tbPackArg, {...})
+				pcall(fnCallBack, unpack(tbPackArg))
 			else
-				tbCallBack	= {varCallBack, unpack(tbArg)};
-			end
-			if (bIsEvent) then
-				Lib:CallBack(tbCallBack);
-			else
-				local ret = {Lib:CallBack(tbCallBack)};
---Event.nRunTime = Event.nRunTime + KGRLInterface.GetTickCount() - nTime;
-				return unpack(ret);
+				pcall(fnCallBack, ...)
 			end
 		end
 	end
-
---Event.nRunTime = Event.nRunTime + KGRLInterface.GetTickCount() - nTime;
 end

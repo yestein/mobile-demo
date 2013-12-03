@@ -52,7 +52,7 @@ function Maze:Load()
 		return
 	end
 	local t = dofile(szPath.."savemap.lua")
-	cclog("Success!")
+	Event:FireEvent("LoadMaze")
 end
 
 function Maze:GetSize()
@@ -65,7 +65,6 @@ end
 
 function Maze:Save()
 	cclog("Save Maze ...")
-	--Lib:Reload()
     local szPath = CCFileUtils:sharedFileUtils():getWritablePath()
 	local file = assert(io.open(szPath.."savemap.lua", "w"))
 	file:write("Maze:Entry{\n")
@@ -78,7 +77,7 @@ function Maze:Save()
 	end
 	file:write("}")
 	file:close()
-	cclog("Success!")
+	Event:FireEvent("SaveMaze")
 end
 
 function Maze:Dig(nRow, nCol)
@@ -91,10 +90,10 @@ function Maze:Dig(nRow, nCol)
 		return 0
 	end
     self.tbData[nRow][nCol] = MAP_FREE
-    
     pBlock:setVisible(false)
     self:PushUndoPos(nRow, nCol)
-   return 1
+    Event:FireEvent("Dig", nRow, nCol)
+    return 1
 end
 
 function Maze:UnDoDig()
@@ -112,8 +111,8 @@ function Maze:UnDoDig()
     self.tbData[nRow][nCol] = MAP_BLOCK
     
     pBlock:setVisible(true)
-    cclog("Undo Dig")
-   return 1
+    Event:FireEvent("UnDoDig", nRow, nCol)
+    return 1
 end
 
 function Maze:ReDoDig()
@@ -133,15 +132,16 @@ function Maze:ReDoDig()
     self.tbData[nRow][nCol] = MAP_FREE
     
     pBlock:setVisible(false)
-    cclog("Redo Dig")
-   return 1
+    Event:FireEvent("ReDoDig", nRow, nCol)
+    return 1
 end
 
-function Maze:PutMonster(nRow, nCol, nMonsterTemplate)
+function Maze:PutMonster(nRow, nCol, dwMonsterTemplate)
 	if self.tbData[nRow][nCol] ~= MAP_FREE then
 		return 0
 	end
-	self.tbData[nRow][nCol] = nMonsterTemplate
+	self.tbData[nRow][nCol] = dwMonsterTemplate
+	Event:FireEvent("PutMonster", nRow, nCol, dwMonsterTemplate)
 	return 1
 end
 
@@ -151,6 +151,7 @@ function Maze:MoveMonster(nRow, nCol, nNewRow, nNewCol)
 	end
 	self.tbData[nNewRow][nNewCol] = self.tbData[nRow][nCol]
 	self.tbData[nRow][nCol] = MAP_FREE
+	Event:FireEvent("PutMonster", self.tbData[nNewRow][nNewCol], nRow, nCol, nNewRow, nNewCol)
 	return 1
 end
 
@@ -221,6 +222,7 @@ function Maze:Reset()
 	local nEnterRow, nEnterCol = unpack(Def.tbEntrance)
 	self.tbData[nEnterRow][nEnterCol] = MAP_FREE
 	self.tbBlock[nEnterRow][nEnterCol]:setVisible(false)
+	Event:FireEvent("ResetMaze")
 end
 
 function Maze:RandomMaze()
@@ -254,6 +256,7 @@ function Maze:SetUnit(nRow, nCol, dwId)
 	if self.tbUnit[nRow] then
 		self.tbUnit[nRow][nCol] = dwId
 	end
+	Event:FireEvent("SetUnit", nRow, nCol, dwId)
 end
 
 function Maze:GetUnit(nRow, nCol)
@@ -274,6 +277,7 @@ end
 
 function Maze:SetMouseMonster(dwMonsterTemplateId)
 	self.dwMonsterTemplateId = dwMonsterTemplateId
+	Event:FireEvent("SetMouseMonster", dwMonsterTemplateId)
 end
 
 function Maze:GetMouseMonster()
@@ -282,6 +286,7 @@ end
 
 function Maze:ClearMouseMonster()
 	self.dwMonsterTemplateId = nil
+	Event:FireEvent("ClearMouseMonster")
 end
 --Render Maze
 

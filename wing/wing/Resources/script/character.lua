@@ -76,15 +76,18 @@ function Character:BeAttacked(tbBullet)
 	local nCurHP = self:GetProperty("CurHP")
 	local nNewHP = tbBullet:CalcDamage(self)
 	self:SetProperty("CurHP", nNewHP)
+	Event:FireEvent("CharcterBeAttacked", self.dwId, nCurHP, nNewHP)
 	if Lib:IsHero(self.dwId) then
 		GameMgr:UpdateHeroHP(self.dwId)
 	end
 	if nNewHP <= 0 then
 		self:Die()
 	end
+
 end
 
 function Character:Die()
+	Event:FireEvent("CharcterDie", self.dwId)
 	Maze:ClearUnit(self.tbLogicPos.nRow, self.tbLogicPos.nCol)
 	GameMgr:RemoveCharacter("GameScene", self.dwId)
 	self:Uninit()
@@ -100,6 +103,7 @@ function Character:Start()
 	self.tbRecordPos = {}
 	self.pSprite:setVisible(true)
 	self.pSprite.isPaused = false
+	Event:FireEvent("CharcterStartMove", self.dwId)
 end
 
 function Character:Reset()
@@ -111,6 +115,7 @@ function Character:Reset()
 
     self.pSprite:setPosition(self.tbOrigin.x, self.tbOrigin.y)
     self:SetDirection(Def.DIR_DOWN)
+    Event:FireEvent("CharcterReset", self.dwId)
 end
 
 function Character:GetProperty(Key)
@@ -159,6 +164,7 @@ function Character:Move(nDirection)
 		end
 	end
 	self.pSprite:setPosition(nNewX, nNewY)
+	Event:FireEvent("CharcterMove", self.dwId, x, y, nNewX, nNewY, nDirection)
 end
 
 function Character:Goto(x, y, nDir)
@@ -174,6 +180,7 @@ function Character:Goto(x, y, nDir)
 	local nNewX, nNewY = x + self.tbSize.width * nX + nX, y + self.tbSize.height * nY
 	self:SetDirection(nDir)
     self.tbTarget = {x = nNewX, y = nNewY}
+    Event:FireEvent("CharcterGoto", self.dwId, x, y, nDir)
 end
 
 function Character:SetSpriteDirection(pSprite, nDirection)

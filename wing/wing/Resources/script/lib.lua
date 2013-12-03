@@ -23,10 +23,23 @@ function Lib:NewClass(tbBase)
 	return tbNew
 end
 
-
 function Lib:ShowTB1(tb)
 	for k, v in pairs(tb) do
 		print(string.format("[%s] = %s", tostring(k), tostring(v)))
+	end
+end
+
+function Lib:CopyTB1(tb)
+	local tbRet = {}
+	for k, v in pairs(tb) do
+		tbRet[k] = v
+	end
+	return tbRet
+end
+
+function Lib:MergeTable(tbDest, tbSrc)
+	for _, v in ipairs(tbSrc) do
+		tbDest[#tbDest + 1] = v
 	end
 end
 
