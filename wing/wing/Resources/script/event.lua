@@ -9,7 +9,6 @@
 function Event:Preload()
 	self.tbGlobalEvent = {}
 
-	Event:Test()
 end
 
 function Event:ReigseterEvent(szEvent, fnCallBack, ...)
