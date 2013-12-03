@@ -45,7 +45,8 @@ local function main()
 	
 	math.randomseed(os.time())
 	math.random(100)
-	
+	Event:Preload()
+    
 	GameMgr:Init()
     SceneMgr:Init()
     MenuMgr:Init()
@@ -60,23 +61,15 @@ local function main()
 	local tbScene = SceneMgr:CreateScene("GameScene", "GameScene")
     local sceneGame = tbScene:GetCCObj()
 
-    local layerMenu = MenuMgr:CreateMenu("MainMenu")
-    sceneGame:addChild(layerMenu, 5)
+    local layerMainMenu = MenuMgr:CreateMenu("MainMenu")
+    layerMainMenu:setPosition(tbVisibleSize.width, tbVisibleSize.height)
+    sceneGame:addChild(layerMainMenu, 3)
 
     local layerMonsterMenu = MenuMgr:CreateMenu("PutMonster")
-    sceneGame:addChild(layerMonsterMenu, 6)
+    sceneGame:addChild(layerMonsterMenu, 4)
     layerMonsterMenu:setVisible(false)
-    layerMonsterMenu:setPosition(100, 100)
-    local tbElement = {
-        {
-            szNormalImg = "switch_normal.png",
-            szPressedImg = "switch.png", 
-            fnCallBack = function()
-                GameMgr:Switch()
-            end
-        },
-    }
-    MenuMgr:AddElement("PutMonster", tbElement)
+    layerMonsterMenu:setPosition(tbVisibleSize.width / 2, tbVisibleSize.height / 2)
+    
 
     local layerWorld = tbScene:Create()
 	sceneGame:addChild(layerWorld, 1)

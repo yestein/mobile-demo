@@ -91,7 +91,19 @@ function GameScene:Create()
                 local tbSize = ccspMaze:getTextureRect().size
     	        local nCol = nLogicX + Def.MAZE_COL_COUNT / 2 + 1
     	        local nRow = nLogicY + math.floor(tbSize.height / Def.BLOCK_HEIGHT / 2) + 1
-    	        local bRet = Maze:Dig(nRow, nCol)
+                local dwMonsterTemplateId = Maze:GetMouseMonster()
+                if dwMonsterTemplateId then
+                    local bRet = Maze:PutMonster(nRow, nCol, dwMonsterTemplateId)
+                    local tbSize = Maze:GetSize()
+                    local nStartX = -tbSize.width / 2 + Def.BLOCK_WIDTH / 2
+                    local nStartY = -tbSize.height / 2 + Def.BLOCK_HEIGHT / 2
+                    local nX, nY = nStartX + (nCol - 1) * Def.BLOCK_WIDTH, nStartY + (nRow - 1) * Def.BLOCK_HEIGHT
+                    local tbMonster, pMonster = Monster:NewMonster(dwMonsterTemplateId, nX, nY)
+                    self.layerMaze:addChild(pMonster)
+                    Maze:ClearMouseMonster()
+                else
+                    local bRet = Maze:Dig(nRow, nCol)
+                end
             end
 	        
 	    end
@@ -149,4 +161,7 @@ function GameScene:GenHero()
     }
     local tbHero, pSpriteHero = Hero:NewHero(nStartX, nStartY, tbProperty)    
     self.layerMaze:addChild(pSpriteHero, 0, tbHero.dwId)
+    if GameMgr:AddHeroHP(tbHero.dwId) ~= 1 then
+        GameMgr:UpdateHeroHP(tbHero.dwId)
+    end
 end

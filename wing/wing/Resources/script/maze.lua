@@ -138,19 +138,19 @@ function Maze:ReDoDig()
 end
 
 function Maze:PutMonster(nRow, nCol, nMonsterTemplate)
-	if self.tbBlock[nRow][nCol] ~= MAP_FREE then
+	if self.tbData[nRow][nCol] ~= MAP_FREE then
 		return 0
 	end
-	self.tbBlock[nRow][nCol] = nMonsterTemplate
+	self.tbData[nRow][nCol] = nMonsterTemplate
 	return 1
 end
 
 function Maze:MoveMonster(nRow, nCol, nNewRow, nNewCol)
-	if self.tbBlock[nRow][nCol] < self.MAP_MONSTER_START then
+	if self.tbData[nRow][nCol] < self.MAP_MONSTER_START then
 		return 0
 	end
-	self.tbBlock[nNewRow][nNewCol] = self.tbBlock[nRow][nCol]
-	self.tbBlock[nRow][nCol] = MAP_FREE
+	self.tbData[nNewRow][nNewCol] = self.tbData[nRow][nCol]
+	self.tbData[nRow][nCol] = MAP_FREE
 	return 1
 end
 
@@ -245,15 +245,21 @@ function Maze:CanMove(nX, nY)
 end
 
 function Maze:ClearUnit(nRow, nCol)
-	self.tbUnit[nRow][nCol] = 0
+	if self.tbUnit[nRow] then
+		self.tbUnit[nRow][nCol] = 0
+	end
 end
 
 function Maze:SetUnit(nRow, nCol, dwId)
-	self.tbUnit[nRow][nCol] = dwId
+	if self.tbUnit[nRow] then
+		self.tbUnit[nRow][nCol] = dwId
+	end
 end
 
 function Maze:GetUnit(nRow, nCol)
-	return self.tbUnit[nRow][nCol]
+	if self.tbUnit[nRow] then
+		return self.tbUnit[nRow][nCol]
+	end
 end
 
 function Maze:IsFree(nRow, nCol)
@@ -266,6 +272,17 @@ function Maze:IsFree(nRow, nCol)
 	return 0
 end
 
+function Maze:SetMouseMonster(dwMonsterTemplateId)
+	self.dwMonsterTemplateId = dwMonsterTemplateId
+end
+
+function Maze:GetMouseMonster()
+	return self.dwMonsterTemplateId
+end
+
+function Maze:ClearMouseMonster()
+	self.dwMonsterTemplateId = nil
+end
 --Render Maze
 
 function Maze:GenBlock()

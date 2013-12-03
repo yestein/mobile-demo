@@ -18,6 +18,7 @@ GameMgr.tbStateDesc = {
 	[GameMgr.STATE_BATTLE] = "战斗中",
 }
 
+local szMenuFontName = "Microsoft Yahei"
 function GameMgr:Init()
 	self.tbCharacterMap = {}
 	self.nState = self.STATE_NORMAL
@@ -69,15 +70,16 @@ end
 
 function GameMgr:OnStart_Normal()
 	local tbElement = {
-        {
-            szNormalImg = "switch_normal.png",
-            szPressedImg = "switch.png", 
-            fnCallBack = function()
-                GameMgr:Switch()
-            end
-        },
+		{
+	        [1] = {
+	        	szItemName = "开始编辑",
+	        	fnCallBack = function()
+	                GameMgr:Switch()
+	            end,
+	        },
+	    },
     }
-    MenuMgr:AddElement("MainMenu", tbElement)
+    MenuMgr:UpdateByString("MainMenu", tbElement, szMenuFontName, 20)
 end
 function GameMgr:OnEnd_Normal()
 
@@ -86,54 +88,73 @@ end
 function GameMgr:OnStart_Edit()
 	Maze:InitRecordOP()
 	local tbElement = {
-		{
-			szNormalImg = "putmonster_normal.png",
-			szPressedImg = "putmonster.png",
-			fnCallBack = function ()
-				local tbMenu = MenuMgr:GetMenu("PutMonster")
-				if not tbMenu then
-					cclog("CreateMenu[PutMonster] is not Exists")
-					return 0
-				end
-				local layerMenu = tbMenu.ccmenuObj
-				layerMenu:setVisible(true)
-			end
-		},
-        {
-            szNormalImg = "undo_normal.png",
-            szPressedImg = "undo.png", 
-            fnCallBack = function()
-                 Maze:UnDoDig()
-            end
-        },
-        {
-            szNormalImg = "redo_normal.png",
-            szPressedImg = "redo.png", 
-            fnCallBack = function()
-                Maze:ReDoDig()
-            end
-        },
-        {
-            szNormalImg = "reset_normal.png",
-            szPressedImg = "reset.png", 
-            fnCallBack = function()
-                Maze:Reset()
-            end
-        },
-        {
-            szNormalImg = "switch_normal.png",
-            szPressedImg = "switch.png", 
-            fnCallBack = function()
-                GameMgr:Switch()
-            end
-        },
+		[1] = {
+			{
+	            szItemName = "开始战斗",
+	            fnCallBack = function()
+	                GameMgr:Switch()
+	            end
+	        },
+	        {
+	            szItemName = "清空地图",
+	            fnCallBack = function()
+	                Maze:Reset()
+	            end
+	        },
+	    },
+		[2] = {
+			{
+				szItemName = "摆放怪物",
+				fnCallBack = GameMgr.OnClickPutMonster,
+			},
+	        {
+	            szItemName = "撤销",
+	            fnCallBack = function()
+	                 Maze:UnDoDig()
+	            end
+	        },
+	        {
+	            szItemName = "重做",
+	            fnCallBack = function()
+	                Maze:ReDoDig()
+	            end
+	        },
+        },		
     }
-    MenuMgr:AddElement("MainMenu", tbElement)
+    MenuMgr:UpdateByString("MainMenu", tbElement, szMenuFontName, 20)
 	local tbScene = SceneMgr:GetScene("GameScene")
 	if tbScene then
 		tbScene:GenMonster()
 	end
 end
+function GameMgr.OnClickPutMonster()
+	local tbMenu = MenuMgr:GetMenu("PutMonster")
+	if not tbMenu then
+		cclog("No Menu[PutMonster]")
+		return 0
+	end
+	local layerMenu = tbMenu.ccmenuObj
+	if not layerMenu:getChildByTag(1) then
+		local tbElement = {
+	    	[1] = {
+		        {
+		            szImage = Def.szMonsterFile,
+		            tbRect = {
+		            	["normal"] = {36, 0, 36, 48},
+		            	["selected"] = {36 * 3, 0, 36, 48},
+		            },
+		            fnCallBack = function()
+		            	Maze:SetMouseMonster(3)
+		                layerMenu:setVisible(false)
+		            end
+		        },
+		    },
+	    }
+	    MenuMgr:UpdateBySprite("PutMonster", tbElement)
+	end
+	layerMenu:setVisible(true)
+end
+
 function GameMgr:OnEnd_Edit()
 	Maze:Save()
 	Maze:ClearRecordOP()
@@ -141,15 +162,16 @@ end
 
 function GameMgr:OnStart_Battle()
 	local tbElement = {
-        {
-            szNormalImg = "switch_normal.png",
-            szPressedImg = "switch.png", 
-            fnCallBack = function()
-                GameMgr:Switch()
-            end
-        },
+		[1] = {
+	        {
+	        	szItemName = "结束战斗",
+	        	fnCallBack = function()
+	                GameMgr:Switch()
+	            end,
+	        },
+	    },
     }
-    MenuMgr:AddElement("MainMenu", tbElement)
+    MenuMgr:UpdateByString("MainMenu", tbElement, szMenuFontName, 20)
 	local tbScene = SceneMgr:GetScene("GameScene")
 	if tbScene then
 		tbScene:GenHero()

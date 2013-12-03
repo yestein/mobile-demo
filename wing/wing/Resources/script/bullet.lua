@@ -22,31 +22,29 @@ function Bullet:Init()
 		for dwBulletId, tbBullet in pairs(self.tbBulletList) do
 			local nDirection = tbBullet.nDirection
 			local tbPosOffset = Def.tbMove[nDirection]
-			if not tbPosOffset then
-				return 0
-			end
-			local pSprite = tbBullet.pSprite
-			local nX, nY = unpack(tbPosOffset)
-			local x, y = pSprite:getPosition()
-			local nNewX, nNewY = x + nX * 4, y + nY * 4
-			local nRow, nCol = Lib:GetRowColByPos(nNewX, nNewY)
-			local dwId = Maze:GetUnit(nRow, nCol)
-			if Maze:IsFree(nRow, nCol) == 1 and dwId == 0 then
-				pSprite:setPosition(nNewX, nNewY)
-				return 0
-			else
-				if dwId > 0 then
-					local tbCharacter = GameMgr:GetCharacterById(dwId)
-					if tbCharacter then
-						if Lib:IsHero(dwId) == 1 then
-							tbCharacter:BeAttacked(tbBullet)
-						else
-							tbCharacter:BeAttacked(tbBullet)
+			if tbPosOffset then
+				local pSprite = tbBullet.pSprite
+				local nX, nY = unpack(tbPosOffset)
+				local x, y = pSprite:getPosition()
+				local nNewX, nNewY = x + nX * 4, y + nY * 4
+				local nRow, nCol = Lib:GetRowColByPos(nNewX, nNewY)
+				local dwId = Maze:GetUnit(nRow, nCol)
+				if Maze:IsFree(nRow, nCol) == 1 and dwId == 0 then
+					pSprite:setPosition(nNewX, nNewY)
+				else
+					if dwId > 0 then
+						local tbCharacter = GameMgr:GetCharacterById(dwId)
+						if tbCharacter then
+							if Lib:IsHero(dwId) == 1 then
+								tbCharacter:BeAttacked(tbBullet)
+							else
+								tbCharacter:BeAttacked(tbBullet)
+							end
 						end
 					end
-				end
-				tbBullet:Uninit()
-				self.tbBulletList[dwBulletId] = nil
+					tbBullet:Uninit()
+					self.tbBulletList[dwBulletId] = nil
+				end			
 			end			
 	    end
 	end

@@ -76,6 +76,9 @@ function Character:BeAttacked(tbBullet)
 	local nCurHP = self:GetProperty("CurHP")
 	local nNewHP = tbBullet:CalcDamage(self)
 	self:SetProperty("CurHP", nNewHP)
+	if Lib:IsHero(self.dwId) then
+		GameMgr:UpdateHeroHP(self.dwId)
+	end
 	if nNewHP <= 0 then
 		self:Die()
 	end

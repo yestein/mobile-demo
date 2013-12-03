@@ -9,6 +9,7 @@
 
 function GameMgr:InitTitle()
 	self.tbTitle = {}
+    self.tbHeroHP = {}
 	local sceneGame = SceneMgr:GetSceneObj("GameScene")
 	if not sceneGame then
 		return
@@ -21,34 +22,59 @@ function GameMgr:InitTitle()
 
 	local tbVisibleSize = CCDirector:sharedDirector():getVisibleSize()
 	local layerTitle = CCLayer:create()
+    self.layerTitle = layerTitle
     layerTitle:setPosition(0, 0)
+
+    local pBg = CCSprite:create(Def.szTitleFile)
+    layerTitle:addChild(pBg)
+    local tbBgSize = pBg:getTextureRect().size
+    pBg:setPosition(tbBgSize.width / 2 , tbVisibleSize.height - tbBgSize.height / 2)
+
     local cclf = CCLabelTTF:create("当前模式", "Microsoft Yahei", 24)
     layerTitle:addChild(cclf)
     local tbTitleSize = cclf:getTextureRect().size
     cclf:setPosition(5 + tbTitleSize.width / 2 , tbVisibleSize.height - tbTitleSize.height / 2 - 10)
-
-    local pHero = CCSprite:createWithSpriteFrame(frame0)
-    Character:SetSpriteDirection(pHero, Def.DIR_DOWN)
-    pHero:setScale(0.7)
-    local tbHeroSize = pHero:getTextureRect().size
-    pHero:setPosition(10 + tbTitleSize.width + tbHeroSize.width / 2, tbVisibleSize.height - (tbHeroSize.height * 0.7 / 2 ))
-    layerTitle:addChild(pHero)
-
-    local cclfHP = CCLabelTTF:create("100 / 100", "Microsoft Yahei", 16)
-    layerTitle:addChild(cclfHP)
-    local tbHPSize = cclfHP:getTextureRect().size
-    cclfHP:setPosition(15 + tbTitleSize.width + tbHeroSize.width +  tbHPSize.width / 2, tbVisibleSize.height - tbHPSize.height / 2 - 10)
-
-    sceneGame:addChild(layerTitle, 10)
+    sceneGame:addChild(layerTitle, 2)
 
     self.tbTitle["State"] = cclf
-    self.tbTitle["Head"] = pHero
-    self.tbTitle["HP"] = cclfHP
     self:UpdateTitle()
 end
 
-function GameMgr:UpdateHP()
+function GameMgr:AddHeroHP(dwHeroId)
+    if self.tbHeroHP[dwHeroId] then
+        return 0
+    end
+    local tbHero = self:GetCharacterById(dwHeroId)
+    local pSprite = tbHero.pSprite
+    local pCopySprite = CCSprite:createWithTexture(pSprite:getTexture())
+    Character:SetSpriteDirection(pCopySprite, Def.DIR_DOWN)
+    pCopySprite:setScale(0.7)
+    local tbVisibleSize = CCDirector:sharedDirector():getVisibleSize()
+    local tbSpriteSize = pSprite:getTextureRect().size
+    print(tbSpriteSize.width / 2,tbSpriteSize.height / 2)
+    pCopySprite:setPosition(100 + tbSpriteSize.width / 2, tbVisibleSize.height - tbSpriteSize.height / 2)
+    self.layerTitle:addChild(pCopySprite)
 
+    local cclfHP = CCLabelTTF:create(string.format("%d / %d", tbHero:GetProperty("CurHP"), tbHero:GetProperty("MaxHP")), "Microsoft Yahei", 16)
+    self.layerTitle:addChild(cclfHP)
+    local tbHPSize = cclfHP:getTextureRect().size
+    cclfHP:setPosition(105 + tbSpriteSize.width +  tbHPSize.width / 2, tbVisibleSize.height - tbSpriteSize.height / 2 - 5)
+    self.tbHeroHP[dwHeroId] = {
+        spriteHead = pCopySprite,
+        labelHP = cclfHP,
+    }
+    return 1
+end
+
+function GameMgr:UpdateHeroHP(dwHeroId)
+    local tbHP = self.tbHeroHP[dwHeroId]
+    if not tbHP then
+        return
+    end
+    local tbHero = self:GetCharacterById(dwHeroId)
+    local nCurHP, nMaxHP = tbHero:GetProperty("CurHP"), tbHero:GetProperty("MaxHP")
+    local szHP = string.format("%d / %d", nCurHP, nMaxHP)
+    tbHP.labelHP:setString(szHP)
 end
 
 function GameMgr:UpdateTitle()
