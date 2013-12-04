@@ -99,6 +99,7 @@ function GameMgr:RegistEvent()
     Event:RegistEvent("CharacterBeAttacked", self.OnCharacterBeAttacked, self)
     Event:RegistEvent("CharacterDie", self.OnCharacterDie, self)
     Event:RegistEvent("GameMgrSetState", self.OnStateChanged, self)
+    Event:RegistEvent("SetResouce", self.OnResourceChanged, self)
 end
 
 function GameMgr:OnStateChanged(nState)
@@ -131,4 +132,8 @@ function GameMgr:OnCharacterBeAttacked(dwCharacterId)
         return
     end
     self:UpdateHeroHP(dwCharacterId)    
+end
+
+function GameMgr:OnResourceChanged(szResourceName, nNewValue, bMax)
+    
 end
