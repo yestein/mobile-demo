@@ -77,11 +77,7 @@ function GameScene:Create()
         if x == touchMoveStartPoint.x and y == touchMoveStartPoint.y then
 
             if GameMgr:GetState() == GameMgr.STATE_BATTLE then
-                if spriteHero.isPaused == true then
-                    spriteHero.isPaused = false
-                else
-                    spriteHero.isPaused = true
-                end
+                GameMgr:PauseBattle()
             elseif GameMgr:GetState() == GameMgr.STATE_EDIT then
     	        local nX, nY = layerMaze:getPosition()
     	        local nLogicX, nLogicY = x - nX, y - nY

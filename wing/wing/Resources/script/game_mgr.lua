@@ -46,10 +46,28 @@ function GameMgr:GetStateDesc(nState)
 end
 
 function GameMgr:StartBattle()
+	self.bPause = 0
 	for dwId, tbCharacter in pairs(self.tbCharacterMap) do
 		tbCharacter:Start()
 	end
 	Event:FireEvent("GameMgrStartBattle")
+end
+
+function GameMgr:PauseBattle()
+	if self.bPause == 0 then
+		for dwId, tbCharacter in pairs(self.tbCharacterMap) do
+			tbCharacter:Pause()
+		end
+		Event:FireEvent("PauseBattle")
+		self.bPause = 1
+	else
+		for dwId, tbCharacter in pairs(self.tbCharacterMap) do
+			tbCharacter:CancelPause()
+		end
+		self.bPause = 0
+		Event:FireEvent("CancelPauseBattle")
+	end
+	
 end
 
 function GameMgr:Reset()
@@ -81,9 +99,14 @@ function GameMgr:OnStart_Normal()
 	    },
     }
     MenuMgr:UpdateByString("MainMenu", tbElement, szMenuFontName, 20)
+    local tbScene = SceneMgr:GetScene("GameScene")
+	if tbScene then
+		tbScene:GenMonster()
+	end
+	self:StartBattle()
 end
 function GameMgr:OnEnd_Normal()
-
+	Monster:ClearAll()
 end
 
 function GameMgr:OnStart_Edit()
@@ -159,6 +182,7 @@ end
 
 function GameMgr:OnEnd_Edit()
 	Maze:Save()
+	Player:Save()
 	Maze:ClearRecordOP()
 end
 

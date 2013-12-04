@@ -36,7 +36,7 @@ function Player:Init()
 	self:SetOwnMonsterCount(3, 1)
 	self:SetOwnHeroCount(1, 1)
 
-	--self:RegistEvent()
+	self:RegistEvent()
 end
 
 function Player:Entry(tbData)
@@ -52,40 +52,40 @@ function Player:Entry(tbData)
 	end
 end
 
-function Player:Save( ... )
-	cclog("Save Player ...")
+function Player:Save()
+	Event:FireEvent("StartSavePlayer")
     local szPath = CCFileUtils:sharedFileUtils():getWritablePath()
 	local file = assert(io.open(szPath.."saveplayer.lua", "w"))
 
-	file:write(string.format("Player:Entry{\nself.nLevel = %d,\n", self.nLevel))
-	file:write("self.tbResource = {")
+	file:write(string.format("Player:Entry{\nnLevel = %d,\n", self.nLevel))
+	file:write("tbResource = {")
 	for szResourceName, nCount in pairs(self.tbResource) do
-		file:write(string.format("\"%s\"] = %d,\n", szResourceName, nCount))
+		file:write(string.format("[\"%s\"] = %d,\n", szResourceName, nCount))
 	end
 	file:write("},\n")
-	file:write("self.tbMonster = {")
+	file:write("tbMonster = {")
 	for dwMonsterTemplateId, nCount in pairs(self.tbMonster) do
 		file:write(string.format("[%d] = %d,\n", dwMonsterTemplateId, nCount))
 	end
 	file:write("},\n")
-	file:write("self.tbHero = {")
+	file:write("tbHero = {")
 	for dwHeroTemplateId, nCount in pairs(self.tbHero) do
 		file:write(string.format("[%d] = %d,\n", dwHeroTemplateId, nCount))
 	end
 	file:write("},\n}")
 	file:close()
-	Event:FireEvent("SavePlayer")
+	Event:FireEvent("SavePlayerSuccess")
 end
 
-function Player:Load( ... )
-	cclog("Load Player ...")
+function Player:Load()
+	Event:FireEvent("StartLoadPlayer")
 	local szPath = CCFileUtils:sharedFileUtils():getWritablePath()
 	local file = io.open(szPath.."saveplayer.lua", "r")
 	if not file then
 		return
 	end
 	local t = dofile(szPath.."saveplayer.lua")
-	Event:FireEvent("LoadPlayer")
+	Event:FireEvent("LoadPlayerSuccess")
 end
 
 function Player:GetLevel()

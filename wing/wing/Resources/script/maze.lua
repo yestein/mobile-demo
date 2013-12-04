@@ -45,14 +45,14 @@ function Maze:GetData()
 end
 
 function Maze:Load()
-	cclog("Load Maze ...")
+	Event:FireEvent("StartLoadMaze")
 	local szPath = CCFileUtils:sharedFileUtils():getWritablePath()
 	local file = io.open(szPath.."savemap.lua", "r")
 	if not file then
 		return
 	end
 	local t = dofile(szPath.."savemap.lua")
-	Event:FireEvent("LoadMaze")
+	Event:FireEvent("LoadMazeSuccess")
 end
 
 function Maze:GetSize()
@@ -64,7 +64,7 @@ function Maze:SetSize(tbSize)
 end
 
 function Maze:Save()
-	cclog("Save Maze ...")
+	Event:FireEvent("StartSaveMaze")
     local szPath = CCFileUtils:sharedFileUtils():getWritablePath()
 	local file = assert(io.open(szPath.."savemap.lua", "w"))
 	file:write("Maze:Entry{\n")
@@ -77,7 +77,7 @@ function Maze:Save()
 	end
 	file:write("}")
 	file:close()
-	Event:FireEvent("SaveMaze")
+	Event:FireEvent("SaveMazeSuccess")
 end
 
 function Maze:Dig(nRow, nCol)
@@ -190,7 +190,11 @@ function Maze:PopUndoPos()
 	return self.nIndex
 end
 
-function Maze:CheckCanDig(nRow, nCol)	
+function Maze:CheckCanDig(nRow, nCol)
+	local nDigPoint = Player:GetResouce("DigPoint")
+	if nDigPoint <= 0 then
+		return 0
+	end
 	local tbCheckPos = {
 		{nRow - 1, nCol},
 		{nRow + 1, nCol},

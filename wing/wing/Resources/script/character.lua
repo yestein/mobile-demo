@@ -102,6 +102,16 @@ function Character:Start()
 	Event:FireEvent("CharacterStartMove", self.dwId)
 end
 
+function Character:Pause()
+	self.pSprite.isPaused = true
+	Event:FireEvent("CharacterPause", self.dwId)
+end
+
+function Character:CancelPause()
+	self.pSprite.isPaused = false
+	Event:FireEvent("CharacterCancelPause", self.dwId)
+end
+
 function Character:Reset()
 	self.tbStack = {}
 	self.tbRecordPos = {}

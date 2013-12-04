@@ -55,8 +55,7 @@ local function main()
     Monster:Init()
     
 	Maze:Init(Def.MAZE_COL_COUNT, Def.MAZE_ROW_COUNT)
-	Maze:Load()
-
+	Lib:SafeCall({Maze.Load, Maze})
 
 	-- run
 	local tbScene = SceneMgr:CreateScene("GameScene", "GameScene")
@@ -79,7 +78,7 @@ local function main()
     GameMgr:InitTitle()
     GameMgr:SetState(GameMgr.STATE_NORMAL)
     Player:Init()
-    Player:Load()
+    Lib:SafeCall({Player.Load, Player})
 		
 	sharedDirector:runWithScene(sceneGame)
 end

@@ -29,33 +29,42 @@ Character:TryFindUnit	.\character.lua	/^function Character:TryFindUnit(bHero)$/;
 Character:TryGoto	.\character.lua	/^function Character:TryGoto(nNewX, nNewY)$/;"	f
 Character:Uninit	.\character.lua	/^function Character:Uninit()$/;"	f
 Character:Wait	.\character.lua	/^function Character:Wait(nFrame)$/;"	f
+Debug.Print	.\debug.lua	/^function Debug.Print(...)$/;"	f
+Debug:Init	.\debug.lua	/^function Debug:Init(nMode)$/;"	f
 DoTest	.\main.lua	/^local function DoTest()$/;"	f
-Event:CallBack	.\event.lua	/^function Event:CallBack(tbEvent, tbArg)$/;"	f
+Event:CallBack	.\event.lua	/^function Event:CallBack(tbEvent, ...)$/;"	f
 Event:FireEvent	.\event.lua	/^function Event:FireEvent(szEvent, ...)$/;"	f
 Event:Preload	.\event.lua	/^function Event:Preload()$/;"	f
 Event:RegistEvent	.\event.lua	/^function Event:RegistEvent(szEvent, fnCallBack, ...)$/;"	f
-Event:UnReigseterEvent	.\event.lua	/^function Event:UnRegistEvent(szEvent, nRegisterId)$/;"	f
+Event:RegistWatcher	.\event.lua	/^function Event:RegistWatcher(tbBlackEventList, fnCallBack)$/;"	f
+Event:UnRegistEvent	.\event.lua	/^function Event:UnRegistEvent(szEvent, nRegisterId)$/;"	f
 GameMgr.OnClickPutMonster	.\game_mgr.lua	/^function GameMgr.OnClickPutMonster()$/;"	f
 GameMgr:AddCharacter	.\character_mgr.lua	/^function GameMgr:AddCharacter(dwId, tbCharacter)$/;"	f
+GameMgr:AddHeroHP	.\title.lua	/^function GameMgr:AddHeroHP(dwHeroId)$/;"	f
 GameMgr:GetCharacterById	.\character_mgr.lua	/^function GameMgr:GetCharacterById(dwId)$/;"	f
 GameMgr:GetState	.\game_mgr.lua	/^function GameMgr:GetState()$/;"	f
-GameMgr:GetStateDesc	.\game_mgr.lua	/^function GameMgr:GetStateDesc()$/;"	f
+GameMgr:GetStateDesc	.\game_mgr.lua	/^function GameMgr:GetStateDesc(nState)$/;"	f
 GameMgr:Init	.\game_mgr.lua	/^function GameMgr:Init()$/;"	f
 GameMgr:InitTitle	.\title.lua	/^function GameMgr:InitTitle()$/;"	f
+GameMgr:OnCharacterBeAttacked	.\title.lua	/^function GameMgr:OnCharacterBeAttacked(dwCharacterId)$/;"	f
+GameMgr:OnCharacterDie	.\title.lua	/^function GameMgr:OnCharacterDie(dwCharacterId)$/;"	f
 GameMgr:OnEnd_Battle	.\game_mgr.lua	/^function GameMgr:OnEnd_Battle()$/;"	f
 GameMgr:OnEnd_Edit	.\game_mgr.lua	/^function GameMgr:OnEnd_Edit()$/;"	f
 GameMgr:OnEnd_Normal	.\game_mgr.lua	/^function GameMgr:OnEnd_Normal()$/;"	f
+GameMgr:OnHeroAdd	.\title.lua	/^function GameMgr:OnHeroAdd(dwHeroId)$/;"	f
 GameMgr:OnStart_Battle	.\game_mgr.lua	/^function GameMgr:OnStart_Battle()$/;"	f
 GameMgr:OnStart_Edit	.\game_mgr.lua	/^function GameMgr:OnStart_Edit()$/;"	f
 GameMgr:OnStart_Normal	.\game_mgr.lua	/^function GameMgr:OnStart_Normal()$/;"	f
+GameMgr:OnStateChanged	.\title.lua	/^function GameMgr:OnStateChanged(nState)$/;"	f
+GameMgr:RegistEvent	.\title.lua	/^function GameMgr:RegistEvent()$/;"	f
 GameMgr:RemoveCharacter	.\character_mgr.lua	/^function GameMgr:RemoveCharacter(szSceneName, dwId)$/;"	f
+GameMgr:RemoveHeroHP	.\title.lua	/^function GameMgr:RemoveHeroHP(dwHeroId)$/;"	f
 GameMgr:RemoveSprite	.\character_mgr.lua	/^function GameMgr:RemoveSprite(szSceneName, pSprite)$/;"	f
 GameMgr:Reset	.\game_mgr.lua	/^function GameMgr:Reset()$/;"	f
 GameMgr:SetState	.\game_mgr.lua	/^function GameMgr:SetState(nState)$/;"	f
-GameMgr:Start	.\game_mgr.lua	/^function GameMgr:Start()$/;"	f
-GameMgr:Switch	.\game_mgr.lua	/^function GameMgr:Switch()$/;"	f
-GameMgr:UpdateHP	.\title.lua	/^function GameMgr:UpdateHP()$/;"	f
-GameMgr:UpdateTitle	.\title.lua	/^function GameMgr:UpdateTitle()$/;"	f
+GameMgr:StartBattle	.\game_mgr.lua	/^function GameMgr:StartBattle()$/;"	f
+GameMgr:SwitchState	.\game_mgr.lua	/^function GameMgr:SwitchState()$/;"	f
+GameMgr:UpdateHeroHP	.\title.lua	/^function GameMgr:UpdateHeroHP(dwHeroId)$/;"	f
 GameScene:Create	.\game_scene.lua	/^function GameScene:Create()$/;"	f
 GameScene:GenHero	.\game_scene.lua	/^function GameScene:GenHero()$/;"	f
 GameScene:GenMonster	.\game_scene.lua	/^function GameScene:GenMonster()$/;"	f
@@ -66,14 +75,19 @@ Hero:GetList	.\hero.lua	/^function Hero:GetList()$/;"	f
 Hero:Init	.\hero.lua	/^function Hero:Init()$/;"	f
 Hero:NewHero	.\hero.lua	/^function Hero:NewHero(nStartX, nStartY, tbProperty, tbAI)$/;"	f
 Hero:Uninit	.\hero.lua	/^function Hero:Uninit()$/;"	f
+InnerCall	.\lib.lua	/^	local function InnerCall()$/;"	f
 IsArriveTarget	.\character.lua	/^	local function IsArriveTarget()$/;"	f
 IsArriveTarget	.\hero.lua	/^	local function IsArriveTarget()$/;"	f
 IsArriveTarget	.\monster.lua	/^	local function IsArriveTarget()$/;"	f
+Lib.ShowStack	.\lib.lua	/^function Lib.ShowStack(s)$/;"	f
+Lib:CopyTB1	.\lib.lua	/^function Lib:CopyTB1(tb)$/;"	f
 Lib:GetPositionByRowCol	.\lib.lua	/^function Lib:GetPositionByRowCol(nRow, nCol)$/;"	f
 Lib:GetRowColByPos	.\lib.lua	/^function Lib:GetRowColByPos(nX, nY)$/;"	f
 Lib:IsHero	.\lib.lua	/^function Lib:IsHero(dwId)$/;"	f
+Lib:MergeTable	.\lib.lua	/^function Lib:MergeTable(tbDest, tbSrc)$/;"	f
 Lib:NewClass	.\lib.lua	/^function Lib:NewClass(tbBase)$/;"	f
 Lib:Reload	.\lib.lua	/^function Lib:Reload()$/;"	f
+Lib:SafeCall	.\lib.lua	/^function Lib:SafeCall(tbCallBack)$/;"	f
 Lib:ShowTB1	.\lib.lua	/^function Lib:ShowTB1(tb)$/;"	f
 Lib:ShowTBN	.\lib.lua	/^function Lib:ShowTBN(tb, n)$/;"	f
 Maze:CanMove	.\maze.lua	/^function Maze:CanMove(nX, nY)$/;"	f
@@ -96,7 +110,7 @@ Maze:Load	.\maze.lua	/^function Maze:Load()$/;"	f
 Maze:MoveMonster	.\maze.lua	/^function Maze:MoveMonster(nRow, nCol, nNewRow, nNewCol)$/;"	f
 Maze:PopUndoPos	.\maze.lua	/^function Maze:PopUndoPos()$/;"	f
 Maze:PushUndoPos	.\maze.lua	/^function Maze:PushUndoPos(nRow, nCol)$/;"	f
-Maze:PutMonster	.\maze.lua	/^function Maze:PutMonster(nRow, nCol, nMonsterTemplate)$/;"	f
+Maze:PutMonster	.\maze.lua	/^function Maze:PutMonster(nRow, nCol, dwMonsterTemplate)$/;"	f
 Maze:RandomMaze	.\maze.lua	/^function Maze:RandomMaze()$/;"	f
 Maze:ReDoDig	.\maze.lua	/^function Maze:ReDoDig()$/;"	f
 Maze:Reset	.\maze.lua	/^function Maze:Reset()$/;"	f
@@ -118,6 +132,24 @@ Monster:GetList	.\monster.lua	/^function Monster:GetList()$/;"	f
 Monster:Init	.\monster.lua	/^function Monster:Init()$/;"	f
 Monster:NewMonster	.\monster.lua	/^function Monster:NewMonster(nMonsterTemplateId, nStartX, nStartY)$/;"	f
 Monster:Uninit	.\monster.lua	/^function Monster:Uninit()$/;"	f
+Player:Entry	.\player.lua	/^function Player:Entry(tbData)$/;"	f
+Player:GetCurResouceMax	.\player.lua	/^function Player:GetCurResouceMax(szResourceName)$/;"	f
+Player:GetLevel	.\player.lua	/^function Player:GetLevel()$/;"	f
+Player:GetOwnHeroCount	.\player.lua	/^function Player:GetOwnHeroCount(dwHeroTemplateId)$/;"	f
+Player:GetOwnMonsterCount	.\player.lua	/^function Player:GetOwnMonsterCount(dwMonsterTemplateId)$/;"	f
+Player:GetResouce	.\player.lua	/^function Player:GetResouce(szResourceName)$/;"	f
+Player:Init	.\player.lua	/^function Player:Init()$/;"	f
+Player:Load	.\player.lua	/^function Player:Load()$/;"	f
+Player:OnDig	.\player.lua	/^function Player:OnDig(nRow, nCol, bReDo)$/;"	f
+Player:OnResetMaze	.\player.lua	/^function Player:OnResetMaze()$/;"	f
+Player:RegistEvent	.\player.lua	/^function Player:RegistEvent()$/;"	f
+Player:Save	.\player.lua	/^function Player:Save()$/;"	f
+Player:SetLevel	.\player.lua	/^function Player:SetLevel(nLevel)$/;"	f
+Player:SetOwnHeroCount	.\player.lua	/^function Player:SetOwnHeroCount(dwHeroTemplateId, nCount)$/;"	f
+Player:SetOwnMonsterCount	.\player.lua	/^function Player:SetOwnMonsterCount(dwMonsterTemplateId, nCount)$/;"	f
+Player:SetResouce	.\player.lua	/^function Player:SetResouce(szResourceName, nCount)$/;"	f
+Player:UnDoDig	.\player.lua	/^function Player:UnDoDig(nRow, nCol, bReDo)$/;"	f
+Player:UnRegistEvent	.\player.lua	/^function Player:UnRegistEvent()$/;"	f
 SceneBase:Create	.\scene_base.lua	/^function SceneBase:Create()$/;"	f
 SceneBase:GetCCObj	.\scene_base.lua	/^function SceneBase:GetCCObj()$/;"	f
 SceneBase:GetClassName	.\scene_base.lua	/^function SceneBase:GetClassName()$/;"	f
