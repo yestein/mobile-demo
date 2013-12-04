@@ -132,7 +132,8 @@ function Maze:ReDoDig()
     self.tbData[nRow][nCol] = MAP_FREE
     
     pBlock:setVisible(false)
-    Event:FireEvent("ReDoDig", nRow, nCol)
+    local bReDo = 1
+    Event:FireEvent("Dig", nRow, nCol, bReDo)
     return 1
 end
 

@@ -78,6 +78,8 @@ local function main()
 
     GameMgr:InitTitle()
     GameMgr:SetState(GameMgr.STATE_NORMAL)
+    Player:Init()
+    Player:Load()
 		
 	sharedDirector:runWithScene(sceneGame)
 end
