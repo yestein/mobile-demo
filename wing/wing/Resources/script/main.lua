@@ -46,6 +46,7 @@ local function main()
 	math.randomseed(os.time())
 	math.random(100)
 	Event:Preload()
+    Debug:Init(Debug.MODE_BLACK_LIST)
     
 	GameMgr:Init()
     SceneMgr:Init()

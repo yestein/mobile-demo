@@ -8,11 +8,14 @@
 
 function Event:Preload()
 	self.tbGlobalEvent = {}
-
-	Event:Test()
 end
 
-function Event:ReigseterEvent(szEvent, fnCallBack, ...)
+function Event:RegistWatcher(tbBlackEventList, fnCallBack)
+	self.tbEventBlackList = tbBlackEventList
+	self.fnWatcherCallBack = fnCallBack
+end
+
+function Event:RegistEvent(szEvent, fnCallBack, ...)
 	if not self.tbGlobalEvent[szEvent] then
 		self.tbGlobalEvent[szEvent] = {}
 	end
@@ -22,7 +25,7 @@ function Event:ReigseterEvent(szEvent, fnCallBack, ...)
 	return nRegisterId
 end
 
-function Event:UnReigseterEvent(szEvent, nRegisterId)
+function Event:UnRegistEvent(szEvent, nRegisterId)
 	if not self.tbGlobalEvent[szEvent] then
 		return 0
 	end
@@ -35,7 +38,12 @@ function Event:UnReigseterEvent(szEvent, nRegisterId)
 end
 
 function Event:FireEvent(szEvent, ...)
-	self:CallBack(self.tbGlobalEvent[szEvent], ...);
+	self:CallBack(self.tbGlobalEvent[szEvent], ...)
+	if self.fnWatcherCallBack then
+		if not self.tbEventBlackList or not self.tbEventBlackList[szEvent] then
+			self.fnWatcherCallBack(szEvent, ...)
+		end
+	end
 end
 
 
@@ -48,11 +56,11 @@ function Event:CallBack(tbEvent, ...)
 		if tbEvent[nRegisterId] then
 			local fnCallBack = tbCallFunc[1]
 			local tbPackArg = tbCallFunc[2]
+
 			if #tbPackArg > 0 then
-				Lib:MergeTable(tbPackArg, {...})
-				pcall(fnCallBack, unpack(tbPackArg))
+				Lib:SafeCall({fnCallBack, unpack(tbPackArg), ...})
 			else
-				pcall(fnCallBack, ...)
+				Lib:SafeCall({fnCallBack, ...})
 			end
 		end
 	end

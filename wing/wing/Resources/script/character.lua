@@ -21,8 +21,8 @@ function Character:Init(pSprite, tbProperty, tbAI)
 	self.tbRecordPos = {}
 	self.tbProperty = {
 		ViewRange   = 3,
-		CurHP       = 100,
-		MaxHP       = 100,
+		CurHP       = 20,
+		MaxHP       = 20,
 		CurMP       = 100,
 		MaxMP       = 100,
 		Attack      = 5,
@@ -76,10 +76,7 @@ function Character:BeAttacked(tbBullet)
 	local nCurHP = self:GetProperty("CurHP")
 	local nNewHP = tbBullet:CalcDamage(self)
 	self:SetProperty("CurHP", nNewHP)
-	Event:FireEvent("CharcterBeAttacked", self.dwId, nCurHP, nNewHP)
-	if Lib:IsHero(self.dwId) then
-		GameMgr:UpdateHeroHP(self.dwId)
-	end
+	Event:FireEvent("CharacterBeAttacked", self.dwId, nCurHP, nNewHP)
 	if nNewHP <= 0 then
 		self:Die()
 	end
@@ -87,7 +84,7 @@ function Character:BeAttacked(tbBullet)
 end
 
 function Character:Die()
-	Event:FireEvent("CharcterDie", self.dwId)
+	Event:FireEvent("CharacterDie", self.dwId)
 	Maze:ClearUnit(self.tbLogicPos.nRow, self.tbLogicPos.nCol)
 	GameMgr:RemoveCharacter("GameScene", self.dwId)
 	self:Uninit()
@@ -98,12 +95,11 @@ function Character:Wait(nFrame)
 end
 
 function Character:Start()
-	cclog("%d Start Move", self.dwId)
 	self.tbStack = {}
 	self.tbRecordPos = {}
 	self.pSprite:setVisible(true)
 	self.pSprite.isPaused = false
-	Event:FireEvent("CharcterStartMove", self.dwId)
+	Event:FireEvent("CharacterStartMove", self.dwId)
 end
 
 function Character:Reset()
@@ -115,7 +111,7 @@ function Character:Reset()
 
     self.pSprite:setPosition(self.tbOrigin.x, self.tbOrigin.y)
     self:SetDirection(Def.DIR_DOWN)
-    Event:FireEvent("CharcterReset", self.dwId)
+    Event:FireEvent("CharacterReset", self.dwId)
 end
 
 function Character:GetProperty(Key)
@@ -164,7 +160,7 @@ function Character:Move(nDirection)
 		end
 	end
 	self.pSprite:setPosition(nNewX, nNewY)
-	Event:FireEvent("CharcterMove", self.dwId, x, y, nNewX, nNewY, nDirection)
+	Event:FireEvent("CharacterMove", self.dwId, x, y, nNewX, nNewY, nDirection)
 end
 
 function Character:Goto(x, y, nDir)
@@ -180,7 +176,7 @@ function Character:Goto(x, y, nDir)
 	local nNewX, nNewY = x + self.tbSize.width * nX + nX, y + self.tbSize.height * nY
 	self:SetDirection(nDir)
     self.tbTarget = {x = nNewX, y = nNewY}
-    Event:FireEvent("CharcterGoto", self.dwId, x, y, nDir)
+    Event:FireEvent("CharacterGoto", self.dwId, x, y, nDir)
 end
 
 function Character:SetSpriteDirection(pSprite, nDirection)

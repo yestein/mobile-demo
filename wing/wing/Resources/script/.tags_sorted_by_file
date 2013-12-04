@@ -36,8 +36,8 @@ Accumulate	define.lua	/^local function Accumulate(nId)$/;"	f
 Event:CallBack	event.lua	/^function Event:CallBack(tbEvent, tbArg)$/;"	f
 Event:FireEvent	event.lua	/^function Event:FireEvent(szEvent, ...)$/;"	f
 Event:Preload	event.lua	/^function Event:Preload()$/;"	f
-Event:ReigseterEvent	event.lua	/^function Event:ReigseterEvent(szEvent, fnCallBack, ...)$/;"	f
-Event:UnReigseterEvent	event.lua	/^function Event:UnReigseterEvent(szEvent, nRegisterId)$/;"	f
+Event:RegistEvent	event.lua	/^function Event:RegistEvent(szEvent, fnCallBack, ...)$/;"	f
+Event:UnReigseterEvent	event.lua	/^function Event:UnRegistEvent(szEvent, nRegisterId)$/;"	f
 GameMgr.OnClickPutMonster	game_mgr.lua	/^function GameMgr.OnClickPutMonster()$/;"	f
 GameMgr:GetState	game_mgr.lua	/^function GameMgr:GetState()$/;"	f
 GameMgr:GetStateDesc	game_mgr.lua	/^function GameMgr:GetStateDesc()$/;"	f

@@ -37,6 +37,18 @@ function Lib:CopyTB1(tb)
 	return tbRet
 end
 
+function Lib.ShowStack(s)
+	print(debug.traceback(s,2))
+	return s
+end
+
+function Lib:SafeCall(tbCallBack)
+	local function InnerCall()
+		tbCallBack[1](unpack(tbCallBack, 2))
+	end
+	return xpcall(InnerCall, Lib.ShowStack)
+end
+
 function Lib:MergeTable(tbDest, tbSrc)
 	for _, v in ipairs(tbSrc) do
 		tbDest[#tbDest + 1] = v

@@ -10,6 +10,7 @@
 function GameMgr:InitTitle()
 	self.tbTitle = {}
     self.tbHeroHP = {}
+    self.tbWaitToRemoveHP = {}
 	local sceneGame = SceneMgr:GetSceneObj("GameScene")
 	if not sceneGame then
 		return
@@ -35,9 +36,10 @@ function GameMgr:InitTitle()
     local tbTitleSize = cclf:getTextureRect().size
     cclf:setPosition(5 + tbTitleSize.width / 2 , tbVisibleSize.height - tbTitleSize.height / 2 - 10)
     sceneGame:addChild(layerTitle, 2)
-
     self.tbTitle["State"] = cclf
-    self:UpdateTitle()
+
+    self:RegistEvent()
+    Event:FireEvent("TitleInit")
 end
 
 function GameMgr:AddHeroHP(dwHeroId)
@@ -55,7 +57,8 @@ function GameMgr:AddHeroHP(dwHeroId)
     pCopySprite:setPosition(100 + tbSpriteSize.width / 2, tbVisibleSize.height - tbSpriteSize.height / 2)
     self.layerTitle:addChild(pCopySprite)
 
-    local cclfHP = CCLabelTTF:create(string.format("%d / %d", tbHero:GetProperty("CurHP"), tbHero:GetProperty("MaxHP")), "Microsoft Yahei", 16)
+    local szMsg = string.format("%d / %d", tbHero:GetProperty("CurHP"), tbHero:GetProperty("MaxHP"))
+    local cclfHP = CCLabelTTF:create(szMsg, "Microsoft Yahei", 16)
     self.layerTitle:addChild(cclfHP)
     local tbHPSize = cclfHP:getTextureRect().size
     cclfHP:setPosition(105 + tbSpriteSize.width +  tbHPSize.width / 2, tbVisibleSize.height - tbSpriteSize.height / 2 - 5)
@@ -63,6 +66,19 @@ function GameMgr:AddHeroHP(dwHeroId)
         spriteHead = pCopySprite,
         labelHP = cclfHP,
     }
+    Event:FireEvent("TitleHPAdd", dwHeroId, szMsg)
+    return 1
+end
+
+function GameMgr:RemoveHeroHP(dwHeroId)
+    local tbHero = self.tbHeroHP[dwHeroId]
+    if not tbHero then
+        return 0
+    end
+    self.layerTitle:removeChild(tbHero.spriteHead, true)
+    self.layerTitle:removeChild(tbHero.labelHP, true)
+    self.tbHeroHP[dwHeroId] = nil
+    Event:FireEvent("TitleHPRemove", dwHeroId)
     return 1
 end
 
@@ -75,12 +91,44 @@ function GameMgr:UpdateHeroHP(dwHeroId)
     local nCurHP, nMaxHP = tbHero:GetProperty("CurHP"), tbHero:GetProperty("MaxHP")
     local szHP = string.format("%d / %d", nCurHP, nMaxHP)
     tbHP.labelHP:setString(szHP)
+    Event:FireEvent("TitleHPUpdate", dwHeroId, szHP)
 end
 
-function GameMgr:UpdateTitle()
+function GameMgr:RegistEvent()
+    Event:RegistEvent("HeroAdd", self.OnHeroAdd, self)
+    Event:RegistEvent("CharacterBeAttacked", self.OnCharacterBeAttacked, self)
+    Event:RegistEvent("CharacterDie", self.OnCharacterDie, self)
+    Event:RegistEvent("GameMgrSetState", self.OnStateChanged, self)
+end
+
+function GameMgr:OnStateChanged(nState)
 	if not self.tbTitle or not self.tbTitle["State"] then
 		return
 	end
-	local szDesc = self:GetStateDesc()
+	local szDesc = self:GetStateDesc(nState)
 	self.tbTitle["State"]:setString(szDesc)
+    for dwId, _ in pairs(self.tbWaitToRemoveHP) do
+        self:RemoveHeroHP(dwId)
+    end
+    self.tbWaitToRemoveHP = {}
+    Event:FireEvent("TitleStateUpdate", szDesc)
+end
+
+function GameMgr:OnHeroAdd(dwHeroId)
+    assert(self:AddHeroHP(dwHeroId) == 1)
+end
+
+function GameMgr:OnCharacterDie(dwCharacterId)
+    if Lib:IsHero(dwCharacterId) ~= 1 then
+        return
+    end
+    self.tbWaitToRemoveHP[dwCharacterId] = 1
+    Event:FireEvent("TitleHPWaitForRemove", dwCharacterId)
+end
+
+function GameMgr:OnCharacterBeAttacked(dwCharacterId)
+    if Lib:IsHero(dwCharacterId) ~= 1 then
+        return
+    end
+    self:UpdateHeroHP(dwCharacterId)    
 end

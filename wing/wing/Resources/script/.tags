@@ -33,8 +33,8 @@ DoTest	.\main.lua	/^local function DoTest()$/;"	f
 Event:CallBack	.\event.lua	/^function Event:CallBack(tbEvent, tbArg)$/;"	f
 Event:FireEvent	.\event.lua	/^function Event:FireEvent(szEvent, ...)$/;"	f
 Event:Preload	.\event.lua	/^function Event:Preload()$/;"	f
-Event:ReigseterEvent	.\event.lua	/^function Event:ReigseterEvent(szEvent, fnCallBack, ...)$/;"	f
-Event:UnReigseterEvent	.\event.lua	/^function Event:UnReigseterEvent(szEvent, nRegisterId)$/;"	f
+Event:RegistEvent	.\event.lua	/^function Event:RegistEvent(szEvent, fnCallBack, ...)$/;"	f
+Event:UnReigseterEvent	.\event.lua	/^function Event:UnRegistEvent(szEvent, nRegisterId)$/;"	f
 GameMgr.OnClickPutMonster	.\game_mgr.lua	/^function GameMgr.OnClickPutMonster()$/;"	f
 GameMgr:AddCharacter	.\character_mgr.lua	/^function GameMgr:AddCharacter(dwId, tbCharacter)$/;"	f
 GameMgr:GetCharacterById	.\character_mgr.lua	/^function GameMgr:GetCharacterById(dwId)$/;"	f

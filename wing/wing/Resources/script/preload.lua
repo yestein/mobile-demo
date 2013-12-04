@@ -58,9 +58,14 @@ if not _G.SceneMgr then
 	_G.SceneMgr = {}
 end
 
+if not _G.Debug then
+	_G.Debug  = {}
+end
+
 require("define")
 require("lib")
 require("event")
+require("debug.lua")
 require("game_mgr")
 require("maze")
 require("player")

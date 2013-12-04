@@ -32,7 +32,7 @@ function Bullet:Init()
 				if Maze:IsFree(nRow, nCol) == 1 and dwId == 0 then
 					pSprite:setPosition(nNewX, nNewY)
 				else
-					if dwId > 0 then
+					if dwId and dwId > 0 then
 						local tbCharacter = GameMgr:GetCharacterById(dwId)
 						if tbCharacter then
 							if Lib:IsHero(dwId) == 1 then
@@ -73,8 +73,7 @@ end
 function tbBulletClass:CalcDamage(tbCharacter)
 	local nCurHP = tbCharacter:GetProperty("CurHP")
 	local nNewHP = nCurHP - self.tbProperty.Damage
-	cclog(nCurHP.."->"..nNewHP)
-	return nNewHP
+	return nNewHP, self.tbProperty.Damage
 end
 
 function tbBulletClass:Uninit()

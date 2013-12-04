@@ -30,35 +30,36 @@ function GameMgr:SetState(nState)
 		funcEnd(self)
 	end
 	self.nState = nState
-	cclog("switch to %s", self.tbStateDesc[nState])
-	GameMgr:UpdateTitle()
 	local funcStart = self.fnStartState[nState]
 	if funcStart then
 		funcStart(self)
 	end
+	Event:FireEvent("GameMgrSetState", nState)
 end
 
 function GameMgr:GetState()
 	return self.nState
 end
 
-function GameMgr:GetStateDesc()
-	return self.tbStateDesc[self.nState]
+function GameMgr:GetStateDesc(nState)
+	return self.tbStateDesc[nState]
 end
 
-function GameMgr:Start()
+function GameMgr:StartBattle()
 	for dwId, tbCharacter in pairs(self.tbCharacterMap) do
 		tbCharacter:Start()
 	end
+	Event:FireEvent("GameMgrStartBattle")
 end
 
 function GameMgr:Reset()
 	for dwId, tbCharacter in pairs(self.tbCharacterMap) do
 		tbCharacter:Reset()
 	end
+	Event:FireEvent("GameMgrStartReset")
 end
 
-function GameMgr:Switch()
+function GameMgr:SwitchState()
 	local nState = self:GetState()
 	local nNewState = nState + 1
 	if nNewState > self.STATE_COUNT then
@@ -74,7 +75,7 @@ function GameMgr:OnStart_Normal()
 	        [1] = {
 	        	szItemName = "开始编辑",
 	        	fnCallBack = function()
-	                GameMgr:Switch()
+	                GameMgr:SwitchState()
 	            end,
 	        },
 	    },
@@ -92,7 +93,7 @@ function GameMgr:OnStart_Edit()
 			{
 	            szItemName = "开始战斗",
 	            fnCallBack = function()
-	                GameMgr:Switch()
+	                GameMgr:SwitchState()
 	            end
 	        },
 	        {
@@ -127,6 +128,7 @@ function GameMgr:OnStart_Edit()
 		tbScene:GenMonster()
 	end
 end
+
 function GameMgr.OnClickPutMonster()
 	local tbMenu = MenuMgr:GetMenu("PutMonster")
 	if not tbMenu then
@@ -166,7 +168,7 @@ function GameMgr:OnStart_Battle()
 	        {
 	        	szItemName = "结束战斗",
 	        	fnCallBack = function()
-	                GameMgr:Switch()
+	                GameMgr:SwitchState()
 	            end,
 	        },
 	    },
@@ -176,7 +178,7 @@ function GameMgr:OnStart_Battle()
 	if tbScene then
 		tbScene:GenHero()
 	end
-	self:Start()
+	self:StartBattle()
 end
 function GameMgr:OnEnd_Battle()
 	self:Reset()

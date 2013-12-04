@@ -125,6 +125,7 @@ function GameScene:Create()
 
     self.layerMaze = layerMaze
     self.spriteMaze = ccspMaze
+    Event:FireEvent("SceneCreate", self.szClassName, self.szSceneName)
     return layerMaze
 end
 
@@ -161,7 +162,4 @@ function GameScene:GenHero()
     }
     local tbHero, pSpriteHero = Hero:NewHero(nStartX, nStartY, tbProperty)    
     self.layerMaze:addChild(pSpriteHero, 0, tbHero.dwId)
-    if GameMgr:AddHeroHP(tbHero.dwId) ~= 1 then
-        GameMgr:UpdateHeroHP(tbHero.dwId)
-    end
 end

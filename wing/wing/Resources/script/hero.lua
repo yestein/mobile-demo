@@ -43,6 +43,7 @@ function Hero:NewHero(nStartX, nStartY, tbProperty, tbAI)
     tbNewHero.dwId = self:GenerateId()
 	tbNewHero:Init(pHero, tbProperty, tbAI)
 	GameMgr:AddCharacter(tbNewHero.dwId, tbNewHero)
+	Event:FireEvent("HeroAdd", tbNewHero.dwId)
 	return tbNewHero, pHero
 end
 

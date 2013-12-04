@@ -46,7 +46,7 @@ function Monster:NewMonster(nMonsterTemplateId, nStartX, nStartY)
 	tbNewMonster.dwId = self:GenerateId()
     tbNewMonster:Init(pMonster, tbProperty, tbAI)	
     GameMgr:AddCharacter(tbNewMonster.dwId, tbNewMonster)
-	
+	Event:FireEvent("MonsterAdd", tbNewMonster.dwId)
 	return tbNewMonster, pMonster
 end
 
