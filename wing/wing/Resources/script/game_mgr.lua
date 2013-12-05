@@ -123,6 +123,7 @@ function GameMgr:OnStart_Edit()
 	            szItemName = "清空地图",
 	            fnCallBack = function()
 	                Maze:Reset()
+	                Monster:ClearAll()
 	            end
 	        },
 	    },
@@ -184,6 +185,7 @@ function GameMgr:OnEnd_Edit()
 	Maze:Save()
 	Player:Save()
 	Maze:ClearRecordOP()
+	Monster:ClearAll()
 end
 
 function GameMgr:OnStart_Battle()
@@ -201,6 +203,7 @@ function GameMgr:OnStart_Battle()
 	local tbScene = SceneMgr:GetScene("GameScene")
 	if tbScene then
 		tbScene:GenHero()
+		tbScene:GenMonster()
 	end
 	self:StartBattle()
 end

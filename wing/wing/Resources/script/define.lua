@@ -62,3 +62,11 @@ Def.DIR_NAME = {
 	[Def.DIR_LEFT]  = "LEFT",
 	[Def.DIR_RIGHT] = "RIGHT",
 }
+
+Def.tbColor = {
+    ["black"] = ccc3(255, 255, 255),
+    ["red"]   = ccc3(255, 0, 0),
+    ["green"] = ccc3(0, 255, 0),
+    ["blue"]  = ccc3(0, 0, 255),
+    ["white"] = ccc3(0, 0, 0),
+}
