@@ -40,8 +40,14 @@ function Maze:Entry(tbData)
 	return 1
 end
 
-function Maze:GetData()
+function Maze:GetAllData()
 	return self.tbData
+end
+
+function Maze:GetData(nRow, nCol)
+	if self.tbData[nRow] then
+		return self.tbData[nRow][nCol]
+	end
 end
 
 function Maze:Load()
@@ -153,9 +159,13 @@ function Maze:MoveMonster(nRow, nCol, nNewRow, nNewCol)
 	if self.tbData[nRow][nCol] < self.MAP_MONSTER_START then
 		return 0
 	end
+	local dwId = self.tbUnit[nRow][nCol]
+	self:ClearUnit(nRow, nCol)
+	self:SetUnit(nNewRow, nNewCol, dwId)
+
 	self.tbData[nNewRow][nNewCol] = self.tbData[nRow][nCol]
 	self.tbData[nRow][nCol] = MAP_FREE
-	Event:FireEvent("PutMonster", self.tbData[nNewRow][nNewCol], nRow, nCol, nNewRow, nNewCol)
+	Event:FireEvent("MoveMonster", self.tbUnit[nNewRow][nNewCol], self.tbData[nNewRow][nNewCol], nRow, nCol, nNewRow, nNewCol)
 	return 1
 end
 
@@ -256,10 +266,9 @@ function Maze:CanMove(nX, nY)
 	if self:IsFree(nRow, nCol) ~= 1 then
 		return 0
 	end
-	
-	if self:GetUnit(nRow, nCol) > 0 then
-		return 0
-	end
+	-- if self:GetUnit(nRow, nCol) > 0 then
+	-- 	return 0
+	-- end
 	return 1
 
 end
@@ -281,6 +290,7 @@ function Maze:GetUnit(nRow, nCol)
 	if self.tbUnit[nRow] then
 		return self.tbUnit[nRow][nCol]
 	end
+	return 0
 end
 
 function Maze:IsFree(nRow, nCol)
@@ -330,4 +340,36 @@ function Maze:GenBlock()
 	end
 
 	return tbSprite
+end
+
+function Maze:StartDrag(nRow, nCol)
+	if not self.tbDrag then
+		local dwCharacterId = self:GetUnit(nRow, nCol)
+		if not dwCharacterId then
+			return
+		end
+		local tbCharacter = GameMgr:GetCharacterById(dwCharacterId)
+		if not tbCharacter then
+			return
+		end
+		self.tbDrag = {
+			nRow = nRow, 
+			nCol = nCol,
+			pSprite = tbCharacter.pSprite,
+		}
+	end
+end
+
+function Maze:GetDragInfo()
+	return self.tbDrag
+end
+
+function Maze:StopDrag(nRow, nCol)
+	local bRet = 0
+	if self.tbData[nRow] and self.tbData[nRow][nCol] == MAP_FREE then
+		self:MoveMonster(self.tbDrag.nRow, self.tbDrag.nCol, nRow, nCol)
+		bRet = 1
+	end
+	self.tbDrag = nil
+	return bRet
 end

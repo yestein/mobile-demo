@@ -65,7 +65,7 @@ end
 require("define")
 require("lib")
 require("event")
-require("debug.lua")
+require("dbg")
 require("game_mgr")
 require("maze")
 require("player")
