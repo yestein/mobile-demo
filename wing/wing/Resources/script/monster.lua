@@ -90,19 +90,30 @@ function tbMonsterClass:AutoMove()
 			self:Attack()
 			return 0
 		end
-		local nNextDir = math.random(Def.DIR_START + 1, Def.DIR_END - 1)
-		local tbPosOffset = Def.tbMove[nNextDir]
-		if not tbPosOffset then
-			return 0
-		end			
-		local nX, nY = unpack(tbPosOffset)
-		local nNewX, nNewY = x + self.tbSize.width * nX + nX, y + self.tbSize.height * nY
-		if self:TryGoto(nNewX, nNewY) == 0 then
-			return
+		
+		local nStep = 1
+		local nRandom = math.random(1, 2)
+		if nRandom == 2 then
+			nStep = -1
 		end
-		self:Goto(x, y, nNextDir)
+		local nTryDirction = self.nDirection
+		for i = Def.DIR_START + 1, Def.DIR_END - 1 do
+			local nNextDir = nTryDirction + (i - 1) * nStep
+			if nNextDir > Def.DIR_END - 1 then
+				nNextDir = nNextDir - Def.DIR_END + 1
+			elseif nNextDir <  Def.DIR_START + 1 then
+				nNextDir = nNextDir + Def.DIR_END - 1
+			end
+			local tbPosOffset = Def.tbMove[nNextDir]
+			if tbPosOffset then
+				local nX, nY = unpack(tbPosOffset)
+				local nNewX, nNewY = x + self.tbSize.width * nX + nX, y + self.tbSize.height * nY
+				if self:TryGoto(nNewX, nNewY) == 1 then
+					self:Goto(x, y, nNextDir)
+					break
+				end
+			end
+		end
 	end
-
-	local nDirection = self.nDirection
-	self:Move(nDirection)
+	self:Move(self.nDirection)
 end

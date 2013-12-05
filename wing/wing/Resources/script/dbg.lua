@@ -6,8 +6,6 @@
 -- Modify       :
 --=======================================================================
 
-require("event")
-
 Debug.MODE_BLACK_LIST = 1
 Debug.MODE_WHITE_LIST = 2
 
