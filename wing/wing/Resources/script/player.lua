@@ -125,6 +125,10 @@ function Player:SetResouce(szResourceName, nCount)
 	Event:FireEvent("SetResouce", szResourceName, nCount, bMax)
 end
 
+function Player:GetOwnMonster()
+	return self.tbMonster
+end
+
 function Player:GetOwnMonsterCount(dwMonsterTemplateId)
 	return self.tbMonster[dwMonsterTemplateId]
 end
@@ -155,6 +159,10 @@ function Player:RegistEvent()
 	if not self.nRegMazeReset then
 		self.nRegMazeReset = Event:RegistEvent("ResetMaze", self.OnResetMaze, self)
 	end
+
+	if not self.nRegPutMonster then
+		self.nRegPutMonster = Event:RegistEvent("PutMonster", self.OnPutMonster, self)
+	end
 end
 
 function Player:UnRegistEvent()
@@ -171,6 +179,11 @@ function Player:UnRegistEvent()
 	if self.nRegMazeReset then
 		Event:UnRegistEvent("ResetMaze", self.nRegMazeReset)
 		self.nRegMazeReset = nil
+	end
+
+	if self.nRegPutMonster then
+		Event:UnRegistEvent("PutMonster", self.nRegPutMonster)
+		self.nRegPutMonster = nil
 	end
 end
 
@@ -191,5 +204,15 @@ end
 function Player:OnResetMaze()
 	local nMaxDigPoint = self:GetCurResouceMax("DigPoint")
 	self:SetResouce("DigPoint", nMaxDigPoint)
+	self:SetOwnMonsterCount(1, 1)
+	self:SetOwnMonsterCount(2, 1)
+	self:SetOwnMonsterCount(3, 1)
+	return
+end
+
+function Player:OnPutMonster(dwMonsterTemplateId, nRow, nCol)
+	local nCount = self:GetOwnMonsterCount(dwMonsterTemplateId)
+	nCount = nCount - 1
+	self:SetOwnMonsterCount(dwMonsterTemplateId, nCount)
 	return
 end

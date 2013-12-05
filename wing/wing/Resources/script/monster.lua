@@ -6,6 +6,8 @@
 -- Modify       :
 --=======================================================================
 
+require("monster_cfg")
+
 local FRAME_WIDTH = 36
 local FRAME_HEIGHT = 48
 local INIT_DIRECTION = Def.DIR_DOWN
@@ -33,8 +35,9 @@ function Monster:GenerateId()
 end
 
 
-function Monster:NewMonster(nMonsterTemplateId, nStartX, nStartY)
-	local TextureMonster = CCTextureCache:sharedTextureCache():addImage(Def.szMonsterFile)
+function Monster:NewMonster(dwMonsterTemplateId, nStartX, nStartY)
+	local szImgFile = self.tbCfg[dwMonsterTemplateId].szImgFile
+	local TextureMonster = CCTextureCache:sharedTextureCache():addImage(szImgFile)
 	local InitRect = CCRectMake(0, 0, Def.BLOCK_WIDTH, Def.BLOCK_HEIGHT)
 	local MonsterFrame0 = CCSpriteFrame:createWithTexture(TextureMonster, InitRect)
 	

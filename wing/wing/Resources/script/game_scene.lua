@@ -171,8 +171,8 @@ function GameScene:GenMonster()
         for nColumn, nData in ipairs(tbRow) do
             local nX, nY = nStartX + (nColumn - 1) * Def.BLOCK_WIDTH, nStartY + (nRow - 1) * Def.BLOCK_HEIGHT
             if nData >= Maze.MAP_MONSTER_START then
-                local nMonsterTemplateId = nData - Maze.MAP_MONSTER_START + 1
-                local tbMonster, pMonster = Monster:NewMonster(nMonsterTemplateId, nX, nY)
+                local dwMonsterTemplateId = nData - Maze.MAP_MONSTER_START + 1
+                local tbMonster, pMonster = Monster:NewMonster(dwMonsterTemplateId, nX, nY)
                 self.layerMaze:addChild(pMonster)
             end
         end

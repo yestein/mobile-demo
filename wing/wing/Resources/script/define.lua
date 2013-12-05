@@ -27,10 +27,9 @@ Def.tbEntrance = {Def.MAZE_ROW_COUNT, Def.MAZE_COL_COUNT / 2}
 
 
 Def.szHeroFile    = "wizard.png"
-Def.szMonsterFile = "icon.pnf"
 Def.szBlockImg    = "block.png"
 Def.szBGImg       = "background.png"
-Def.szMonsterFile = "monster.png"
+Def.szMonsterFile = "skeleton.png"
 Def.szBulletFile  = "bullet.png"
 Def.szTitleFile = "title_bg.png"
 

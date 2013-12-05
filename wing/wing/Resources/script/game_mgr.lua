@@ -161,21 +161,26 @@ function GameMgr.OnClickPutMonster()
 	end
 	local layerMenu = tbMenu.ccmenuObj
 	if not layerMenu:getChildByTag(1) then
-		local tbElement = {
-	    	[1] = {
-		        {
-		            szImage = Def.szMonsterFile,
-		            tbRect = {
-		            	["normal"] = {36, 0, 36, 48},
-		            	["selected"] = {36 * 3, 0, 36, 48},
-		            },
-		            fnCallBack = function()
-		            	Maze:SetMouseMonster(3)
-		                layerMenu:setVisible(false)
-		            end
-		        },
-		    },
-	    }
+		local tbRect = {
+        	["normal"] = {36, 0, 36, 48},
+        	["selected"] = {36 * 3, 0, 36, 48},
+        }
+		local tbElement = {[1] = {}, }
+		local tbMonster = Player:GetOwnMonster()
+		local tbMenu = {}
+		for dwMonsterTemplateId, nCount in pairs(tbMonster) do
+			if nCount > 0 then
+				local tb = {
+					szImage = Monster.tbCfg[dwMonsterTemplateId].szImgFile,
+					tbRect = tbRect,
+					fnCallBack = function()
+						Maze:SetMouseMonster(dwMonsterTemplateId)
+				        layerMenu:removeChildByTag(1, true)
+					end,
+		        }
+		        table.insert(tbElement[1], tb)
+			end
+		end
 	    MenuMgr:UpdateBySprite("PutMonster", tbElement)
 	end
 	layerMenu:setVisible(true)

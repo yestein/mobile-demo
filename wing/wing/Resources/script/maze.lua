@@ -146,12 +146,12 @@ function Maze:ReDoDig()
     return 1
 end
 
-function Maze:PutMonster(nRow, nCol, dwMonsterTemplate)
+function Maze:PutMonster(nRow, nCol, dwMonsterTemplateId)
 	if self.tbData[nRow][nCol] ~= MAP_FREE then
 		return 0
 	end
-	self.tbData[nRow][nCol] = dwMonsterTemplate
-	Event:FireEvent("PutMonster", nRow, nCol, dwMonsterTemplate)
+	self.tbData[nRow][nCol] = self.MAP_MONSTER_START + dwMonsterTemplateId - 1
+	Event:FireEvent("PutMonster", dwMonsterTemplateId, nRow, nCol)
 	return 1
 end
 
