@@ -6,6 +6,8 @@
 -- Modify       :
 --=======================================================================
 
+GameMgr.MSG_MAX_COUNT = 3
+
 function GameMgr:InitTitle()
 	self.tbTitle = {}
     self.tbHeroHP = {}
@@ -29,6 +31,16 @@ function GameMgr:InitTitle()
     layerTitle:addChild(cclf)
     local tbTitleSize = cclf:getTextureRect().size
     cclf:setPosition(tbTitleSize.width / 2, tbVisibleSize.height - tbBgSize.height / 2)
+
+    for i = 1, GameMgr.MSG_MAX_COUNT do
+        local labelSysMsg = CCLabelTTF:create("系统提示", "Microsoft Yahei", 18)
+        layerTitle:addChild(labelSysMsg)
+        local tbMsgSize = labelSysMsg:getTextureRect().size
+        labelSysMsg:setPosition(tbVisibleSize.width / 2, tbVisibleSize.height / 2 - (2 - i) * tbMsgSize.height)
+        labelSysMsg:setVisible(false)
+        self.tbTitle["SysMsg"..i] = labelSysMsg
+        self.nMsgIndex = 1
+    end
 
     local tbTemp = {
         {szImageFile = "digpoint.png", szResourceName = "DigPoint"},
@@ -156,5 +168,36 @@ function GameMgr:OnCharacterBeAttacked(dwCharacterId)
 end
 
 function GameMgr:OnResourceChanged(szResourceName, nNewValue, bMax)
-    
+    local label = self.tbTitle[szResourceName]
+    if not label then
+        return
+    end
+    label:setString(tostring(nNewValue))
+end
+
+function GameMgr:SysMsg(szMsg, szColor)
+    local tbVisibleSize = CCDirector:sharedDirector():getVisibleSize()
+    if not szColor then
+        szColor = "white"
+    end
+    for i = 1, self.MSG_MAX_COUNT do
+        local nIndex = self.nMsgIndex - i + 1
+        if nIndex <= 0 then
+            nIndex = nIndex + self.MSG_MAX_COUNT
+        end
+        local labelSysMsg = self.tbTitle["SysMsg"..nIndex]
+        if i == 1 then
+            local color = Def.tbColor[szColor]
+            labelSysMsg:setVisible(true)
+            labelSysMsg:setString(szMsg)
+            labelSysMsg:setColor(color)
+            labelSysMsg:runAction(CCFadeOut:create(3))
+        end
+        local tbMsgSize = labelSysMsg:getTextureRect().size
+        labelSysMsg:setPosition(tbVisibleSize.width / 2, tbVisibleSize.height / 2 + (i + 3) * tbMsgSize.height)
+    end
+    self.nMsgIndex = self.nMsgIndex + 1
+    if self.nMsgIndex > self.MSG_MAX_COUNT then
+        self.nMsgIndex = self.nMsgIndex - self.MSG_MAX_COUNT
+    end
 end

@@ -81,8 +81,11 @@ function Maze:Save()
 end
 
 function Maze:Dig(nRow, nCol)
-	if self:CheckCanDig(nRow, nCol) ~= 1 then
-		cclog("Can not Dig Row[%d] Col[%d]", nRow, nCol)
+	local bRet, szMsg = self:CheckCanDig(nRow, nCol)
+	if bRet ~= 1 then
+		if szMsg then
+			GameMgr:SysMsg(szMsg, "red")
+		end
 		return 0
 	end	
 	local pBlock = self.tbBlock[nRow][nCol]
@@ -191,10 +194,6 @@ function Maze:PopUndoPos()
 end
 
 function Maze:CheckCanDig(nRow, nCol)
-	local nDigPoint = Player:GetResouce("DigPoint")
-	if nDigPoint <= 0 then
-		return 0
-	end
 	local tbCheckPos = {
 		{nRow - 1, nCol},
 		{nRow + 1, nCol},
@@ -205,15 +204,29 @@ function Maze:CheckCanDig(nRow, nCol)
 	if nRow > Def.MAZE_ROW_COUNT then
 		return 0
 	end
+
+	if self.tbData[nRow][nCol] ~= MAP_BLOCK then
+		return 0
+	end
+
+	local nDigPoint = Player:GetResouce("DigPoint")
+	if nDigPoint <= 0 then
+		return 0, "挖掘点不足"
+	end
+	local bLogicCheck = 0
 	for _, tbPos in ipairs(tbCheckPos) do
 		if self.tbData[tbPos[1]] then
 			local nValue = self.tbData[tbPos[1]][tbPos[2]]
-			if nValue and nValue == MAP_FREE then
-				return 1
+			if nValue and nValue ~= MAP_BLOCK then
+				bLogicCheck = 1
+				break
 			end
 		end
 	end
-	return 0
+	if bLogicCheck ~= 1 then
+		return 0, "必须沿着通道挖掘"
+	end
+	return 1
 end
 
 function Maze:Reset()

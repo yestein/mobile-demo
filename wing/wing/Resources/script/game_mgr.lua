@@ -123,6 +123,7 @@ function GameMgr:OnStart_Edit()
 	            szItemName = "清空地图",
 	            fnCallBack = function()
 	                Maze:Reset()
+	                Monster:ClearAll()
 	            end
 	        },
 	    },
