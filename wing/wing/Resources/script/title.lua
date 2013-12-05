@@ -6,7 +6,6 @@
 -- Modify       :
 --=======================================================================
 
-
 function GameMgr:InitTitle()
 	self.tbTitle = {}
     self.tbHeroHP = {}
@@ -15,16 +14,11 @@ function GameMgr:InitTitle()
 	if not sceneGame then
 		return
 	end
-	local frameWidth = 36
-	local frameHeight = 48
-	local textureHero = CCTextureCache:sharedTextureCache():addImage(Def.szHeroFile)
-	local rect = CCRectMake(0, frameHeight, frameWidth, frameHeight)
-	local frame0 = CCSpriteFrame:createWithTexture(textureHero, rect)
-
 	local tbVisibleSize = CCDirector:sharedDirector():getVisibleSize()
 	local layerTitle = CCLayer:create()
     self.layerTitle = layerTitle
     layerTitle:setPosition(0, 0)
+    sceneGame:addChild(layerTitle, 2)
 
     local pBg = CCSprite:create(Def.szTitleFile)
     layerTitle:addChild(pBg)
@@ -34,10 +28,36 @@ function GameMgr:InitTitle()
     local cclf = CCLabelTTF:create("当前模式", "Microsoft Yahei", 24)
     layerTitle:addChild(cclf)
     local tbTitleSize = cclf:getTextureRect().size
-    cclf:setPosition(5 + tbTitleSize.width / 2 , tbVisibleSize.height - tbTitleSize.height / 2 - 10)
-    sceneGame:addChild(layerTitle, 2)
-    self.tbTitle["State"] = cclf
+    cclf:setPosition(tbTitleSize.width / 2, tbVisibleSize.height - tbBgSize.height / 2)
 
+    local tbTemp = {
+        {szImageFile = "digpoint.png", szResourceName = "DigPoint"},
+        {szImageFile = "gold.png", szResourceName = "Gold"},
+        {szImageFile = "magic.png", szResourceName = "Magic"},
+    }
+
+    local nHeight = 20
+    local nWidth = 20
+    self.nSpriteX = tbTitleSize.width + nWidth / 2
+    self.nSpriteY = tbVisibleSize.height - nHeight / 2
+    for _, tb in ipairs(tbTemp) do
+        local spriteIcon = CCSprite:create(tb.szImageFile)
+        local labelValue = CCLabelTTF:create("10000000", "Microsoft Yahei", 16)
+        layerTitle:addChild(spriteIcon)
+        layerTitle:addChild(labelValue)
+        spriteIcon:setPosition(self.nSpriteX, self.nSpriteY)
+        spriteIcon:setScale(0.7)
+        labelValue:setPosition(self.nSpriteX + nWidth, self.nSpriteY)
+        labelValue:setAnchorPoint(CCPoint:new(0, 0.5))
+        if not self.nHeroX then
+            local tbValueSize = labelValue:getTextureRect().size
+            self.nHeroX = self.nSpriteX + nWidth + tbValueSize.width
+        end
+        self.tbTitle[tb.szResourceName] = labelValue
+        self.nSpriteY = self.nSpriteY - nHeight
+    end
+
+    self.tbTitle["State"] = cclf
     self:RegistEvent()
     Event:FireEvent("TitleInit")
 end
@@ -53,15 +73,16 @@ function GameMgr:AddHeroHP(dwHeroId)
     pCopySprite:setScale(0.7)
     local tbVisibleSize = CCDirector:sharedDirector():getVisibleSize()
     local tbSpriteSize = pSprite:getTextureRect().size
-    print(tbSpriteSize.width / 2,tbSpriteSize.height / 2)
-    pCopySprite:setPosition(100 + tbSpriteSize.width / 2, tbVisibleSize.height - tbSpriteSize.height / 2)
+    pCopySprite:setAnchorPoint(CCPoint:new(0, 0))
+    pCopySprite:setPosition(self.nHeroX, tbVisibleSize.height - dwHeroId * tbSpriteSize.height * 0.7)
     self.layerTitle:addChild(pCopySprite)
 
     local szMsg = string.format("%d / %d", tbHero:GetProperty("CurHP"), tbHero:GetProperty("MaxHP"))
-    local cclfHP = CCLabelTTF:create(szMsg, "Microsoft Yahei", 16)
+    local cclfHP = CCLabelTTF:create(szMsg, "Microsoft Yahei", 18)
+    cclfHP:setAnchorPoint(CCPoint:new(0, 0))
     self.layerTitle:addChild(cclfHP)
     local tbHPSize = cclfHP:getTextureRect().size
-    cclfHP:setPosition(105 + tbSpriteSize.width +  tbHPSize.width / 2, tbVisibleSize.height - tbSpriteSize.height / 2 - 5)
+    cclfHP:setPosition(self.nHeroX + tbSpriteSize.width + 1, tbVisibleSize.height - dwHeroId * tbSpriteSize.height * 0.7)
     self.tbHeroHP[dwHeroId] = {
         spriteHead = pCopySprite,
         labelHP = cclfHP,

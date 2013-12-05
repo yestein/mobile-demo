@@ -44,7 +44,6 @@ function MenuMgr:UpdateBySprite(szName, tbElementList)
 	for nRow, tbRow in ipairs(tbElementList) do
 		local nX = 0
 		for nCol, tbElement in ipairs(tbRow) do
-			print(tbElement.szImage)
 			local texture = CCTextureCache:sharedTextureCache():addImage(tbElement.szImage)
 			local rectNormal = CCRectMake(unpack(tbElement.tbRect["normal"]))
 			local frameNormal = CCSpriteFrame:createWithTexture(texture, rectNormal)
