@@ -98,19 +98,19 @@ function GameMgr:AddHeroHP(dwHeroId)
     local pSprite = tbHero.pSprite
     local pCopySprite = CCSprite:createWithTexture(pSprite:getTexture())
     Character:SetSpriteDirection(pCopySprite, Def.DIR_DOWN)
-    pCopySprite:setScale(0.7)
+    pCopySprite:setScale(0.6)
     local tbVisibleSize = CCDirector:sharedDirector():getVisibleSize()
     local tbSpriteSize = pSprite:getTextureRect().size
     pCopySprite:setAnchorPoint(CCPoint:new(0, 0))
-    pCopySprite:setPosition(self.nHeroX, tbVisibleSize.height - dwHeroId * tbSpriteSize.height * 0.7)
+    pCopySprite:setPosition(self.nHeroX, tbVisibleSize.height - dwHeroId * tbSpriteSize.height * 0.6)
     self.layerTitle:addChild(pCopySprite)
 
     local szMsg = string.format("%d / %d", tbHero:GetProperty("CurHP"), tbHero:GetProperty("MaxHP"))
-    local cclfHP = CCLabelTTF:create(szMsg, szTitleFontName, 18)
+    local cclfHP = CCLabelTTF:create(szMsg, szTitleFontName, 16)
     cclfHP:setAnchorPoint(CCPoint:new(0, 0))
     self.layerTitle:addChild(cclfHP)
     local tbHPSize = cclfHP:getTextureRect().size
-    cclfHP:setPosition(self.nHeroX + tbSpriteSize.width + 1, tbVisibleSize.height - dwHeroId * tbSpriteSize.height * 0.7)
+    cclfHP:setPosition(self.nHeroX + tbSpriteSize.width + 1, tbVisibleSize.height - dwHeroId * tbSpriteSize.height * 0.6)
     self.tbHeroHP[dwHeroId] = {
         spriteHead = pCopySprite,
         labelHP = cclfHP,

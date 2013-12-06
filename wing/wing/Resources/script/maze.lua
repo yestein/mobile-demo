@@ -266,9 +266,9 @@ function Maze:CanMove(nX, nY)
 	if self:IsFree(nRow, nCol) ~= 1 then
 		return 0
 	end
-	-- if self:GetUnit(nRow, nCol) > 0 then
-	-- 	return 0
-	-- end
+	if self:GetUnit(nRow, nCol) > 0 then
+		return 0
+	end
 	return 1
 
 end

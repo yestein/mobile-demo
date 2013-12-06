@@ -201,6 +201,9 @@ function GameMgr:OnStart_Battle()
 	        {
 	        	szItemName = "结束战斗",
 	        	fnCallBack = function()
+	        		if GameMgr.nRegGenHeroId then
+	        			return
+	        		end
 	                GameMgr:SwitchState()
 	            end,
 	        },
@@ -209,10 +212,25 @@ function GameMgr:OnStart_Battle()
     MenuMgr:UpdateByString("MainMenu", tbElement, szMenuFontName, 20)
 	local tbScene = SceneMgr:GetScene("GameScene")
 	if tbScene then
-		tbScene:GenHero()
+		self.nMaxHero = 2
+		self.nCurHero = 1
+		tbScene:GenHero(self.nCurHero)
 		tbScene:GenMonster()
-	end
-	self:StartBattle()
+		self.nRegGenHeroId = CCDirector:sharedDirector():getScheduler():scheduleScriptFunc(
+			function()
+				self.nCurHero = self.nCurHero + 1
+				if self.nCurHero > self.nMaxHero then
+					CCDirector:sharedDirector():getScheduler():unscheduleScriptEntry(GameMgr.nRegGenHeroId)
+					GameMgr.nRegGenHeroId = nil
+					return
+				end		
+				local tbHero = tbScene:GenHero(self.nCurHero)
+				tbHero:Start()
+			end,
+			0.5, false
+		)
+		self:StartBattle()
+	end	
 end
 function GameMgr:OnEnd_Battle()
 	self:Reset()

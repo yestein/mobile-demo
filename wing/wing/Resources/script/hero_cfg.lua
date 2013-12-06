@@ -29,7 +29,7 @@ Hero.tbCfg = {
 }
 
 if OS_WIN32 then
-	Hero.tbCfg[1].szImgFile = "image/hero/wizzard.png"
+	Hero.tbCfg[1].szImgFile = "image/hero/wizard.png"
 	Hero.tbCfg[2].szImgFile = "image/hero/soldier.png"
 else
 	Hero.tbCfg[1].szImgFile = "wizzard.png"
