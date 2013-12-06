@@ -18,6 +18,12 @@ local function Accumulate(nId)
 	return Id
 end
 
+Def.ZOOM_LEVEL_WORLD = 1
+Def.ZOOM_LEVEL_TITLE = 2
+Def.ZOOM_LEVEL_PERFORMANCE = 3
+Def.ZOOM_LEVEL_MENU = 4
+Def.ZOOM_LEVEL_SUB_MENU = 5
+
 Def.MAZE_ROW_COUNT = 21
 Def.MAZE_COL_COUNT = 40
 Def.BLOCK_WIDTH    = 36

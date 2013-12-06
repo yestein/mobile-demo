@@ -26,7 +26,7 @@ function GameMgr:InitTitle()
 	local layerTitle = CCLayer:create()
     self.layerTitle = layerTitle
     layerTitle:setPosition(0, 0)
-    sceneGame:addChild(layerTitle, 2)
+    sceneGame:addChild(layerTitle, Def.ZOOM_LEVEL_TITLE)
 
     local pBg = CCSprite:create(Def.szTitleFile)
     layerTitle:addChild(pBg)
@@ -38,15 +38,16 @@ function GameMgr:InitTitle()
     local tbTitleSize = cclf:getTextureRect().size
     cclf:setPosition(tbTitleSize.width / 2, tbVisibleSize.height - tbBgSize.height / 2)
 
+    self.tbSysMsg = {}
     for i = 1, GameMgr.MSG_MAX_COUNT do
         local labelSysMsg = CCLabelTTF:create("系统提示", szTitleFontName, 18)
         layerTitle:addChild(labelSysMsg)
         local tbMsgSize = labelSysMsg:getTextureRect().size
         labelSysMsg:setPosition(tbVisibleSize.width / 2, tbVisibleSize.height / 2 - (2 - i) * tbMsgSize.height)
         labelSysMsg:setVisible(false)
-        self.tbTitle["SysMsg"..i] = labelSysMsg
-        self.nMsgIndex = 1
+        self.tbSysMsg[i] = labelSysMsg
     end
+    self.nMsgIndex = 1
 
     local tbTemp = nil
     if OS_WIN32 then
@@ -200,7 +201,7 @@ function GameMgr:SysMsg(szMsg, szColor)
         if nIndex <= 0 then
             nIndex = nIndex + self.MSG_MAX_COUNT
         end
-        local labelSysMsg = self.tbTitle["SysMsg"..nIndex]
+        local labelSysMsg = self.tbSysMsg[nIndex]
         if i == 1 then
             local color = Def.tbColor[szColor]
             labelSysMsg:setVisible(true)

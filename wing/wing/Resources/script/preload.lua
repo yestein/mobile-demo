@@ -62,10 +62,15 @@ if not _G.Debug then
 	_G.Debug  = {}
 end
 
+if not _G.Performance then
+	_G.Performance  = {}
+end
+
 require("define")
 require("lib")
 require("event")
 require("dbg")
+require("performance")
 require("game_mgr")
 require("maze")
 require("player")

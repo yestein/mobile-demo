@@ -63,18 +63,19 @@ local function main()
 
     local layerMainMenu = MenuMgr:CreateMenu("MainMenu")
     layerMainMenu:setPosition(tbVisibleSize.width, tbVisibleSize.height)
-    sceneGame:addChild(layerMainMenu, 3)
+    sceneGame:addChild(layerMainMenu, Def.ZOOM_LEVEL_MENU)
 
     local layerMonsterMenu = MenuMgr:CreateMenu("PutMonster")
-    sceneGame:addChild(layerMonsterMenu, 4)
+    sceneGame:addChild(layerMonsterMenu, Def.ZOOM_LEVEL_SUB_MENU)
     layerMonsterMenu:setVisible(false)
     layerMonsterMenu:setPosition(tbVisibleSize.width / 2, tbVisibleSize.height / 2)
     
 
     local layerWorld = tbScene:Create()
-	sceneGame:addChild(layerWorld, 1)
+	sceneGame:addChild(layerWorld, Def.ZOOM_LEVEL_WORLD)
     GameMgr.layerWorld = layerWorld
 
+    Performance:Init(layerWorld)
     GameMgr:InitTitle()
     GameMgr:SetState(GameMgr.STATE_NORMAL)
     Player:Init()
