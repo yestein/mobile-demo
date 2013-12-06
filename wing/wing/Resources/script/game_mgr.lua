@@ -17,8 +17,10 @@ GameMgr.tbStateDesc = {
 	[GameMgr.STATE_EDIT]   = "编辑中",
 	[GameMgr.STATE_BATTLE] = "战斗中",
 }
-
-local szMenuFontName = "Microsoft Yahei"
+local szMenuFontName = "MarkerFelt-Thin"
+if OS_WIN32 then
+	szMenuFontName = "Microsoft Yahei"
+end
 function GameMgr:Init()
 	self.tbCharacterMap = {}
 	self.nState = self.STATE_NORMAL

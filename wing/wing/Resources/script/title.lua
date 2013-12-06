@@ -8,6 +8,12 @@
 
 GameMgr.MSG_MAX_COUNT = 3
 
+local szTitleFontName = "MarkerFelt-Thin"
+
+if OS_WIN32 then
+    szTitleFontName = "Microsoft Yahei"
+end
+
 function GameMgr:InitTitle()
 	self.tbTitle = {}
     self.tbHeroHP = {}
@@ -27,13 +33,13 @@ function GameMgr:InitTitle()
     local tbBgSize = pBg:getTextureRect().size
     pBg:setPosition(tbBgSize.width / 2 , tbVisibleSize.height - tbBgSize.height / 2)
 
-    local cclf = CCLabelTTF:create("当前模式", "Microsoft Yahei", 24)
+    local cclf = CCLabelTTF:create("当前模式", szTitleFontName, 24)
     layerTitle:addChild(cclf)
     local tbTitleSize = cclf:getTextureRect().size
     cclf:setPosition(tbTitleSize.width / 2, tbVisibleSize.height - tbBgSize.height / 2)
 
     for i = 1, GameMgr.MSG_MAX_COUNT do
-        local labelSysMsg = CCLabelTTF:create("系统提示", "Microsoft Yahei", 18)
+        local labelSysMsg = CCLabelTTF:create("系统提示", szTitleFontName, 18)
         layerTitle:addChild(labelSysMsg)
         local tbMsgSize = labelSysMsg:getTextureRect().size
         labelSysMsg:setPosition(tbVisibleSize.width / 2, tbVisibleSize.height / 2 - (2 - i) * tbMsgSize.height)
@@ -42,11 +48,20 @@ function GameMgr:InitTitle()
         self.nMsgIndex = 1
     end
 
-    local tbTemp = {
-        {szImageFile = "digpoint.png", szResourceName = "DigPoint"},
-        {szImageFile = "gold.png", szResourceName = "Gold"},
-        {szImageFile = "magic.png", szResourceName = "Magic"},
-    }
+    local tbTemp = nil
+    if OS_WIN32 then
+        tbTemp = {
+            {szImageFile = "image/ui/digpoint.png", szResourceName = "DigPoint"},
+            {szImageFile = "image/ui/gold.png", szResourceName = "Gold"},
+            {szImageFile = "image/ui/magic.png", szResourceName = "Magic"},
+        }
+    else
+        tbTemp = {
+            {szImageFile = "digpoint.png", szResourceName = "DigPoint"},
+            {szImageFile = "gold.png", szResourceName = "Gold"},
+            {szImageFile = "magic.png", szResourceName = "Magic"},
+        }
+    end
 
     local nHeight = 20
     local nWidth = 20
@@ -54,7 +69,7 @@ function GameMgr:InitTitle()
     self.nSpriteY = tbVisibleSize.height - nHeight / 2
     for _, tb in ipairs(tbTemp) do
         local spriteIcon = CCSprite:create(tb.szImageFile)
-        local labelValue = CCLabelTTF:create("10000000", "Microsoft Yahei", 16)
+        local labelValue = CCLabelTTF:create("10000000", szTitleFontName, 16)
         layerTitle:addChild(spriteIcon)
         layerTitle:addChild(labelValue)
         spriteIcon:setPosition(self.nSpriteX, self.nSpriteY)
@@ -90,7 +105,7 @@ function GameMgr:AddHeroHP(dwHeroId)
     self.layerTitle:addChild(pCopySprite)
 
     local szMsg = string.format("%d / %d", tbHero:GetProperty("CurHP"), tbHero:GetProperty("MaxHP"))
-    local cclfHP = CCLabelTTF:create(szMsg, "Microsoft Yahei", 18)
+    local cclfHP = CCLabelTTF:create(szMsg, szTitleFontName, 18)
     cclfHP:setAnchorPoint(CCPoint:new(0, 0))
     self.layerTitle:addChild(cclfHP)
     local tbHPSize = cclfHP:getTextureRect().size

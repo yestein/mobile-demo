@@ -25,14 +25,6 @@ Def.BLOCK_HEIGHT   = 48
 
 Def.tbEntrance = {Def.MAZE_ROW_COUNT, Def.MAZE_COL_COUNT / 2}
 
-
-Def.szHeroFile    = "wizard.png"
-Def.szBlockImg    = "block.png"
-Def.szBGImg       = "background.png"
-Def.szMonsterFile = "skeleton.png"
-Def.szBulletFile  = "bullet.png"
-Def.szTitleFile = "title_bg.png"
-
 Def.DIR_START = Accumulate(0)
 Def.DIR_DOWN  = Accumulate()
 Def.DIR_RIGHT = Accumulate()
@@ -63,9 +55,23 @@ Def.DIR_NAME = {
 }
 
 Def.tbColor = {
-    ["black"] = ccc3(255, 255, 255),
-    ["red"]   = ccc3(255, 0, 0),
-    ["green"] = ccc3(0, 255, 0),
-    ["blue"]  = ccc3(0, 0, 255),
-    ["white"] = ccc3(0, 0, 0),
+	["black"] = ccc3(255, 255, 255),
+	["red"]   = ccc3(255, 0, 0),
+	["green"] = ccc3(0, 255, 0),
+	["blue"]  = ccc3(0, 0, 255),
+	["white"] = ccc3(0, 0, 0),
 }
+
+if OS_WIN32 then
+	Def.szHeroFile   = "image/hero/wizard.png"
+	Def.szBlockImg   = "image/block.png"
+	Def.szBGImg      = "image/background.png"
+	Def.szBulletFile = "image/bullet.png"
+	Def.szTitleFile  = "image/ui/title_bg.png"
+else	
+	Def.szHeroFile   = "wizard.png"
+	Def.szBlockImg   = "block.png"
+	Def.szBGImg      = "background.png"
+	Def.szBulletFile = "bullet.png"
+	Def.szTitleFile  = "title_bg.png"
+end
