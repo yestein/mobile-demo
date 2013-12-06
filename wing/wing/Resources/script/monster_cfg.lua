@@ -1,21 +1,42 @@
 --=======================================================================
 -- File Name    : monster_cfg.lua
 -- Creator      : yestein(yestein86@gmail.com)
--- Date         : 2013-12-05 10:27:30
+-- Date         : 2013-12-05 22:27:30
 -- Description  :
 -- Modify       :
 --=======================================================================
 
+-- self.tbProperty = {
+-- 		ViewRange   = 5,
+-- 		CurHP       = 0,
+-- 		MaxHP       = 20,
+-- 		CurMP       = 0,
+-- 		MaxMP       = 0,
+-- 		Attack      = 5,
+-- 		AttackRange = 1,
+-- 		Defence     = 5,
+-- 		Magic       = 5,
+-- 		Speed       = 1,
+-- }
+
+Monster.tbCfg = {
+	[1]= {
+		tbProperty = {MaxHP = 30, Attack = 10, Defence = 5, AttackRange = 1},
+	},
+	[2]= {
+		tbProperty = {MaxHP = 20, Attack = 15, Defence = 2, AttackRange = 5, Speed = 3},
+	},
+	[3]= {
+		tbProperty = {MaxHP = 50, Attack = 10, Defence = 10, AttackRange = 3, Speed = 2},
+	},
+}
+
 if OS_WIN32 then
-	Monster.tbCfg = {
-		[1] = {szImgFile = "image/monster/skeleton.png", },
-		[2] = {szImgFile = "image/monster/witch.png", },
-		[3] = {szImgFile = "image/monster/dragon.png", },
-	}
+	Monster.tbCfg[1].szImgFile = "image/monster/skeleton.png"
+	Monster.tbCfg[2].szImgFile = "image/monster/witch.png"
+	Monster.tbCfg[3].szImgFile = "image/monster/dragon.png"
 else
-	Monster.tbCfg = {
-		[1] = {szImgFile = "skeleton.png", },
-		[2] = {szImgFile = "witch.png", },
-		[3] = {szImgFile = "dragon.png", },
-	}
+	Monster.tbCfg[1].szImgFile = "skeleton.png"
+	Monster.tbCfg[2].szImgFile = "witch.png"
+	Monster.tbCfg[3].szImgFile = "dragon.png"
 end

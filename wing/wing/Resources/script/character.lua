@@ -20,11 +20,11 @@ function Character:Init(pSprite, tbProperty, tbAI)
 	self.nWaitFrame = 0
 	self.tbRecordPos = {}
 	self.tbProperty = {
-		ViewRange   = 3,
-		CurHP       = 20,
+		ViewRange   = 5,
+		CurHP       = 0,
 		MaxHP       = 20,
-		CurMP       = 100,
-		MaxMP       = 100,
+		CurMP       = 0,
+		MaxMP       = 0,
 		Attack      = 5,
 		AttackRange = 1,
 		Defence     = 5,
@@ -39,6 +39,8 @@ function Character:Init(pSprite, tbProperty, tbAI)
 			end
 		end
 	end
+	self.tbProperty.CurHP = self.tbProperty.MaxHP
+	self.tbProperty.CurMP = self.tbProperty.MaxMP
 	
 	self:SetDirection(Def.DIR_DOWN)
 	-- moving Hero at every frame

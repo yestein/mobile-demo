@@ -36,12 +36,13 @@ end
 
 
 function Monster:NewMonster(dwMonsterTemplateId, nStartX, nStartY)
-	local szImgFile = self.tbCfg[dwMonsterTemplateId].szImgFile
+	local tbCfg = self.tbCfg[dwMonsterTemplateId]
+	local szImgFile = tbCfg.szImgFile
 	local TextureMonster = CCTextureCache:sharedTextureCache():addImage(szImgFile)
 	local InitRect = CCRectMake(0, 0, Def.BLOCK_WIDTH, Def.BLOCK_HEIGHT)
 	local MonsterFrame0 = CCSpriteFrame:createWithTexture(TextureMonster, InitRect)
 	
-	local tbProperty = {CurHP = 15, AttackRange = 3}
+	local tbProperty = tbCfg.tbProperty
 	local tbNewMonster = Lib:NewClass(tbMonsterClass)
 	local pMonster = CCSprite:createWithSpriteFrame(MonsterFrame0)
 	pMonster.isPaused = true

@@ -6,6 +6,7 @@
 -- Modify       :
 --===================================================
 
+require("hero_cfg")
 local frameWidth = 36
 local frameHeight = 48
 
@@ -31,9 +32,10 @@ function Hero:GenerateId()
 	return nRetId
 end
 
-function Hero:NewHero(nStartX, nStartY, tbProperty, tbAI)
+function Hero:NewHero(dwTemplateId, nStartX, nStartY, tbAI)
 	-- create hero animate
-	local textureHero = CCTextureCache:sharedTextureCache():addImage(Def.szHeroFile)
+	local tbCfg = self.tbCfg[dwTemplateId]
+	local textureHero = CCTextureCache:sharedTextureCache():addImage(tbCfg.szImgFile)
 	local rect = CCRectMake(0, frameHeight, frameWidth, frameHeight)
 	local frame0 = CCSpriteFrame:createWithTexture(textureHero, rect)
 	local tbNewHero = Lib:NewClass(tbHeroClass)
@@ -41,6 +43,7 @@ function Hero:NewHero(nStartX, nStartY, tbProperty, tbAI)
     pHero:setPosition(nStartX, nStartY)
     pHero.isPaused = true
     tbNewHero.dwId = self:GenerateId()
+    local tbProperty = tbCfg.tbProperty
 	tbNewHero:Init(pHero, tbProperty, tbAI)
 	GameMgr:AddCharacter(tbNewHero.dwId, tbNewHero)
 	Event:FireEvent("HeroAdd", tbNewHero.dwId)

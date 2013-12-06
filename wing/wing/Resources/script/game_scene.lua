@@ -186,10 +186,6 @@ function GameScene:GenHero()
     nStartX = nStartX + (Def.MAZE_COL_COUNT / 2 - 1) * Def.BLOCK_WIDTH
     nStartY = nStartY + (Def.MAZE_ROW_COUNT - 1) * Def.BLOCK_HEIGHT
 
-    local tbProperty = {
-        AttackRange = 3,
-        Speed = 6,
-    }
-    local tbHero, pSpriteHero = Hero:NewHero(nStartX, nStartY, tbProperty)    
+    local tbHero, pSpriteHero = Hero:NewHero(2, nStartX, nStartY)    
     self.layerMaze:addChild(pSpriteHero, 0, tbHero.dwId)
 end
