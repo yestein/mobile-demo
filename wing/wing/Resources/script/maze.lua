@@ -6,9 +6,9 @@
 -- Modify       :
 --===================================================
 
+Maze.MAP_FREE     = 1
+Maze.MAP_BLOCK    = 2
 
-local MAP_FREE     = 1
-local MAP_BLOCK    = 2
 Maze.MAP_MONSTER_START  = 3
 
 local sharedTextureCache = CCTextureCache:sharedTextureCache()
@@ -21,7 +21,11 @@ function Maze:Init(nWidth, nHeight)
 		self.tbData[i] = {}
 		self.tbUnit[i] = {}
 		for j = 1, nWidth do
-			self.tbData[i][j] = MAP_BLOCK
+			if i == Def.tbEntrance[1] and j == Def.tbEntrance[2] then
+				self.tbData[i][j] = self.MAP_FREE
+			else
+				self.tbData[i][j] = self.MAP_BLOCK
+			end
 			self.tbUnit[i][j] = 0
 		end
 	end
@@ -31,7 +35,7 @@ function Maze:Entry(tbData)
 	for nRow, tbRow in ipairs(tbData) do
 		for nCol, nData in ipairs(tbRow) do
 			if nRow == Def.MAZE_ROW_COUNT and nCol == Def.MAZE_COL_COUNT / 2 then
-				self.tbData[nRow][nCol] = MAP_FREE
+				self.tbData[nRow][nCol] = self.MAP_FREE
 			else
 				self.tbData[nRow][nCol] = nData
 			end
@@ -59,6 +63,32 @@ function Maze:Load()
 	end
 	local t = dofile(szPath.."savemap.lua")
 	Event:FireEvent("LoadMazeSuccess")
+end
+
+function Maze:SetSkillTest()
+	local nWidth , nHeight = Def.MAZE_COL_COUNT, Def.MAZE_ROW_COUNT
+	for i = 1, nHeight do
+		for j = 1, nWidth do
+			if i == 1 or i == nHeight or j == 1 or j == nWidth or j == 16 or j == 24 or i == 17 then
+				self:SetData(i, j, self.MAP_BLOCK)
+			else
+				self:SetData(i, j, self.MAP_FREE)
+			end
+			self.tbUnit[i][j] = 0
+		end
+	end
+end
+
+function Maze:Refresh()
+	for nRow, tbRow in ipairs(self.tbBlock) do
+		for nCol, pSprite in ipairs(tbRow) do
+			if self.tbData[nRow][nCol] == self.MAP_BLOCK then
+				pSprite:setVisible(true)
+			else
+				pSprite:setVisible(false)
+			end
+		end
+	end
 end
 
 function Maze:GetSize()
@@ -94,15 +124,23 @@ function Maze:Dig(nRow, nCol)
 		end
 		return 0
 	end	
+	SetData(nRow, nCol, MAP_FREE)
+    self:PushUndoPos(nRow, nCol)
+    Event:FireEvent("Dig", nRow, nCol)
+    return 1
+end
+
+function Maze:SetData(nRow, nCol, nValue)
+	self.tbData[nRow][nCol] = nValue
 	local pBlock = self.tbBlock[nRow][nCol]
 	if not pBlock then
 		return 0
 	end
-    self.tbData[nRow][nCol] = MAP_FREE
-    pBlock:setVisible(false)
-    self:PushUndoPos(nRow, nCol)
-    Event:FireEvent("Dig", nRow, nCol)
-    return 1
+	if nValue == self.MAP_BLOCK then
+		pBlock:setVisible(true)
+	else
+		pBlock:setVisible(false)
+	end
 end
 
 function Maze:UnDoDig()
@@ -113,14 +151,8 @@ function Maze:UnDoDig()
 	
 	self:PopUndoPos()
 	local nRow, nCol = unpack(tbPos)
-	local pBlock = self.tbBlock[nRow][nCol]
-	if not pBlock then
-		return 0
-	end
-    self.tbData[nRow][nCol] = MAP_BLOCK
-    
-    pBlock:setVisible(true)
-    Event:FireEvent("UnDoDig", nRow, nCol)
+	self:SetData(i, j, self.MAP_BLOCK)
+	Event:FireEvent("UnDoDig", nRow, nCol)
     return 1
 end
 
@@ -133,21 +165,14 @@ function Maze:ReDoDig()
 		return 0
 	end
 	
-	local nRow, nCol = unpack(tbPos)
-	local pBlock = self.tbBlock[nRow][nCol]
-	if not pBlock then
-		return 0
-	end
-    self.tbData[nRow][nCol] = MAP_FREE
-    
-    pBlock:setVisible(false)
+	self:SetData(i, j, self.MAP_FREE)
     local bReDo = 1
     Event:FireEvent("Dig", nRow, nCol, bReDo)
     return 1
 end
 
 function Maze:PutMonster(nRow, nCol, dwMonsterTemplateId)
-	if self.tbData[nRow][nCol] ~= MAP_FREE then
+	if self.tbData[nRow][nCol] ~= self.MAP_FREE then
 		return 0
 	end
 	self.tbData[nRow][nCol] = self.MAP_MONSTER_START + dwMonsterTemplateId - 1
@@ -164,7 +189,7 @@ function Maze:MoveMonster(nRow, nCol, nNewRow, nNewCol)
 	self:SetUnit(nNewRow, nNewCol, dwId)
 
 	self.tbData[nNewRow][nNewCol] = self.tbData[nRow][nCol]
-	self.tbData[nRow][nCol] = MAP_FREE
+	self.tbData[nRow][nCol] = self.MAP_FREE
 	Event:FireEvent("MoveMonster", self.tbUnit[nNewRow][nNewCol], self.tbData[nNewRow][nNewCol], nRow, nCol, nNewRow, nNewCol)
 	return 1
 end
@@ -215,7 +240,7 @@ function Maze:CheckCanDig(nRow, nCol)
 		return 0
 	end
 
-	if self.tbData[nRow][nCol] ~= MAP_BLOCK then
+	if self.tbData[nRow][nCol] ~= self.MAP_BLOCK then
 		return 0
 	end
 
@@ -227,7 +252,7 @@ function Maze:CheckCanDig(nRow, nCol)
 	for _, tbPos in ipairs(tbCheckPos) do
 		if self.tbData[tbPos[1]] then
 			local nValue = self.tbData[tbPos[1]][tbPos[2]]
-			if nValue and nValue ~= MAP_BLOCK then
+			if nValue and nValue ~= self.MAP_BLOCK then
 				bLogicCheck = 1
 				break
 			end
@@ -243,12 +268,12 @@ function Maze:Reset()
 	cclog("Maze:Rest")
 	for nRow , tbRow in ipairs(self.tbData) do
 		for nCol, _ in ipairs(tbRow) do
-			self.tbData[nRow][nCol] = MAP_BLOCK
+			self.tbData[nRow][nCol] = self.MAP_BLOCK
 			self.tbBlock[nRow][nCol]:setVisible(true)
 		end
 	end
 	local nEnterRow, nEnterCol = unpack(Def.tbEntrance)
-	self.tbData[nEnterRow][nEnterCol] = MAP_FREE
+	self.tbData[nEnterRow][nEnterCol] = self.MAP_FREE
 	self.tbBlock[nEnterRow][nEnterCol]:setVisible(false)
 	Event:FireEvent("ResetMaze")
 end
@@ -297,7 +322,7 @@ function Maze:IsFree(nRow, nCol)
 	if nRow > Def.MAZE_ROW_COUNT then
 		return 0
 	end
-	if self.tbData[nRow][nCol] ~= MAP_BLOCK then
+	if self.tbData[nRow][nCol] ~= self.MAP_BLOCK then
 		return 1
 	end
 	return 0
@@ -333,7 +358,7 @@ function Maze:GenBlock()
 			local nX, nY = nStartX + (nColumn - 1) * Def.BLOCK_WIDTH, nStartY + (nRow - 1) * Def.BLOCK_HEIGHT
     		pSprite:setPosition(nX, nY)
     		tbSprite[#tbSprite + 1] = pSprite
-			if nData ~= MAP_BLOCK then
+			if nData ~= self.MAP_BLOCK then
 				pSprite:setVisible(false)
 	    	end
 		end
@@ -366,7 +391,7 @@ end
 
 function Maze:StopDrag(nRow, nCol)
 	local bRet = 0
-	if self.tbData[nRow] and self.tbData[nRow][nCol] == MAP_FREE then
+	if self.tbData[nRow] and self.tbData[nRow][nCol] == self.MAP_FREE then
 		self:MoveMonster(self.tbDrag.nRow, self.tbDrag.nCol, nRow, nCol)
 		bRet = 1
 	end

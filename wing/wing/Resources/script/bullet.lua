@@ -60,6 +60,7 @@ function Bullet:AddBullet(nX, nY, nDirection, tbProperty)
 	tbBullet:Init(nX, nY, tbProperty)
 	tbBullet.nDirection = nDirection
 	self.tbBulletList[dwId] = tbBullet
+	return dwId
 end
 
 function tbBulletClass:Init(nX, nY, tbProperty)

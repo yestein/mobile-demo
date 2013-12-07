@@ -7,7 +7,7 @@
 --=======================================================================
 
 
-function Character:Init(pSprite, tbProperty, tbAI)
+function Character:Init(pSprite, tbProperty, szAIName)
 	self.pSprite = pSprite
 	local nOriginX, nOriginY = pSprite:getPosition()
 	self.tbOrigin = {x = nOriginX, y = nOriginY}
@@ -31,7 +31,8 @@ function Character:Init(pSprite, tbProperty, tbAI)
 		Magic       = 5,
 		Speed       = 1,
 	}
-	self.tbAIDirection = tbAI or {Def.DIR_DOWN, Def.DIR_RIGHT, Def.DIR_UP, Def.DIR_LEFT}
+	self.tbAIDirection = AI:GetDirctionList(szAIName)
+	self.szAIName = szAIName
 	if tbProperty then
 		for k, v in pairs(tbProperty) do
 			if self:SetProperty(k, v) ~= 1 then
@@ -71,7 +72,7 @@ function Character:Attack()
 	nOffsetX = nOffsetX * 36
 	nOffsetY = nOffsetY * 48
 	Bullet:AddBullet(nX + nOffsetX, nY + nOffsetY, self.nDirection, tbBulletProperty)
-	self:Wait(60)
+	self:Wait(30)
 end
 
 function Character:BeAttacked(tbBullet)

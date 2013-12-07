@@ -16,7 +16,6 @@ Debug.tbWatchEventList = {
 	"CharacterReset",
 	"GameMgrStartBattle",
 	"GameMgrStartReset",
-	"GameMgrSwitchState",
 	"SceneCreate",
 	"HeroAdd",
 	"LoadMaze",
@@ -30,7 +29,6 @@ Debug.tbWatchEventBlackList = {
 	["SetUnit"] = 1,
 	["TitleHPUpdate"] = 1,
 	["TitleStateUpdate"] = 1,
-	["GameMgrSwitchState"] = 1,
 }
 
 function Debug:Init(nMode)

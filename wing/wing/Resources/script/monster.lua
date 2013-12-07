@@ -35,7 +35,7 @@ function Monster:GenerateId()
 end
 
 
-function Monster:NewMonster(dwMonsterTemplateId, nStartX, nStartY)
+function Monster:NewMonster(dwMonsterTemplateId, nStartX, nStartY, szAIName)
 	local tbCfg = self.tbCfg[dwMonsterTemplateId]
 	local szImgFile = tbCfg.szImgFile
 	local TextureMonster = CCTextureCache:sharedTextureCache():addImage(szImgFile)
@@ -48,7 +48,7 @@ function Monster:NewMonster(dwMonsterTemplateId, nStartX, nStartY)
 	pMonster.isPaused = true
 	pMonster:setPosition(nStartX, nStartY)
 	tbNewMonster.dwId = self:GenerateId()
-    tbNewMonster:Init(pMonster, tbProperty, tbAI)	
+    tbNewMonster:Init(pMonster, tbProperty, szAIName)	
     GameMgr:AddCharacter(tbNewMonster.dwId, tbNewMonster)
 	Event:FireEvent("MonsterAdd", tbNewMonster.dwId)
 	return tbNewMonster, pMonster

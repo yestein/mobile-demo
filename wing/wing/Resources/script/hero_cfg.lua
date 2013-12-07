@@ -21,17 +21,22 @@
 
 Hero.tbCfg = {
 	[1]= {
-		tbProperty = {MaxHP = 100, Attack = 15, Defence = 5, AttackRange = 5, Speed = 3},
+		tbProperty = {MaxHP = 100, Attack = 15, Defence = 5, AttackRange = 5, Speed = 15},
 	},
 	[2]= {
-		tbProperty = {MaxHP = 200, Attack = 10, Defence = 10, Speed = 2},
+		tbProperty = {MaxHP = 200, Attack = 10, Defence = 10, Speed = 10},
+	},
+	[999]= {
+		tbProperty = {MaxHP = 10000, Attack = 15, Defence = 5, AttackRange = 5, Speed = 15},
 	},
 }
 
 if OS_WIN32 then
 	Hero.tbCfg[1].szImgFile = "image/hero/wizard.png"
 	Hero.tbCfg[2].szImgFile = "image/hero/soldier.png"
+	Hero.tbCfg[999].szImgFile = "image/hero/wizard.png"
 else
-	Hero.tbCfg[1].szImgFile = "wizzard.png"
+	Hero.tbCfg[1].szImgFile = "wizard.png"
 	Hero.tbCfg[2].szImgFile = "soldier.png"
+	Hero.tbCfg[999].szImgFile = "wizard.png"
 end

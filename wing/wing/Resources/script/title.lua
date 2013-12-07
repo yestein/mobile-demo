@@ -155,7 +155,7 @@ function GameMgr:OnStateChanged(nState)
 	if not self.tbTitle or not self.tbTitle["State"] then
 		return
 	end
-	local szDesc = self:GetStateDesc(nState)
+	local szDesc = self:GetStateDesc(nState) or "未知状态"
 	self.tbTitle["State"]:setString(szDesc)
     for dwId, _ in pairs(self.tbWaitToRemoveHP) do
         self:RemoveHeroHP(dwId)

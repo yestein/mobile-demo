@@ -38,7 +38,7 @@ local function main()
 	
 	-- uncomment below for the BlackBerry version
 	-- local bgMusicPath = sharedFileUtils:fullPathForFilename("background.ogg")
-	-- local bgMusicPath = sharedFileUtils:fullPathForFilename("background.mp3")
+	-- local bgMusicPath = sharedFileUtils:fullPathForFilename("1.mp3")
 	-- sharedEngine:playBackgroundMusic(bgMusicPath, true)
 	-- local effectPath = sharedFileUtils:fullPathForFilename("effect1.wav")
 	-- sharedEngine:preloadEffect(effectPath)
@@ -77,7 +77,7 @@ local function main()
 
     Performance:Init(layerWorld)
     GameMgr:InitTitle()
-    GameMgr:SetState(GameMgr.STATE_NORMAL)
+    GameMgr:SetState(GameMgr.STATE_TEST_SKILL)
     Player:Init()
     Lib:SafeCall({Player.Load, Player})
 		

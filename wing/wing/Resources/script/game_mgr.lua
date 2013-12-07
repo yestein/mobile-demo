@@ -9,6 +9,7 @@
 GameMgr.STATE_NORMAL = 1
 GameMgr.STATE_EDIT   = 2
 GameMgr.STATE_BATTLE = 3
+GameMgr.STATE_TEST_SKILL = 4
 
 GameMgr.STATE_COUNT = 3
 
@@ -16,6 +17,7 @@ GameMgr.tbStateDesc = {
 	[GameMgr.STATE_NORMAL] = "普通",
 	[GameMgr.STATE_EDIT]   = "编辑中",
 	[GameMgr.STATE_BATTLE] = "战斗中",
+	[GameMgr.STATE_TEST_SKILL] = "技能测试"
 }
 local szMenuFontName = "MarkerFelt-Thin"
 if OS_WIN32 then
@@ -91,11 +93,25 @@ end
 
 function GameMgr:OnStart_Normal()
 	local tbElement = {
-		{
+		[1] = {
 	        [1] = {
 	        	szItemName = "开始编辑",
 	        	fnCallBack = function()
-	                GameMgr:SwitchState()
+	                GameMgr:SetState(self.STATE_EDIT)
+	            end,
+	        },
+	        [2] = {
+	        	szItemName = "模拟战斗",
+	        	fnCallBack = function()
+	                GameMgr:SetState(self.STATE_BATTLE)
+	            end,
+	        },
+	    },
+	    [2] = {
+	        [1] = {
+	        	szItemName = "技能测试",
+	        	fnCallBack = function()
+	                GameMgr:SetState(self.STATE_TEST_SKILL)
 	            end,
 	        },
 	    },
@@ -116,9 +132,9 @@ function GameMgr:OnStart_Edit()
 	local tbElement = {
 		[1] = {
 			{
-	            szItemName = "开始战斗",
+	            szItemName = "结束编辑",
 	            fnCallBack = function()
-	                GameMgr:SwitchState()
+	                GameMgr:SetState(self.STATE_NORMAL)
 	            end
 	        },
 	        {
@@ -204,17 +220,18 @@ function GameMgr:OnStart_Battle()
 	        		if GameMgr.nRegGenHeroId then
 	        			return
 	        		end
-	                GameMgr:SwitchState()
+	                GameMgr:SetState(self.STATE_NORMAL)
 	            end,
 	        },
 	    },
     }
     MenuMgr:UpdateByString("MainMenu", tbElement, szMenuFontName, 20)
+
 	local tbScene = SceneMgr:GetScene("GameScene")
 	if tbScene then
 		self.nMaxHero = 2
 		self.nCurHero = 1
-		tbScene:GenHero(self.nCurHero)
+		tbScene:GenHero(self.nCurHero, unpack(Def.tbEntrance))
 		tbScene:GenMonster()
 		self.nRegGenHeroId = CCDirector:sharedDirector():getScheduler():scheduleScriptFunc(
 			function()
@@ -224,10 +241,10 @@ function GameMgr:OnStart_Battle()
 					GameMgr.nRegGenHeroId = nil
 					return
 				end		
-				local tbHero = tbScene:GenHero(self.nCurHero)
+				local tbHero = tbScene:GenHero(self.nCurHero, unpack(Def.tbEntrance))
 				tbHero:Start()
 			end,
-			0.5, false
+			1, false
 		)
 		self:StartBattle()
 	end	
@@ -238,14 +255,63 @@ function GameMgr:OnEnd_Battle()
 	Monster:ClearAll()
 end
 
+function GameMgr:OnStart_TestSkill()
+	local tbElement = {
+		[1] = {
+			{
+	        	szItemName = "释放英雄技能",
+	        	fnCallBack = function()
+	                for dwId, tbCharacter in pairs(Hero:GetList()) do
+						tbCharacter:Attack()
+					end
+	            end,
+	        },
+	        {
+	        	szItemName = "释放怪物技能",
+	        	fnCallBack = function()
+	                for dwId, tbCharacter in pairs(Monster:GetList()) do
+						tbCharacter:Attack()
+					end
+	            end,
+	        },
+		},
+		[2] = {
+	        {
+	        	szItemName = "结束测试",
+	        	fnCallBack = function()
+	                GameMgr:SetState(self.STATE_NORMAL)
+	            end,
+	        },
+	    },
+    }
+    MenuMgr:UpdateByString("MainMenu", tbElement, szMenuFontName, 20)
+	Maze:SetSkillTest()
+	local tbScene = SceneMgr:GetScene("GameScene")
+	if tbScene then
+		local tbHero = tbScene:GenHero(999, 19, 17)
+		tbHero:SetDirection(Def.DIR_RIGHT)
+		local tbMonster = tbScene:GenSingleMonster(999, 19, 23)
+		tbMonster:SetDirection(Def.DIR_LEFT)
+	end
+end
+
+function GameMgr:OnEnd_TestSkill()
+	Maze:Load()
+	Maze:Refresh()
+	Hero:ClearAll()
+	Monster:ClearAll()
+end
+
 GameMgr.fnStartState = {
 	[GameMgr.STATE_NORMAL] = GameMgr.OnStart_Normal,
 	[GameMgr.STATE_EDIT]   = GameMgr.OnStart_Edit,
 	[GameMgr.STATE_BATTLE] = GameMgr.OnStart_Battle,
+	[GameMgr.STATE_TEST_SKILL] = GameMgr.OnStart_TestSkill,
 }
 
 GameMgr.fnEndState = {
 	[GameMgr.STATE_NORMAL] = GameMgr.OnEnd_Normal,
 	[GameMgr.STATE_EDIT]   = GameMgr.OnEnd_Edit,
 	[GameMgr.STATE_BATTLE] = GameMgr.OnEnd_Battle,
+	[GameMgr.STATE_TEST_SKILL] = GameMgr.OnEnd_TestSkill,
 }

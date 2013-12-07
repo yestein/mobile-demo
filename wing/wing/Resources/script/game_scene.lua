@@ -179,12 +179,22 @@ function GameScene:GenMonster()
     end
 end
 
-function GameScene:GenHero(dwHeroTemplateId)
+function GameScene:GenSingleMonster(dwMonsterTemplateId, nRow, nCol)
+    local tbSize = Maze:GetSize()
+    local nStartX = -tbSize.width / 2 + Def.BLOCK_WIDTH / 2
+    local nStartY = -tbSize.height / 2 + Def.BLOCK_HEIGHT / 2
+    local nX, nY = nStartX + (nCol - 1) * Def.BLOCK_WIDTH, nStartY + (nRow - 1) * Def.BLOCK_HEIGHT
+    local tbMonster, pMonster = Monster:NewMonster(dwMonsterTemplateId, nX, nY)
+    self.layerMaze:addChild(pMonster)
+    return tbMonster, pMonster
+end
+
+function GameScene:GenHero(dwHeroTemplateId, nRow, nCol)
     local tbSize = self.spriteMaze:getTextureRect().size
     local nStartX = -tbSize.width / 2 + Def.BLOCK_WIDTH / 2
     local nStartY = -tbSize.height / 2 + Def.BLOCK_HEIGHT / 2
-    nStartX = nStartX + (Def.MAZE_COL_COUNT / 2 - 1) * Def.BLOCK_WIDTH
-    nStartY = nStartY + (Def.MAZE_ROW_COUNT - 1) * Def.BLOCK_HEIGHT
+    nStartX = nStartX + (nCol - 1) * Def.BLOCK_WIDTH
+    nStartY = nStartY + (nRow - 1) * Def.BLOCK_HEIGHT
 
     local tbHero, pSpriteHero = Hero:NewHero(dwHeroTemplateId, nStartX, nStartY)    
     self.layerMaze:addChild(pSpriteHero, 0, tbHero.dwId)

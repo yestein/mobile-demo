@@ -112,7 +112,8 @@ function tbHeroClass:AutoMove()
 				self.pSprite.isPaused = true
 				self.nDirection = nil
 				self.tbTarget = nil
-				GameMgr:SetState(GameMgr.STATE_NORMAL)
+
+				-- GameMgr:SetState(GameMgr.STATE_NORMAL)
 				return
 			end
 		end
