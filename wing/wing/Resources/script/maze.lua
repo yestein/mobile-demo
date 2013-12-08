@@ -124,7 +124,7 @@ function Maze:Dig(nRow, nCol)
 		end
 		return 0
 	end	
-	SetData(nRow, nCol, MAP_FREE)
+	self:SetData(nRow, nCol, self.MAP_FREE)
     self:PushUndoPos(nRow, nCol)
     Event:FireEvent("Dig", nRow, nCol)
     return 1
@@ -252,6 +252,7 @@ function Maze:CheckCanDig(nRow, nCol)
 	for _, tbPos in ipairs(tbCheckPos) do
 		if self.tbData[tbPos[1]] then
 			local nValue = self.tbData[tbPos[1]][tbPos[2]]
+			print(tbPos[1], tbPos[2], nValue)
 			if nValue and nValue ~= self.MAP_BLOCK then
 				bLogicCheck = 1
 				break
