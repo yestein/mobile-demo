@@ -63,16 +63,7 @@ function Character:Uninit()
 end
 
 function Character:Attack()
-	local nX, nY = self.pSprite:getPosition()
-	local tbBulletProperty = {
-		Damage = self:GetProperty("Attack"),
-	}
-	local tbPosOffset = Def.tbMove[self.nDirection]
-	local nOffsetX, nOffsetY = unpack(tbPosOffset)
-	nOffsetX = nOffsetX * 36
-	nOffsetY = nOffsetY * 48
-	Bullet:AddBullet(nX + nOffsetX, nY + nOffsetY, self.nDirection, tbBulletProperty)
-	self:Wait(30)
+	Skill:CastSkill(2, self)
 end
 
 function Character:BeAttacked(tbBullet)

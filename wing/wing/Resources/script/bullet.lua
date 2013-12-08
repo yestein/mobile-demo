@@ -21,30 +21,33 @@ function Bullet:Init()
 	local function tick()
 		for dwBulletId, tbBullet in pairs(self.tbBulletList) do
 			local nDirection = tbBullet.nDirection
+			local tbProperty = tbBullet.tbProperty
+			local nMoveSpeed = tbProperty.nMoveSpeed
 			local tbPosOffset = Def.tbMove[nDirection]
 			if tbPosOffset then
 				local pSprite = tbBullet.pSprite
 				local nX, nY = unpack(tbPosOffset)
 				local x, y = pSprite:getPosition()
-				local nNewX, nNewY = x + nX * 4, y + nY * 4
+				local nNewX, nNewY = x + nX * nMoveSpeed, y + nY * nMoveSpeed
+				pSprite:setPosition(nNewX, nNewY)
+
 				local nRow, nCol = Lib:GetRowColByPos(nNewX, nNewY)
-				local dwId = Maze:GetUnit(nRow, nCol)
-				if Maze:IsFree(nRow, nCol) == 1 and dwId == 0 then
-					pSprite:setPosition(nNewX, nNewY)
-				else
-					if dwId and dwId > 0 then
-						local tbCharacter = GameMgr:GetCharacterById(dwId)
-						if tbCharacter then
-							if Lib:IsHero(dwId) == 1 then
-								tbCharacter:BeAttacked(tbBullet)
-							else
-								tbCharacter:BeAttacked(tbBullet)
-							end
-						end
-					end
+				if Maze:IsFree(nRow, nCol) == Maze.MAP_BLOCK  then
 					tbBullet:Uninit()
 					self.tbBulletList[dwBulletId] = nil
-				end			
+					return
+				end
+				local dwTargetId = Maze:GetUnit(nRow, nCol)
+				if dwTargetId and dwTargetId > 0 then
+					local tbCharacter = GameMgr:GetCharacterById(dwTargetId)
+					if tbCharacter then
+						if tbBullet:JudgeCollide(nRow, nCol, dwTargetId) == 1  then
+							tbCharacter:BeAttacked(tbBullet)
+							tbBullet:Uninit()
+							self.tbBulletList[dwBulletId] = nil
+						end
+					end
+				end		
 			end			
 	    end
 	end
@@ -63,12 +66,29 @@ function Bullet:AddBullet(nX, nY, nDirection, tbProperty)
 	return dwId
 end
 
+function Bullet.NotSameCamp(dwLancherId, dwTargetId)
+	if Lib:IsHero(dwLancherId) == Lib:IsHero(dwTargetId) then
+		return 0
+	else
+		return 1
+	end
+end
+
+Bullet.tbJudgeCollide = {
+	["Enemy"] = Bullet.NotSameCamp,
+}
+
 function tbBulletClass:Init(nX, nY, tbProperty)
 	local pSprite = CCSprite:createWithTexture(Bullet.bulletNode:getTexture())
 	pSprite:setPosition(nX, nY)
 	Bullet.bulletNode:addChild(pSprite)
 	self.pSprite = pSprite
 	self.tbProperty = tbProperty
+end
+
+function tbBulletClass:JudgeCollide(nRow, nCol, dwTargetId)
+	local func = Bullet.tbJudgeCollide[self.tbProperty.szTargetType]
+	return func(self.tbProperty.dwLancherId, dwTargetId)
 end
 
 function tbBulletClass:CalcDamage(tbCharacter)

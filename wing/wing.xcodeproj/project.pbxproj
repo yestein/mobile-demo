@@ -11,6 +11,7 @@
 		3405AEAD1851EEBF00097C26 /* performance.lua in Resources */ = {isa = PBXBuildFile; fileRef = 3405AEAB1851EEBF00097C26 /* performance.lua */; };
 		3405AEB01851FABE00097C26 /* 1.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 3405AEAF1851FABE00097C26 /* 1.mp3 */; };
 		3405AEB2185224EA00097C26 /* ai.lua in Resources */ = {isa = PBXBuildFile; fileRef = 3405AEB1185224EA00097C26 /* ai.lua */; };
+		3405AEB41854386A00097C26 /* skill.lua in Resources */ = {isa = PBXBuildFile; fileRef = 3405AEB31854386A00097C26 /* skill.lua */; };
 		342F88EB17B0BE2E00450B82 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 342F88EA17B0BE2E00450B82 /* QuartzCore.framework */; };
 		342F88ED17B0BE2E00450B82 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 342F88EC17B0BE2E00450B82 /* OpenGLES.framework */; };
 		342F88EF17B0BE2E00450B82 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 342F88EE17B0BE2E00450B82 /* OpenAL.framework */; };
@@ -309,6 +310,7 @@
 		3405AEAB1851EEBF00097C26 /* performance.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = performance.lua; sourceTree = "<group>"; };
 		3405AEAF1851FABE00097C26 /* 1.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = 1.mp3; sourceTree = "<group>"; };
 		3405AEB1185224EA00097C26 /* ai.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ai.lua; sourceTree = "<group>"; };
+		3405AEB31854386A00097C26 /* skill.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = skill.lua; sourceTree = "<group>"; };
 		342F88E717B0BE2E00450B82 /* wing.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = wing.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		342F88EA17B0BE2E00450B82 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		342F88EC17B0BE2E00450B82 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
@@ -2037,6 +2039,7 @@
 		342F8C7717B0BEE300450B82 /* script */ = {
 			isa = PBXGroup;
 			children = (
+				3405AEB31854386A00097C26 /* skill.lua */,
 				3405AEB1185224EA00097C26 /* ai.lua */,
 				3405AEAA1851EEBF00097C26 /* hero_cfg.lua */,
 				3405AEAB1851EEBF00097C26 /* performance.lua */,
@@ -2186,6 +2189,7 @@
 				342F8C8C17B0BEE300450B82 /* Icon@2x.png in Resources */,
 				342F8C9017B0BEE300450B82 /* define.lua in Resources */,
 				342F8C9117B0BEE300450B82 /* main.lua in Resources */,
+				3405AEB41854386A00097C26 /* skill.lua in Resources */,
 				342F8C9217B0BEE300450B82 /* preload.lua in Resources */,
 				3405AEAC1851EEBF00097C26 /* hero_cfg.lua in Resources */,
 				342F8C9317B0BEE300450B82 /* background.mp3 in Resources */,
