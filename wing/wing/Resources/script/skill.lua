@@ -14,20 +14,22 @@ function Skill:Init( ... )
 
 end
 
-function Skill:CastSkill(dwSkillId, tbLancher, tbTarget)
-	local tbSkillCfg = self.tbCfg[dwSkillId]
+function Skill:CastSkill(szSkillName, tbLancher, tbTarget)
+	local tbSkillCfg = self.tbCfg[szSkillName]
 	if not tbSkillCfg then
 		return
 	end
 	local func = tbSkillCfg.func
-	return func(self, tbLancher, tbTarget, tbSkillCfg)
+	local nRetCode = func(self, tbLancher, tbTarget, tbSkillCfg)
+	Event:FireEvent("CastSkill", szSkillName, tbLancher.dwId, tbTarget and tbTarget.dwId)
+	return nRetCode
 end
 
 function Skill:CastPhysicAttack(tbLancher, tbTarget, tbCfg)
 	-- body
 end
 
-function Skill:CastFireAttack(tbLancher, tbTarget, tbCfg)
+function Skill:CastLightAttack(tbLancher, tbTarget, tbCfg)
 	if not tbLancher then
 		assert(false)
 		return
@@ -38,6 +40,26 @@ function Skill:CastFireAttack(tbLancher, tbTarget, tbCfg)
 		Damage = tbLancher:GetProperty("Attack"),
 		dwLancherId = tbLancher.dwId,
 		nMoveSpeed = tbCfg.nBulletSpeed,
+		szBulletType = "LightBall",
+		szTargetType = "Enemy",
+	}
+	local nDirection = tbLancher.nDirection
+	Bullet:AddBullet(nX , nY, nDirection, tbBulletProperty)
+	tbLancher:Wait(30)
+end
+
+function Skill:CastFireAttack(tbLancher, tbTarget, tbCfg)
+	if not tbLancher then
+		assert(false)
+		return
+	end
+	local pLancherSprite = tbLancher.pSprite
+	local nX, nY = pLancherSprite:getPosition()
+	local tbBulletProperty = {
+		Damage = math.floor(tbLancher:GetProperty("Attack") * 1.5),
+		dwLancherId = tbLancher.dwId,
+		nMoveSpeed = tbCfg.nBulletSpeed,
+		szBulletType = "Fire",
 		szTargetType = "Enemy",
 	}
 	local nDirection = tbLancher.nDirection
@@ -46,6 +68,7 @@ function Skill:CastFireAttack(tbLancher, tbTarget, tbCfg)
 end
 
 Skill.tbCfg = {
-	[1] = {szName = "物理攻击", nCDFrame = 10, nBulletSpeed = 4, func = Skill.CastPhysicAttack},
-	[2] = {szName = "火球攻击", nCDFrame = 30, nBulletSpeed = 8, func = Skill.CastFireAttack,}
+	["物理攻击"] = {nCDFrame = 10, nBulletSpeed = 4, func = Skill.CastPhysicAttack},
+	["光魔法"] = {nCDFrame = 30, nBulletSpeed = 8, func = Skill.CastLightAttack,},
+	["火魔法"] = {nCDFrame = 30, nBulletSpeed = 2, func = Skill.CastFireAttack,},
 }

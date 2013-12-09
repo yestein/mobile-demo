@@ -258,6 +258,14 @@ end
 function GameMgr:OnStart_TestSkill()
 	local tbElement = {
 		[1] = {
+	        {
+	        	szItemName = "结束测试",
+	        	fnCallBack = function()
+	                GameMgr:SetState(self.STATE_NORMAL)
+	            end,
+	        },
+	    },
+		[2] = {
 			{
 	        	szItemName = "释放英雄技能",
 	        	fnCallBack = function()
@@ -274,15 +282,7 @@ function GameMgr:OnStart_TestSkill()
 					end
 	            end,
 	        },
-		},
-		[2] = {
-	        {
-	        	szItemName = "结束测试",
-	        	fnCallBack = function()
-	                GameMgr:SetState(self.STATE_NORMAL)
-	            end,
-	        },
-	    },
+		},		
     }
     MenuMgr:UpdateByString("MainMenu", tbElement, szMenuFontName, 20)
 	Maze:SetSkillTest()

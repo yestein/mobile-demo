@@ -22,12 +22,15 @@
 Hero.tbCfg = {
 	[1]= {
 		tbProperty = {MaxHP = 100, Attack = 15, Defence = 5, AttackRange = 5, Speed = 15},
+		tbSkill = {"光魔法"},
 	},
 	[2]= {
 		tbProperty = {MaxHP = 200, Attack = 10, Defence = 10, Speed = 10},
+		tbSkill = {"光魔法"},
 	},
 	[999]= {
 		tbProperty = {MaxHP = 10000, Attack = 15, Defence = 5, AttackRange = 5, Speed = 15},
+		tbSkill = {"光魔法", "火魔法"},
 	},
 }
 

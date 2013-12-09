@@ -34,8 +34,10 @@ function GameScene:Create()
         layerMaze:addChild(pBlock)
     end
     
-    local spriteBullet = Bullet:Init()
-    layerMaze:addChild(spriteBullet)
+    local tbBulletNodeList = Bullet:Init()
+    for szType, bulletNode in pairs(tbBulletNodeList) do
+        layerMaze:addChild(bulletNode)
+    end
 
     -- handing touch events
     local touchBeginPoint = nil

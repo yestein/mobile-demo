@@ -48,7 +48,7 @@ function Monster:NewMonster(dwMonsterTemplateId, nStartX, nStartY, szAIName)
 	pMonster.isPaused = true
 	pMonster:setPosition(nStartX, nStartY)
 	tbNewMonster.dwId = self:GenerateId()
-    tbNewMonster:Init(pMonster, tbProperty, szAIName)	
+    tbNewMonster:Init(pMonster, tbProperty, tbCfg.tbSkill, szAIName)	
     GameMgr:AddCharacter(tbNewMonster.dwId, tbNewMonster)
 	Event:FireEvent("MonsterAdd", tbNewMonster.dwId)
 	return tbNewMonster, pMonster

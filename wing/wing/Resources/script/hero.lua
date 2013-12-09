@@ -44,7 +44,7 @@ function Hero:NewHero(dwTemplateId, nStartX, nStartY, tbAI)
     pHero.isPaused = true
     tbNewHero.dwId = self:GenerateId()
     local tbProperty = tbCfg.tbProperty
-	tbNewHero:Init(pHero, tbProperty, tbAI)
+	tbNewHero:Init(pHero, tbProperty, tbCfg.tbSkill, tbAI)
 	GameMgr:AddCharacter(tbNewHero.dwId, tbNewHero)
 	Event:FireEvent("HeroAdd", tbNewHero.dwId)
 	return tbNewHero, pHero

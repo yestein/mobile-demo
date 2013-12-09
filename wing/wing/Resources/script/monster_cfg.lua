@@ -22,19 +22,23 @@
 Monster.tbCfg = {
 	[1]= {
 		tbProperty = {MaxHP = 30, Attack = 10, Defence = 5, AttackRange = 1},
+		tbSkill = {"光魔法"},
 		szAIName = "NormalMove",
 	},
 	[2]= {
 		tbProperty = {MaxHP = 20, Attack = 15, Defence = 2, AttackRange = 5, Speed = 5},
+		tbSkill = {"光魔法"},
 		szAIName = "NotMove"
 	},
 	[3]= {
 		tbProperty = {MaxHP = 50, Attack = 10, Defence = 10, AttackRange = 3, Speed = 2},
+		tbSkill = {"光魔法"},
 		szAIName = "NotMove"
 	},
 
 	[999]= {
 		tbProperty = {MaxHP = 10000, Attack = 15, Defence = 2, AttackRange = 5, Speed = 5},
+		tbSkill = {"光魔法", "火魔法"},
 		szAIName = "NotMove"
 	},
 }

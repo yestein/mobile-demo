@@ -72,12 +72,10 @@ if OS_WIN32 then
 	Def.szHeroFile   = "image/hero/wizard.png"
 	Def.szBlockImg   = "image/block.png"
 	Def.szBGImg      = "image/background.png"
-	Def.szBulletFile = "image/bullet.png"
 	Def.szTitleFile  = "image/ui/title_bg.png"
 else	
 	Def.szHeroFile   = "wizard.png"
 	Def.szBlockImg   = "block.png"
 	Def.szBGImg      = "background.png"
-	Def.szBulletFile = "bullet.png"
 	Def.szTitleFile  = "title_bg.png"
 end

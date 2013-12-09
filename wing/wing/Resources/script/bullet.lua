@@ -14,10 +14,28 @@ local function Accumulator()
 	return Id
 end
 
+if OS_WIN32 then
+	Bullet.tbBulletCfg = {
+		["LightBall"] = {szImgFile = "image/lightball.png", szCreateFunc = "CreateLightBall"},
+		["Fire"] = {szImgFile = "image/fire.png", szCreateFunc = "CreateFire"},
+	}
+else
+	Bullet.tbBulletCfg = {
+		["LightBall"] = {szImgFile = "lightball.png", szCreateFunc = "CreateLightBall"},
+		["Fire"] = {szImgFile = "fire.png", szCreateFunc = "CreateFire"},
+	}
+end
+
 function Bullet:Init()
 	self.tbBulletList = {}
-	local bulletNode = CCSpriteBatchNode:create(Def.szBulletFile)
-	bulletNode:setPosition(0, 0)
+	self.tbBulletNodeList = {}
+	for szBulletType, tbCfg in pairs(self.tbBulletCfg) do
+		local bulletNode = CCSpriteBatchNode:create(tbCfg.szImgFile)
+		bulletNode:setPosition(0, 0)
+		
+		self.tbBulletNodeList[szBulletType] = bulletNode
+	end
+
 	local function tick()
 		for dwBulletId, tbBullet in pairs(self.tbBulletList) do
 			local nDirection = tbBullet.nDirection
@@ -52,8 +70,11 @@ function Bullet:Init()
 	    end
 	end
 	CCDirector:sharedDirector():getScheduler():scheduleScriptFunc(tick, 0, false)
-	self.bulletNode = bulletNode
-	return bulletNode
+	return self.tbBulletNodeList
+end
+
+function Bullet:GetBulletNode(szType)
+	return self.tbBulletNodeList[szType]
 end
 
 function Bullet:AddBullet(nX, nY, nDirection, tbProperty)
@@ -74,14 +95,59 @@ function Bullet.NotSameCamp(dwLancherId, dwTargetId)
 	end
 end
 
+function Bullet:CreateLightBall(bulletNode)
+	return CCSprite:createWithTexture(bulletNode:getTexture())
+end
+
+function Bullet:CreateFire(bulletNode)
+	local textureBullet = bulletNode:getTexture()
+	local pSprite = CCSprite:createWithTexture(textureBullet)
+
+	local tbTextureSize = pSprite:getTextureRect().size
+	local nFrameWidth = tbTextureSize.width / 4
+	local nFrameHeight = tbTextureSize.height / 4
+	local spriteFrames = CCArray:create()	
+	for i = 1, 4 do
+		local rect = CCRectMake((i - 1) * nFrameWidth, nFrameHeight, nFrameWidth, nFrameHeight)
+    	local frame = CCSpriteFrame:createWithTexture(textureBullet, rect)
+    	spriteFrames:addObject(frame)
+    end
+    local animation = CCAnimation:createWithSpriteFrames(spriteFrames, 0.15)
+    local animate = CCAnimate:create(animation)
+    pSprite:stopAllActions()
+    pSprite:runAction(CCRepeatForever:create(animate))
+    pSprite:setScale(0.5)
+
+    return pSprite
+end	
+
 Bullet.tbJudgeCollide = {
 	["Enemy"] = Bullet.NotSameCamp,
 }
 
 function tbBulletClass:Init(nX, nY, tbProperty)
-	local pSprite = CCSprite:createWithTexture(Bullet.bulletNode:getTexture())
+	if not tbProperty.szBulletType then
+		assert(false)
+		return
+	end
+	local szBulletType = tbProperty.szBulletType
+	local bulletNode = Bullet:GetBulletNode(szBulletType)
+	local szfuncName = Bullet.tbBulletCfg[szBulletType].szCreateFunc
+	if not szfuncName then
+		return
+	end
+	local func = Bullet[szfuncName]
+	if not func then
+		assert(false)
+		return
+	end
+	local pSprite = func(self, bulletNode)
+	if not pSprite then
+		assert(false)
+		return
+	end
 	pSprite:setPosition(nX, nY)
-	Bullet.bulletNode:addChild(pSprite)
+	bulletNode:addChild(pSprite)
 	self.pSprite = pSprite
 	self.tbProperty = tbProperty
 end
@@ -98,6 +164,7 @@ function tbBulletClass:CalcDamage(tbCharacter)
 end
 
 function tbBulletClass:Uninit()
-	Bullet.bulletNode:removeChild(self.pSprite, true)
+	local bulletNode = Bullet:GetBulletNode(self.tbProperty.szBulletType)
+	bulletNode:removeChild(self.pSprite, true)
 end
 

@@ -7,7 +7,7 @@
 --=======================================================================
 
 
-function Character:Init(pSprite, tbProperty, szAIName)
+function Character:Init(pSprite, tbProperty, tbSkill, szAIName)
 	self.pSprite = pSprite
 	local nOriginX, nOriginY = pSprite:getPosition()
 	self.tbOrigin = {x = nOriginX, y = nOriginY}
@@ -42,7 +42,7 @@ function Character:Init(pSprite, tbProperty, szAIName)
 	end
 	self.tbProperty.CurHP = self.tbProperty.MaxHP
 	self.tbProperty.CurMP = self.tbProperty.MaxMP
-	
+	self.tbSkill = tbSkill
 	self:SetDirection(Def.DIR_DOWN)
 	-- moving Hero at every frame
 	local function tick()
@@ -63,7 +63,9 @@ function Character:Uninit()
 end
 
 function Character:Attack()
-	Skill:CastSkill(2, self)
+	local tbSkill = self:GetSkill()
+	local szSkillName = tbSkill[math.random(1, #tbSkill)]
+	Skill:CastSkill(szSkillName, self)
 end
 
 function Character:BeAttacked(tbBullet)
@@ -132,6 +134,11 @@ function Character:SetProperty(Key, Value)
 		return 1
 	end
 	return 0
+end
+
+function Character:GetSkill( )
+	-- body
+	return self.tbSkill
 end
 
 function Character:GetOppositeDirection(nDir)
