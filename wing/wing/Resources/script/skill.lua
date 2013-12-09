@@ -37,9 +37,9 @@ function Skill:CastLightAttack(tbLancher, tbTarget, tbCfg)
 	local pLancherSprite = tbLancher.pSprite
 	local nX, nY = pLancherSprite:getPosition()
 	local tbBulletProperty = {
-		Damage = tbLancher:GetProperty("Attack"),
-		dwLancherId = tbLancher.dwId,
-		nMoveSpeed = tbCfg.nBulletSpeed,
+		Damage       = tbLancher:GetProperty("Attack"),
+		dwLancherId  = tbLancher.dwId,
+		nMoveSpeed   = tbCfg.nBulletSpeed,
 		szBulletType = "LightBall",
 		szTargetType = "Enemy",
 	}
@@ -56,9 +56,9 @@ function Skill:CastFireAttack(tbLancher, tbTarget, tbCfg)
 	local pLancherSprite = tbLancher.pSprite
 	local nX, nY = pLancherSprite:getPosition()
 	local tbBulletProperty = {
-		Damage = math.floor(tbLancher:GetProperty("Attack") * 1.5),
-		dwLancherId = tbLancher.dwId,
-		nMoveSpeed = tbCfg.nBulletSpeed,
+		Damage       = math.floor(tbLancher:GetProperty("Attack") * 1.5),
+		dwLancherId  = tbLancher.dwId,
+		nMoveSpeed   = tbCfg.nBulletSpeed,
 		szBulletType = "Fire",
 		szTargetType = "Enemy",
 	}
@@ -69,6 +69,6 @@ end
 
 Skill.tbCfg = {
 	["物理攻击"] = {nCDFrame = 10, nBulletSpeed = 4, func = Skill.CastPhysicAttack},
-	["光魔法"] = {nCDFrame = 30, nBulletSpeed = 8, func = Skill.CastLightAttack,},
-	["火魔法"] = {nCDFrame = 30, nBulletSpeed = 2, func = Skill.CastFireAttack,},
+	["光魔法"]   = {nCDFrame = 30, nBulletSpeed = 8, func = Skill.CastLightAttack,},
+	["火魔法"]   = {nCDFrame = 30, nBulletSpeed = 2, func = Skill.CastFireAttack,},
 }

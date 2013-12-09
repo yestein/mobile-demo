@@ -17,12 +17,12 @@ end
 if OS_WIN32 then
 	Bullet.tbBulletCfg = {
 		["LightBall"] = {szImgFile = "image/lightball.png", szCreateFunc = "CreateLightBall"},
-		["Fire"] = {szImgFile = "image/fire.png", szCreateFunc = "CreateFire"},
+		["Fire"]      = {szImgFile = "image/fire.png", szCreateFunc = "CreateFire"},
 	}
 else
 	Bullet.tbBulletCfg = {
 		["LightBall"] = {szImgFile = "lightball.png", szCreateFunc = "CreateLightBall"},
-		["Fire"] = {szImgFile = "fire.png", szCreateFunc = "CreateFire"},
+		["Fire"]      = {szImgFile = "fire.png", szCreateFunc = "CreateFire"},
 	}
 end
 

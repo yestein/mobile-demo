@@ -195,21 +195,12 @@ function Character:SetSpriteDirection(pSprite, nDirection)
 	local frameHeight = 48
 
 	local Texture = pSprite:getTexture()
-	local rect = CCRectMake(0, frameHeight * Def.tbTextureRow[nDirection], frameWidth, frameHeight)
-    local frame0 = CCSpriteFrame:createWithTexture(Texture, rect)
-    rect = CCRectMake(frameWidth, frameHeight * Def.tbTextureRow[nDirection], frameWidth, frameHeight)
-    local frame1 = CCSpriteFrame:createWithTexture(Texture, rect)
-    rect = CCRectMake(2 * frameWidth, frameHeight * Def.tbTextureRow[nDirection], frameWidth, frameHeight)
-    local frame2 = CCSpriteFrame:createWithTexture(Texture, rect)
-    rect = CCRectMake(3 * frameWidth, frameHeight * Def.tbTextureRow[nDirection], frameWidth, frameHeight)
-    local frame3 = CCSpriteFrame:createWithTexture(Texture, rect)
 	local animFrames = CCArray:create()
-
-    animFrames:addObject(frame0)
-    animFrames:addObject(frame1)
-    animFrames:addObject(frame2)
-    animFrames:addObject(frame3)
-
+	for i = 1, 4 do
+		local rect = CCRectMake((i - 1) * frameWidth, frameHeight * Def.tbTextureRow[nDirection], frameWidth, frameHeight)
+	    local frame = CCSpriteFrame:createWithTexture(Texture, rect)
+	    animFrames:addObject(frame)
+	end
     local animation = CCAnimation:createWithSpriteFrames(animFrames, 0.15)
     local animate = CCAnimate:create(animation)
     pSprite:stopAllActions()
