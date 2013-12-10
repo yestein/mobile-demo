@@ -230,7 +230,7 @@ function GameMgr:OnStart_Battle()
 	local tbScene = SceneMgr:GetScene("GameScene")
 	if tbScene then
 		self.nMaxHero = 2
-		self.nCurHero = 1
+		self.nCurHero = 2
 		tbScene:GenHero(self.nCurHero, unpack(Def.tbEntrance))
 		tbScene:GenMonster()
 		self.nRegGenHeroId = CCDirector:sharedDirector():getScheduler():scheduleScriptFunc(

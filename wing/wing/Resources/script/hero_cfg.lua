@@ -21,19 +21,19 @@
 
 Hero.tbCfg = {
 	[1]= {
-		tbProperty = {MaxHP = 100, Attack = 15, Defense = 5, AttackRange = 5, Speed = 15},
+		tbProperty = {MaxHP = 100, Attack = 15, Defense = 5, AttackRange = 5, Speed = 3},
 		tbSkill = {"光魔法"},
 	},
 	[2]= {
-		tbProperty = {MaxHP = 200, Attack = 10, Defense = 10, Speed = 10},
-		tbSkill = {"光魔法"},
+		tbProperty = {MaxHP = 200, Attack = 10, Defense = 10, Speed = 2},
+		tbSkill = {"物理攻击"},
 	},
 	[999]= {
-		tbProperty = {MaxHP = 10000, Attack = 15, Defense = 5, AttackRange = 5, Speed = 15},
+		tbProperty = {MaxHP = 10000, Attack = 15, Defense = 5, AttackRange = 5, Speed = 3},
 		tbSkill = {"光魔法", "火魔法"},
 	},
 	[1000]= {
-		tbProperty = {MaxHP = 10000, Attack = 15, Defense = 5, AttackRange = 5, Speed = 15},
+		tbProperty = {MaxHP = 10000, Attack = 15, Defense = 5, AttackRange = 5, Speed = 3},
 		tbSkill = {"物理攻击"},
 	},
 }

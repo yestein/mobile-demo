@@ -160,7 +160,8 @@ end
 
 function tbBulletClass:CalcDamage(tbCharacter)
 	local nTargetDefense = tbCharacter:GetProperty("Defense")
-	return self.tbProperty.Damage - nTargetDefense
+	local nDamage = math.floor(self.tbProperty.Damage * (100 / (100 + nTargetDefense)))
+	return nDamage
 end
 
 function tbBulletClass:Uninit()

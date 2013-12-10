@@ -44,9 +44,10 @@ function Skill:CastPhysicAttack(tbLancher, tbCfg)
 
 	local nLancherAttack = tbLancher:GetProperty("Attack")
 	local nTargetDefense = tbTarget:GetProperty("Defense")
-	local nDamage = nLancherAttack - nTargetDefense
-	tbTarget:ReceiveDamage(nDamage)
+	local nDamage = math.floor(nLancherAttack * (100 / (100 + nTargetDefense)))
 	Event:FireEvent("CharacterPhyiscAttack", tbLancher.dwId, tbTarget.dwId, nDamage)
+	tbTarget:ReceiveDamage(nDamage)
+	tbLancher:Wait(30)
 	return 1, tbTarget
 end
 
