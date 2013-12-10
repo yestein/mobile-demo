@@ -70,7 +70,6 @@ local function main()
     layerMonsterMenu:setVisible(false)
     layerMonsterMenu:setPosition(tbVisibleSize.width / 2, tbVisibleSize.height / 2)
     
-
     local layerWorld = tbScene:Create()
 	sceneGame:addChild(layerWorld, Def.ZOOM_LEVEL_WORLD)
     GameMgr.layerWorld = layerWorld

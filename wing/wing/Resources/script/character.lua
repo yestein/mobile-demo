@@ -157,6 +157,9 @@ function Character:Move(nDirection)
 	if not tbPosOffset then
 		return 0
 	end
+	if not self.tbTarget then
+		return 0
+	end
 	local nX, nY = unpack(tbPosOffset)
 	local x, y = self.pSprite:getPosition()
 	local nNewX, nNewY = x + nX * self.tbProperty.Speed, y + nY * self.tbProperty.Speed
@@ -227,21 +230,26 @@ function Character:AutoMove()
 	end
 
 	if IsArriveTarget() == 1 then
-		local nNextDir = math.random(Def.DIR_START + 1, Def.DIR_END - 1)
-		local tbPosOffset = Def.tbMove[nNextDir]
-		if not tbPosOffset then
-			return 0
-		end			
-		local nX, nY = unpack(tbPosOffset)
-		local nNewX, nNewY = x + self.tbSize.width * nX + nX, y + self.tbSize.height * nY
-		if self:TryGoto(nNewX, nNewY) == 0 then
-			return
-		end
-		self:Goto(x, y, nNextDir)
+		self:ExecuteAI()
 	end
 
 	local nDirection = self.nDirection
 	self:Move(nDirection)
+end
+
+function Character:ExecuteAI()
+	local tbCfg = AI:GetCfg(self.szAIName)
+	if not tbCfg then
+		assert(false)
+		return
+	end
+	local func = tbCfg.aifunc
+	if not func then
+		print(self.szAIName)
+		assert(false)
+		return
+	end
+	return func(self)
 end
 
 function Character:TryGoto(nNewX, nNewY)

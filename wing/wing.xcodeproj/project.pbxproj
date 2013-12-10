@@ -12,6 +12,9 @@
 		3405AEB01851FABE00097C26 /* 1.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 3405AEAF1851FABE00097C26 /* 1.mp3 */; };
 		3405AEB2185224EA00097C26 /* ai.lua in Resources */ = {isa = PBXBuildFile; fileRef = 3405AEB1185224EA00097C26 /* ai.lua */; };
 		3405AEB41854386A00097C26 /* skill.lua in Resources */ = {isa = PBXBuildFile; fileRef = 3405AEB31854386A00097C26 /* skill.lua */; };
+		3405AEB818576D1400097C26 /* fight.png in Resources */ = {isa = PBXBuildFile; fileRef = 3405AEB518576D1400097C26 /* fight.png */; };
+		3405AEB918576D1400097C26 /* fire.png in Resources */ = {isa = PBXBuildFile; fileRef = 3405AEB618576D1400097C26 /* fire.png */; };
+		3405AEBA18576D1400097C26 /* lightball.png in Resources */ = {isa = PBXBuildFile; fileRef = 3405AEB718576D1400097C26 /* lightball.png */; };
 		342F88EB17B0BE2E00450B82 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 342F88EA17B0BE2E00450B82 /* QuartzCore.framework */; };
 		342F88ED17B0BE2E00450B82 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 342F88EC17B0BE2E00450B82 /* OpenGLES.framework */; };
 		342F88EF17B0BE2E00450B82 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 342F88EE17B0BE2E00450B82 /* OpenAL.framework */; };
@@ -295,7 +298,6 @@
 		345A9199184A599C0056CAAE /* scene_mgr.lua in Resources */ = {isa = PBXBuildFile; fileRef = 345A9192184A599C0056CAAE /* scene_mgr.lua */; };
 		345A919A184A599C0056CAAE /* title.lua in Resources */ = {isa = PBXBuildFile; fileRef = 345A9193184A599C0056CAAE /* title.lua */; };
 		34942427180ECED900BE7BCB /* game_mgr.lua in Resources */ = {isa = PBXBuildFile; fileRef = 34942426180ECED900BE7BCB /* game_mgr.lua */; };
-		34942429180ECEFF00BE7BCB /* bullet.png in Resources */ = {isa = PBXBuildFile; fileRef = 34942428180ECEFF00BE7BCB /* bullet.png */; };
 		34D00A5117F1F70900EE531E /* bullet.lua in Resources */ = {isa = PBXBuildFile; fileRef = 34D00A4E17F1F70900EE531E /* bullet.lua */; };
 		34D00A5217F1F70900EE531E /* character.lua in Resources */ = {isa = PBXBuildFile; fileRef = 34D00A4F17F1F70900EE531E /* character.lua */; };
 		34D00A5317F1F70900EE531E /* monster.lua in Resources */ = {isa = PBXBuildFile; fileRef = 34D00A5017F1F70900EE531E /* monster.lua */; };
@@ -311,6 +313,9 @@
 		3405AEAF1851FABE00097C26 /* 1.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = 1.mp3; sourceTree = "<group>"; };
 		3405AEB1185224EA00097C26 /* ai.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ai.lua; sourceTree = "<group>"; };
 		3405AEB31854386A00097C26 /* skill.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = skill.lua; sourceTree = "<group>"; };
+		3405AEB518576D1400097C26 /* fight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fight.png; sourceTree = "<group>"; };
+		3405AEB618576D1400097C26 /* fire.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fire.png; sourceTree = "<group>"; };
+		3405AEB718576D1400097C26 /* lightball.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lightball.png; sourceTree = "<group>"; };
 		342F88E717B0BE2E00450B82 /* wing.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = wing.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		342F88EA17B0BE2E00450B82 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		342F88EC17B0BE2E00450B82 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
@@ -880,7 +885,6 @@
 		345A9192184A599C0056CAAE /* scene_mgr.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = scene_mgr.lua; sourceTree = "<group>"; };
 		345A9193184A599C0056CAAE /* title.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = title.lua; sourceTree = "<group>"; };
 		34942426180ECED900BE7BCB /* game_mgr.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = game_mgr.lua; sourceTree = "<group>"; };
-		34942428180ECEFF00BE7BCB /* bullet.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bullet.png; sourceTree = "<group>"; };
 		34D00A4E17F1F70900EE531E /* bullet.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bullet.lua; sourceTree = "<group>"; };
 		34D00A4F17F1F70900EE531E /* character.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = character.lua; sourceTree = "<group>"; };
 		34D00A5017F1F70900EE531E /* monster.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = monster.lua; sourceTree = "<group>"; };
@@ -2015,15 +2019,13 @@
 		342F8C6417B0BEE300450B82 /* image */ = {
 			isa = PBXGroup;
 			children = (
-				3430E8A51850C72100BF4002 /* ui */,
-				3430E8951850C5CC00BF4002 /* hero */,
-				3430E8981850C5CC00BF4002 /* monster */,
-				34942428180ECEFF00BE7BCB /* bullet.png */,
 				342F8C6517B0BEE300450B82 /* background.png */,
 				342F8C6617B0BEE300450B82 /* block.png */,
 				342F8C6717B0BEE300450B82 /* CloseNormal.png */,
 				342F8C6817B0BEE300450B82 /* CloseSelected.png */,
 				342F8C6A17B0BEE300450B82 /* Default.png */,
+				3405AEB518576D1400097C26 /* fight.png */,
+				3405AEB618576D1400097C26 /* fire.png */,
 				342F8C6D17B0BEE300450B82 /* HelloWorld.png */,
 				342F8C6E17B0BEE300450B82 /* Icon-72.png */,
 				342F8C6F17B0BEE300450B82 /* Icon-Small-50.png */,
@@ -2031,6 +2033,10 @@
 				342F8C7117B0BEE300450B82 /* Icon-Small@2x.png */,
 				342F8C7217B0BEE300450B82 /* Icon.png */,
 				342F8C7317B0BEE300450B82 /* Icon@2x.png */,
+				3405AEB718576D1400097C26 /* lightball.png */,
+				3430E8951850C5CC00BF4002 /* hero */,
+				3430E8981850C5CC00BF4002 /* monster */,
+				3430E8A51850C72100BF4002 /* ui */,
 			);
 			name = image;
 			path = Resources/image;
@@ -2166,6 +2172,7 @@
 				3405AEB01851FABE00097C26 /* 1.mp3 in Resources */,
 				3430E8A31850C70200BF4002 /* dragon.png in Resources */,
 				342F8BC317B0BE3B00450B82 /* cocos2dx-ext.mkf in Resources */,
+				3405AEB818576D1400097C26 /* fight.png in Resources */,
 				342F8BC517B0BE3B00450B82 /* cocos2dx-ext_public.defines.txt in Resources */,
 				342F8C7E17B0BEE300450B82 /* background.png in Resources */,
 				342F8C7F17B0BEE300450B82 /* block.png in Resources */,
@@ -2206,15 +2213,16 @@
 				3430E88C1850C0FE00BF4002 /* event.lua in Resources */,
 				345A9198184A599C0056CAAE /* scene_base.lua in Resources */,
 				3430E8A01850C5CC00BF4002 /* skeleton.png in Resources */,
+				3405AEBA18576D1400097C26 /* lightball.png in Resources */,
 				345A9194184A599C0056CAAE /* character_mgr.lua in Resources */,
 				3430E8AF1850D26900BF4002 /* monster_cfg.lua in Resources */,
 				34D00A5117F1F70900EE531E /* bullet.lua in Resources */,
+				3405AEB918576D1400097C26 /* fire.png in Resources */,
 				345A9196184A599C0056CAAE /* game_scene.lua in Resources */,
 				34D00A5217F1F70900EE531E /* character.lua in Resources */,
 				34D00A5317F1F70900EE531E /* monster.lua in Resources */,
 				3430E8AC1850C72100BF4002 /* magic.png in Resources */,
 				34942427180ECED900BE7BCB /* game_mgr.lua in Resources */,
-				34942429180ECEFF00BE7BCB /* bullet.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
