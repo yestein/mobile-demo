@@ -267,31 +267,37 @@ function GameMgr:OnStart_TestSkill()
 	    },
 		[2] = {
 			{
-	        	szItemName = "释放英雄技能",
+	        	szItemName = "英雄攻击",
 	        	fnCallBack = function()
 	                for dwId, tbCharacter in pairs(Hero:GetList()) do
 						tbCharacter:Attack()
 					end
 	            end,
-	        },
-	        {
-	        	szItemName = "释放怪物技能",
+	        },	        
+		},		
+		[3] = {
+			{
+	        	szItemName = "怪物攻击",
 	        	fnCallBack = function()
 	                for dwId, tbCharacter in pairs(Monster:GetList()) do
 						tbCharacter:Attack()
 					end
 	            end,
 	        },
-		},		
+		},
     }
-    MenuMgr:UpdateByString("MainMenu", tbElement, szMenuFontName, 20)
+    MenuMgr:UpdateByString("MainMenu", tbElement, szMenuFontName, 14)
 	Maze:SetSkillTest()
 	local tbScene = SceneMgr:GetScene("GameScene")
 	if tbScene then
-		local tbHero = tbScene:GenHero(999, 19, 17)
-		tbHero:SetDirection(Def.DIR_RIGHT)
-		local tbMonster = tbScene:GenSingleMonster(999, 19, 23)
-		tbMonster:SetDirection(Def.DIR_LEFT)
+		local tbMagicHero = tbScene:GenHero(999, 19, 17)
+		tbMagicHero:SetDirection(Def.DIR_RIGHT)
+		local tbPhysicHero = tbScene:GenHero(1000, 18, 19)
+		tbPhysicHero:SetDirection(Def.DIR_RIGHT)
+		local tbMonster1 = tbScene:GenSingleMonster(999, 19, 23)
+		tbMonster1:SetDirection(Def.DIR_LEFT)
+		local tbMonster2 = tbScene:GenSingleMonster(999, 18, 20)
+		tbMonster2:SetDirection(Def.DIR_LEFT)
 	end
 end
 

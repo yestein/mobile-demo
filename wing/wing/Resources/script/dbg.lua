@@ -10,7 +10,7 @@ Debug.MODE_BLACK_LIST = 1
 Debug.MODE_WHITE_LIST = 2
 
 Debug.tbWatchEventList = {
-	"CharacterBeAttacked",
+	"CharacterHPChanged",
 	"CharacterDie",
 	"CharacterStartMove",
 	"CharacterReset",

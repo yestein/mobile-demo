@@ -69,13 +69,15 @@ Def.tbColor = {
 }
 
 if OS_WIN32 then
-	Def.szHeroFile   = "image/hero/wizard.png"
-	Def.szBlockImg   = "image/block.png"
-	Def.szBGImg      = "image/background.png"
-	Def.szTitleFile  = "image/ui/title_bg.png"
+	Def.szHeroFile  = "image/hero/wizard.png"
+	Def.szBlockImg  = "image/block.png"
+	Def.szBGImg     = "image/background.png"
+	Def.szTitleFile = "image/ui/title_bg.png"
+	Def.szFightImg  = "image/fight.png"
 else	
-	Def.szHeroFile   = "wizard.png"
-	Def.szBlockImg   = "block.png"
-	Def.szBGImg      = "background.png"
-	Def.szTitleFile  = "title_bg.png"
+	Def.szHeroFile  = "wizard.png"
+	Def.szBlockImg  = "block.png"
+	Def.szBGImg     = "background.png"
+	Def.szTitleFile = "title_bg.png"
+	Def.szFightImg  = "fight.png"
 end

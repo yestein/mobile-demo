@@ -27,7 +27,7 @@ function Character:Init(pSprite, tbProperty, tbSkill, szAIName)
 		MaxMP       = 0,
 		Attack      = 5,
 		AttackRange = 1,
-		Defence     = 5,
+		Defense     = 5,
 		Magic       = 5,
 		Speed       = 1,
 	}
@@ -68,15 +68,14 @@ function Character:Attack()
 	Skill:CastSkill(szSkillName, self)
 end
 
-function Character:BeAttacked(tbBullet)
+function Character:ReceiveDamage(nDamage)
 	local nCurHP = self:GetProperty("CurHP")
-	local nNewHP = tbBullet:CalcDamage(self)
+	local nNewHP = nCurHP - nDamage
 	self:SetProperty("CurHP", nNewHP)
-	Event:FireEvent("CharacterBeAttacked", self.dwId, nCurHP, nNewHP)
+	Event:FireEvent("CharacterHPChanged", self.dwId, nCurHP, nNewHP)
 	if nNewHP <= 0 then
 		self:Die()
 	end
-
 end
 
 function Character:Die()

@@ -14,25 +14,46 @@ function Skill:Init( ... )
 
 end
 
-function Skill:CastSkill(szSkillName, tbLancher, tbTarget)
+function Skill:CastSkill(szSkillName, tbLancher)
 	local tbSkillCfg = self.tbCfg[szSkillName]
 	if not tbSkillCfg then
 		return
 	end
 	local func = tbSkillCfg.func
-	local nRetCode = func(self, tbLancher, tbTarget, tbSkillCfg)
-	Event:FireEvent("CastSkill", szSkillName, tbLancher.dwId, tbTarget and tbTarget.dwId)
+	local nRetCode, tbTargetList = func(self, tbLancher, tbSkillCfg)
+	Event:FireEvent("CastSkill", szSkillName, tbLancher.dwId, tbTargetList)
 	return nRetCode
 end
 
-function Skill:CastPhysicAttack(tbLancher, tbTarget, tbCfg)
-	-- body
-end
-
-function Skill:CastLightAttack(tbLancher, tbTarget, tbCfg)
+function Skill:CastPhysicAttack(tbLancher, tbCfg)
 	if not tbLancher then
 		assert(false)
-		return
+		return 0
+	end
+	local nDirection = tbLancher.nDirection	
+	local tbOffset = Def.tbMove[nDirection]
+	local nCheckRow, nCheckCol = tbLancher.tbLogicPos.nRow + tbOffset[2], tbLancher.tbLogicPos.nCol + tbOffset[1]
+	local dwCharacterId = Maze:GetUnit(nCheckRow, nCheckCol)
+	if not dwCharacterId or dwCharacterId == 0 then
+		return 0
+	end
+	local tbTarget = GameMgr:GetCharacterById(dwCharacterId)
+	if not tbTarget then
+		return 0
+	end
+
+	local nLancherAttack = tbLancher:GetProperty("Attack")
+	local nTargetDefense = tbTarget:GetProperty("Defense")
+	local nDamage = nLancherAttack - nTargetDefense
+	tbTarget:ReceiveDamage(nDamage)
+	Event:FireEvent("CharacterPhyiscAttack", tbLancher.dwId, tbTarget.dwId, nDamage)
+	return 1, tbTarget
+end
+
+function Skill:CastLightAttack(tbLancher, tbCfg)
+	if not tbLancher then
+		assert(false)
+		return 0
 	end
 	local pLancherSprite = tbLancher.pSprite
 	local nX, nY = pLancherSprite:getPosition()
@@ -46,12 +67,13 @@ function Skill:CastLightAttack(tbLancher, tbTarget, tbCfg)
 	local nDirection = tbLancher.nDirection
 	Bullet:AddBullet(nX , nY, nDirection, tbBulletProperty)
 	tbLancher:Wait(30)
+	return 1
 end
 
-function Skill:CastFireAttack(tbLancher, tbTarget, tbCfg)
+function Skill:CastFireAttack(tbLancher, tbCfg)
 	if not tbLancher then
 		assert(false)
-		return
+		return 0
 	end
 	local pLancherSprite = tbLancher.pSprite
 	local nX, nY = pLancherSprite:getPosition()
@@ -65,6 +87,7 @@ function Skill:CastFireAttack(tbLancher, tbTarget, tbCfg)
 	local nDirection = tbLancher.nDirection
 	Bullet:AddBullet(nX , nY, nDirection, tbBulletProperty)
 	tbLancher:Wait(30)
+	return 1
 end
 
 Skill.tbCfg = {

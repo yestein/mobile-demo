@@ -22,9 +22,11 @@ function Performance:Init(layer)
 		local labelDamage = CCLabelTTF:create("-100", szDamageFontName, 18)
         layer:addChild(labelDamage, 10)
         labelDamage:setVisible(false)
-        self.tbDamage[i] = labelDamage        
+        self.tbDamage[i] = labelDamage
 	end
-
+	self.nodeFight = CCSpriteBatchNode:create(Def.szFightImg)
+	self.nodeFight:setPosition(0, 0)
+	layer:addChild(self.nodeFight, 10)
 	self:UnRegistEvent()
 	self:RegistEvent()
 end
@@ -42,21 +44,34 @@ function Performance:GetAvaiableDamageLabel()
 	return label
 end
 
+function Performance:GetNodeFight()
+	return self.nodeFight
+end
+
 function Performance:RegistEvent()
-	if not self.nRegBeAttack then
-		self.nRegBeAttack = Event:RegistEvent("CharacterBeAttacked", self.OnCharacterBeAttacked, self)
+	if not self.nRegHPChanged then
+		self.nRegHPChanged = Event:RegistEvent("CharacterHPChanged", self.OnCharacterHPChanged, self)
+	end
+
+	if not self.nRegPhysicAttack then
+		self.nRegPhysicAttack = Event:RegistEvent("CharacterPhyiscAttack", self.OnCharacterPhyiscAttack, self)
 	end
 end
 
 function Performance:UnRegistEvent()
-	if self.nRegBeAttack then
-		Event:UnRegistEvent("CharacterBeAttacked", self.nRegBeAttack )
-		self.nRegBeAttack = nil
+	if self.nRegHPChanged then
+		Event:UnRegistEvent("CharacterHPChanged", self.nRegHPChanged )
+		self.nRegHPChanged = nil
+	end
+
+	if self.nRegPhysicAttack then
+		Event:UnRegistEvent("CharacterPhyiscAttack", self.nRegPhysicAttack )
+		self.nRegPhysicAttack = nil
 	end
 end
 
 
-function Performance:OnCharacterBeAttacked(dwCharacterId,  nBeforeHP, nAfterHP)
+function Performance:OnCharacterHPChanged(dwCharacterId,  nBeforeHP, nAfterHP)
 	local nDamage = nAfterHP - nBeforeHP
 	local color = nil
 	local szMsg = nil
@@ -90,4 +105,73 @@ function Performance:OnCharacterBeAttacked(dwCharacterId,  nBeforeHP, nAfterHP)
 	label:setPosition(nX, nY + 10)
 	local action = CCSpawn:createWithTwoActions(CCFadeOut:create(1), CCMoveBy:create(1, ccp(0, 40)))
 	label:runAction(action)
+end
+
+function Performance:OnCharacterPhyiscAttack(dwLancherId, dwTargetId, nDamage)
+	local tbLancher = GameMgr:GetCharacterById(dwLancherId)
+	if not tbLancher then
+		assert(false)
+		return
+	end
+	local tbTarget = GameMgr:GetCharacterById(dwTargetId)
+	if not tbTarget then
+		assert(false)
+		return
+	end
+	local pLancherSprite = tbLancher.pSprite
+	if not pLancherSprite then
+		assert(false)
+		return
+	end
+	local pTargetSprite = tbTarget.pSprite
+	if not pTargetSprite then
+		assert(false)
+		return
+	end
+
+	local nLancherX, nLancherY = pLancherSprite:getPosition()
+	local nTargetX, nTargetY = pTargetSprite:getPosition()
+
+	local nDisPlayX = math.floor((nLancherX + nTargetX) / 2)
+	local nDisPlayY = math.floor((nLancherY + nTargetY) / 2)
+	print(nLancherX, nLancherY, nDisPlayX,  nDisPlayY)
+	self:GenerateFightFlag(nDisPlayX, nDisPlayY)
+end
+
+function Performance:GenerateFightFlag(nX, nY)
+	local nodeFight = self:GetNodeFight()
+	if not nodeFight then
+		assert(false)
+		return
+	end
+	local textureFight = nodeFight:getTexture()
+	local pSprite = CCSprite:createWithTexture(textureFight)
+	
+	
+	local tbTextureSize = pSprite:getTextureRect().size
+	local nFrameWidth = tbTextureSize.width / 2
+	local nFrameHeight = tbTextureSize.height
+	local spriteFrames = CCArray:create()	
+	for i = 1, 2 do
+		local rect = CCRectMake((i - 1) * nFrameWidth, 0, nFrameWidth, nFrameHeight)
+		print((i - 1) * nFrameWidth, nFrameHeight, nFrameWidth, nFrameHeight)
+    	local frame = CCSpriteFrame:createWithTexture(textureFight, rect)
+    	spriteFrames:addObject(frame)
+    end
+    local animation = CCAnimation:createWithSpriteFrames(spriteFrames, 0.125)
+    local animate = CCAnimate:create(animation)
+    pSprite:stopAllActions()
+    pSprite:runAction(CCRepeatForever:create(animate))
+
+	nodeFight:addChild(pSprite)
+	pSprite:setPosition(nX, nY)
+
+    local nRegId = nil
+    local function tick()
+	    CCDirector:sharedDirector():getScheduler():unscheduleScriptEntry(nRegId)
+	    nodeFight:removeChild(pSprite, true)
+	end
+	nRegId = CCDirector:sharedDirector():getScheduler():scheduleScriptFunc(tick, 0.25, false)
+	
+	return pSprite
 end

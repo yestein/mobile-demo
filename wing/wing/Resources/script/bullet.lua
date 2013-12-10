@@ -60,7 +60,8 @@ function Bullet:Init()
 					local tbCharacter = GameMgr:GetCharacterById(dwTargetId)
 					if tbCharacter then
 						if tbBullet:JudgeCollide(nRow, nCol, dwTargetId) == 1  then
-							tbCharacter:BeAttacked(tbBullet)
+							local nDamage = tbBullet:CalcDamage(tbCharacter)
+							tbCharacter:ReceiveDamage(nDamage)
 							tbBullet:Uninit()
 							self.tbBulletList[dwBulletId] = nil
 						end
@@ -158,9 +159,8 @@ function tbBulletClass:JudgeCollide(nRow, nCol, dwTargetId)
 end
 
 function tbBulletClass:CalcDamage(tbCharacter)
-	local nCurHP = tbCharacter:GetProperty("CurHP")
-	local nNewHP = nCurHP - self.tbProperty.Damage
-	return nNewHP, self.tbProperty.Damage
+	local nTargetDefense = tbCharacter:GetProperty("Defense")
+	return self.tbProperty.Damage - nTargetDefense
 end
 
 function tbBulletClass:Uninit()

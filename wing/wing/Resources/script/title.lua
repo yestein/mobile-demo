@@ -145,7 +145,7 @@ end
 
 function GameMgr:RegistEvent()
     Event:RegistEvent("HeroAdd", self.OnHeroAdd, self)
-    Event:RegistEvent("CharacterBeAttacked", self.OnCharacterBeAttacked, self)
+    Event:RegistEvent("CharacterHPChanged", self.OnCharacterReceiveDamage, self)
     Event:RegistEvent("CharacterDie", self.OnCharacterDie, self)
     Event:RegistEvent("GameMgrSetState", self.OnStateChanged, self)
     Event:RegistEvent("SetResouce", self.OnResourceChanged, self)
@@ -176,7 +176,7 @@ function GameMgr:OnCharacterDie(dwCharacterId)
     Event:FireEvent("TitleHPWaitForRemove", dwCharacterId)
 end
 
-function GameMgr:OnCharacterBeAttacked(dwCharacterId)
+function GameMgr:OnCharacterReceiveDamage(dwCharacterId)
     if Lib:IsHero(dwCharacterId) ~= 1 then
         return
     end
