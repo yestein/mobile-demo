@@ -62,10 +62,17 @@ function Character:Uninit()
 	CCDirector:sharedDirector():getScheduler():unscheduleScriptEntry(self.nRegId)
 end
 
-function Character:Attack()
-	local tbSkill = self:GetSkill()
-	local szSkillName = tbSkill[math.random(1, #tbSkill)]
-	Skill:CastSkill(szSkillName, self)
+function Character:GoAndAttack(nDirection, tbTarget)
+	local nDistance = Lib:GetDistance(self, tbTarget)
+	local nAttackRange = self:GetProperty("AttackRange")
+	self:SetDirection(nDirection)
+	if nAttackRange < nDistance then
+		self:Goto(nDirection)
+	else
+		local tbSkill = self:GetSkill()
+		local szSkillName = tbSkill[math.random(1, #tbSkill)]
+		Skill:CastSkill(szSkillName, self)
+	end
 end
 
 function Character:ReceiveDamage(nDamage)
@@ -152,12 +159,14 @@ function Character:GetOppositeDirection(nDir)
 	end
 end
 
-function Character:Move(nDirection)
-	local tbPosOffset = Def.tbMove[nDirection]
-	if not tbPosOffset then
+function Character:Move()
+	if not self.tbTarget then
 		return 0
 	end
-	if not self.tbTarget then
+
+	local nDirection = self.nDirection
+	local tbPosOffset = Def.tbMove[nDirection]
+	if not tbPosOffset then
 		return 0
 	end
 	local nX, nY = unpack(tbPosOffset)
@@ -176,11 +185,13 @@ function Character:Move(nDirection)
 	Event:FireEvent("CharacterMove", self.dwId, x, y, nNewX, nNewY, nDirection)
 end
 
-function Character:Goto(x, y, nDir)
+function Character:Goto(nDir)
 	local tbPosOffset = Def.tbMove[nDir]
 	if not tbPosOffset then
 		return 0
 	end
+	self:SetDirection(nDir)
+	local x, y = self.pSprite:getPosition()
 	local nX, nY = unpack(tbPosOffset)
 	Maze:ClearUnit(self.tbLogicPos.nRow, self.tbLogicPos.nCol)
 	self.tbLogicPos.nRow = self.tbLogicPos.nRow + nY
@@ -232,9 +243,7 @@ function Character:AutoMove()
 	if IsArriveTarget() == 1 then
 		self:ExecuteAI()
 	end
-
-	local nDirection = self.nDirection
-	self:Move(nDirection)
+	self:Move()
 end
 
 function Character:ExecuteAI()

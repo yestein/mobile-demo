@@ -111,3 +111,11 @@ function Lib:IsHero(dwId)
 	end
 end
 
+function Lib:GetDistance(tbCharacterA, tbCharacterB)
+	local nRowA, nColA = tbCharacterA:GetLogicPos()
+	local nRowB, nColB = tbCharacterB:GetLogicPos()
+	local nDistanceY = nRowA - nRowB
+	local nDistanceX = nColA - nColB
+	return math.sqrt((nDistanceY * nDistanceY) + (nDistanceX * nDistanceX))
+end
+

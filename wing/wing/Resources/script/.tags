@@ -13,7 +13,7 @@ Bullet:CreateFire	.\bullet.lua	/^function Bullet:CreateFire(bulletNode)$/;"	f
 Bullet:CreateLightBall	.\bullet.lua	/^function Bullet:CreateLightBall(bulletNode)$/;"	f
 Bullet:GetBulletNode	.\bullet.lua	/^function Bullet:GetBulletNode(szType)$/;"	f
 Bullet:Init	.\bullet.lua	/^function Bullet:Init()$/;"	f
-Character:Attack	.\character.lua	/^function Character:Attack()$/;"	f
+Character:GoAndAttack	.\character.lua	/^function Character:GoAndAttack()$/;"	f
 Character:AutoMove	.\character.lua	/^function Character:AutoMove()$/;"	f
 Character:CancelPause	.\character.lua	/^function Character:CancelPause()$/;"	f
 Character:Die	.\character.lua	/^function Character:Die()$/;"	f

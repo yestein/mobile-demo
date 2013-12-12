@@ -50,7 +50,7 @@ function Bullet:Init()
 				pSprite:setPosition(nNewX, nNewY)
 
 				local nRow, nCol = Lib:GetRowColByPos(nNewX, nNewY)
-				if Maze:IsFree(nRow, nCol) == Maze.MAP_BLOCK  then
+				if Maze:GetData(nRow, nCol) == Maze.MAP_BLOCK  then
 					tbBullet:Uninit()
 					self.tbBulletList[dwBulletId] = nil
 					return

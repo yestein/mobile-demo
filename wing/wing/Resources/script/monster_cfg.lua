@@ -41,6 +41,11 @@ Monster.tbCfg = {
 		tbSkill = {"光魔法", "火魔法"},
 		szAIName = "NormalMove"
 	},
+	[1000]= {
+		tbProperty = {MaxHP = 10000, Attack = 10, Defense = 5, AttackRange = 1},
+		tbSkill = {"物理攻击"},
+		szAIName = "NotMove"
+	},
 }
 
 if OS_WIN32 then
@@ -48,9 +53,11 @@ if OS_WIN32 then
 	Monster.tbCfg[2].szImgFile = "image/monster/witch.png"
 	Monster.tbCfg[3].szImgFile = "image/monster/dragon.png"
 	Monster.tbCfg[999].szImgFile = "image/monster/witch.png"
+	Monster.tbCfg[1000].szImgFile = "image/monster/skeleton.png"
 else
 	Monster.tbCfg[1].szImgFile = "skeleton.png"
 	Monster.tbCfg[2].szImgFile = "witch.png"
 	Monster.tbCfg[3].szImgFile = "dragon.png"
 	Monster.tbCfg[999].szImgFile = "witch.png"
+	Monster.tbCfg[1000].szImgFile = "skeleton.png"
 end

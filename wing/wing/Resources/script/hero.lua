@@ -86,10 +86,9 @@ function tbHeroClass:AutoMove()
 
 	if IsArriveTarget() == 1 then
 		self:RecordPos(x, y)
-		local tbMonster, nDirection = self:TryFindMonster()
+		local tbMonster, nDirection, nX, nY = self:TryFindMonster()
 		if tbMonster then
-			self:SetDirection(nDirection)
-			self:Attack()
+			self:GoAndAttack(nDirection, tbMonster)
 			return 0
 		end
 		local nNextDir = Def.DIR_END		
@@ -117,11 +116,10 @@ function tbHeroClass:AutoMove()
 				return
 			end
 		end
-		self:Goto(x, y, nNextDir)
+		self:Goto(nNextDir)
 	end
 
-	local nDirection = self.nDirection
-	self:Move(nDirection)
+	self:Move()
 end
 
 function tbHeroClass:TryGoto(nNewX, nNewY)

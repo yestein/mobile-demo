@@ -76,7 +76,7 @@ local function main()
 
     Performance:Init(layerWorld)
     GameMgr:InitTitle()
-    GameMgr:SetState(GameMgr.STATE_TEST_SKILL)
+    GameMgr:SetState(GameMgr.STATE_NORMAL)
     Player:Init()
     Lib:SafeCall({Player.Load, Player})
 		

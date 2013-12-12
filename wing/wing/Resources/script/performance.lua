@@ -134,7 +134,6 @@ function Performance:OnCharacterPhyiscAttack(dwLancherId, dwTargetId, nDamage)
 
 	local nDisPlayX = math.floor((nLancherX + nTargetX) / 2)
 	local nDisPlayY = math.floor((nLancherY + nTargetY) / 2)
-	print(nLancherX, nLancherY, nDisPlayX,  nDisPlayY)
 	self:GenerateFightFlag(nDisPlayX, nDisPlayY)
 end
 
@@ -154,7 +153,6 @@ function Performance:GenerateFightFlag(nX, nY)
 	local spriteFrames = CCArray:create()	
 	for i = 1, 2 do
 		local rect = CCRectMake((i - 1) * nFrameWidth, 0, nFrameWidth, nFrameHeight)
-		print((i - 1) * nFrameWidth, nFrameHeight, nFrameWidth, nFrameHeight)
     	local frame = CCSpriteFrame:createWithTexture(textureFight, rect)
     	spriteFrames:addObject(frame)
     end

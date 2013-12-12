@@ -32,8 +32,7 @@ function AI.AI_NormalMove(tbCharacter)
 	local x, y = tbCharacter.pSprite:getPosition()
 	local tbHero, nDirection = tbCharacter:TryFindHero()
 	if tbHero then
-		tbCharacter:SetDirection(nDirection)
-		tbCharacter:Attack()
+		tbCharacter:GoAndAttack(nDirection, tbHero)
 		return 0
 	end
 	
@@ -55,7 +54,7 @@ function AI.AI_NormalMove(tbCharacter)
 			local nX, nY = unpack(tbPosOffset)
 			local nNewX, nNewY = x + tbCharacter.tbSize.width * nX + nX, y + tbCharacter.tbSize.height * nY
 			if tbCharacter:TryGoto(nNewX, nNewY) == 1 then
-				tbCharacter:Goto(x, y, nNextDir)
+				tbCharacter:Goto(nNextDir)
 				break
 			end
 		end
@@ -65,14 +64,7 @@ end
 function AI.AI_NotMove(tbCharacter)
 	local tbHero, nDirection, nX, nY = tbCharacter:TryFindHero()
 	if tbHero then
-		tbCharacter:SetDirection(nDirection)
-		local nDistance = nX > 0 and nX or nY
-		local nAttackRange = tbCharacter:GetProperty("AttackRange")
-		if nAttackRange < nDistance then
-			tbCharacter:Goto(unpack(Def.tbMove[nDirection], nDirection)
-		else
-			tbCharacter:Attack()
-		end
+		tbCharacter:GoAndAttack(nDirection, tbHero)
 		return 0
 	end
 	return 1

@@ -11,7 +11,7 @@ tbBulletClass:Init	bullet.lua	/^function tbBulletClass:Init(nX, nY, tbProperty)$
 tbBulletClass:JudgeCollide	bullet.lua	/^function tbBulletClass:JudgeCollide(nRow, nCol, dwTargetId)$/;"	f
 tbBulletClass:Uninit	bullet.lua	/^function tbBulletClass:Uninit()$/;"	f
 tick	bullet.lua	/^	local function tick()$/;"	f
-Character:Attack	character.lua	/^function Character:Attack()$/;"	f
+Character:GoAndAttack	character.lua	/^function Character:GoAndAttack()$/;"	f
 Character:AutoMove	character.lua	/^function Character:AutoMove()$/;"	f
 Character:CancelPause	character.lua	/^function Character:CancelPause()$/;"	f
 Character:Die	character.lua	/^function Character:Die()$/;"	f
