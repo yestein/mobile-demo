@@ -265,7 +265,7 @@ function Character:GetLogicPos()
 end
 
 function Character:TryFindUnit(bHero)
-	local nFindRange = self.tbProperty.AttackRange
+	local nFindRange = self.tbProperty.ViewRange
 	local nRow, nCol = self:GetLogicPos()
 	
 	for nDirection = Def.DIR_START + 1, Def.DIR_END - 1 do
@@ -283,7 +283,7 @@ function Character:TryFindUnit(bHero)
 			end
 			local dwId = Maze:GetUnit(nCheckRow, nCheckCol)
 			if dwId > 0 and Lib:IsHero(dwId) == bHero then
-				return GameMgr:GetCharacterById(dwId), nDirection
+				return GameMgr:GetCharacterById(dwId), nDirection, nX, nY
 			end
 		end
 	end

@@ -63,6 +63,18 @@ function AI.AI_NormalMove(tbCharacter)
 end
 
 function AI.AI_NotMove(tbCharacter)
+	local tbHero, nDirection, nX, nY = tbCharacter:TryFindHero()
+	if tbHero then
+		tbCharacter:SetDirection(nDirection)
+		local nDistance = nX > 0 and nX or nY
+		local nAttackRange = tbCharacter:GetProperty("AttackRange")
+		if nAttackRange < nDistance then
+			tbCharacter:Goto(unpack(Def.tbMove[nDirection], nDirection)
+		else
+			tbCharacter:Attack()
+		end
+		return 0
+	end
 	return 1
 end
 
