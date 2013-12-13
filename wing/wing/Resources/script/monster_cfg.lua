@@ -18,6 +18,7 @@
 -- 		Magic       = 5,
 -- 		Speed       = 1,
 -- }
+require("maze")
 
 Monster.tbCfg = {
 	[1]= {
@@ -46,6 +47,11 @@ Monster.tbCfg = {
 		tbSkill = {"物理攻击"},
 		szAIName = "NotMove"
 	},
+	[Maze.MAP_TARGET]= {
+		tbProperty = {MaxHP = 10000, Attack = 0, Defense = 0, AttackRange = 0},
+		tbSkill = {},
+		szAIName = "Follow",
+	},
 }
 
 if OS_WIN32 then
@@ -54,10 +60,12 @@ if OS_WIN32 then
 	Monster.tbCfg[3].szImgFile = "image/monster/dragon.png"
 	Monster.tbCfg[999].szImgFile = "image/monster/witch.png"
 	Monster.tbCfg[1000].szImgFile = "image/monster/skeleton.png"
+	Monster.tbCfg[Maze.MAP_TARGET].szImgFile = "image/monster/target.png"
 else
 	Monster.tbCfg[1].szImgFile = "skeleton.png"
 	Monster.tbCfg[2].szImgFile = "witch.png"
 	Monster.tbCfg[3].szImgFile = "dragon.png"
 	Monster.tbCfg[999].szImgFile = "witch.png"
 	Monster.tbCfg[1000].szImgFile = "skeleton.png"
+	Monster.tbCfg[Maze.MAP_TARGET].szImgFile = "target.png"
 end

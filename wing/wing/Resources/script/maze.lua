@@ -10,25 +10,39 @@ Maze.MAP_FREE     = 1
 Maze.MAP_BLOCK    = 2
 
 Maze.MAP_MONSTER_START  = 3
-
-local sharedTextureCache = CCTextureCache:sharedTextureCache()
+Maze.MAP_TARGET = 99999
 
 function Maze:Init(nWidth, nHeight)
 	self.tbData = {}
 	self.tbUnit = {}
 	self.tbRecord = {}
+	self.tbKindPos = {Def.tbEntrance[1], Def.tbEntrance[2]}
 	for i = 1, nHeight do
 		self.tbData[i] = {}
 		self.tbUnit[i] = {}
 		for j = 1, nWidth do
 			if i == Def.tbEntrance[1] and j == Def.tbEntrance[2] then
-				self.tbData[i][j] = self.MAP_FREE
+				self.tbData[i][j] = self.MAP_TARGET + Maze.MAP_MONSTER_START - 1
 			else
 				self.tbData[i][j] = self.MAP_BLOCK
 			end
 			self.tbUnit[i][j] = 0
 		end
 	end
+end
+
+function Maze:Reset()
+	cclog("Maze:Rest")
+	for nRow , tbRow in ipairs(self.tbData) do
+		for nCol, _ in ipairs(tbRow) do
+			self.tbData[nRow][nCol] = self.MAP_BLOCK
+			self.tbBlock[nRow][nCol]:setVisible(true)
+		end
+	end
+	local nEnterRow, nEnterCol = unpack(Def.tbEntrance)
+	self.tbData[nEnterRow][nEnterCol] = self.MAP_TARGET + Maze.MAP_MONSTER_START - 1
+	self.tbBlock[nEnterRow][nEnterCol]:setVisible(false)
+	Event:FireEvent("ResetMaze")
 end
 
 function Maze:Entry(tbData)
@@ -265,20 +279,6 @@ function Maze:CheckCanDig(nRow, nCol)
 	return 1
 end
 
-function Maze:Reset()
-	cclog("Maze:Rest")
-	for nRow , tbRow in ipairs(self.tbData) do
-		for nCol, _ in ipairs(tbRow) do
-			self.tbData[nRow][nCol] = self.MAP_BLOCK
-			self.tbBlock[nRow][nCol]:setVisible(true)
-		end
-	end
-	local nEnterRow, nEnterCol = unpack(Def.tbEntrance)
-	self.tbData[nEnterRow][nEnterCol] = self.MAP_FREE
-	self.tbBlock[nEnterRow][nEnterCol]:setVisible(false)
-	Event:FireEvent("ResetMaze")
-end
-
 function Maze:RandomMaze()
 	for nRow, tbRow in ipairs(self.tbData) do
 		for nColumn, nData in ipairs(tbRow) do
@@ -342,8 +342,8 @@ function Maze:ClearMouseMonster()
 	self.dwMonsterTemplateId = nil
 	Event:FireEvent("ClearMouseMonster")
 end
---Render Maze
 
+--Render Maze
 function Maze:GenBlock()
 	local BlockNode = CCSpriteBatchNode:create(Def.szBlockImg)
     local tbSprite = {}
@@ -364,8 +364,11 @@ function Maze:GenBlock()
 	    	end
 		end
 	end
-
 	return tbSprite
+end
+
+function Maze:GenTarget()
+
 end
 
 function Maze:StartDrag(nRow, nCol)

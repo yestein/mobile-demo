@@ -140,8 +140,12 @@ function GameMgr:OnStart_Edit()
 	        {
 	            szItemName = "清空地图",
 	            fnCallBack = function()
+	           		Monster:ClearAll()
 	                Maze:Reset()
-	                Monster:ClearAll()
+	                local tbScene = SceneMgr:GetScene("GameScene")
+	                if tbScene then
+	                	tbScene:GenMonster()
+	                end
 	            end
 	        },
 	    },

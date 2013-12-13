@@ -97,7 +97,7 @@ function GameMgr:AddHeroHP(dwHeroId)
     local tbHero = self:GetCharacterById(dwHeroId)
     local pSprite = tbHero.pSprite
     local pCopySprite = CCSprite:createWithTexture(pSprite:getTexture())
-    Character:SetSpriteDirection(pCopySprite, Def.DIR_DOWN)
+    Performance:SetSpriteDirection(pCopySprite, Def.DIR_DOWN)
     pCopySprite:setScale(0.6)
     local tbVisibleSize = CCDirector:sharedDirector():getVisibleSize()
     local tbSpriteSize = pSprite:getTextureRect().size

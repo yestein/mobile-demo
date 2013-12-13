@@ -32,9 +32,9 @@ function Hero:GenerateId()
 	return nRetId
 end
 
-function Hero:NewHero(dwTemplateId, nStartX, nStartY, tbAI)
+function Hero:NewHero(dwHeroTemplateId, nStartX, nStartY, tbAI)
 	-- create hero animate
-	local tbCfg = self.tbCfg[dwTemplateId]
+	local tbCfg = self.tbCfg[dwHeroTemplateId]
 	local textureHero = CCTextureCache:sharedTextureCache():addImage(tbCfg.szImgFile)
 	local rect = CCRectMake(0, frameHeight, frameWidth, frameHeight)
 	local frame0 = CCSpriteFrame:createWithTexture(textureHero, rect)
@@ -44,7 +44,7 @@ function Hero:NewHero(dwTemplateId, nStartX, nStartY, tbAI)
     pHero.isPaused = true
     tbNewHero.dwId = self:GenerateId()
     local tbProperty = tbCfg.tbProperty
-	tbNewHero:Init(pHero, tbProperty, tbCfg.tbSkill, tbAI)
+	tbNewHero:Init(pHero, dwHeroTemplateId, tbProperty, tbCfg.tbSkill, tbAI)
 	GameMgr:AddCharacter(tbNewHero.dwId, tbNewHero)
 	Event:FireEvent("HeroAdd", tbNewHero.dwId)
 	return tbNewHero, pHero
@@ -71,7 +71,15 @@ function Hero:GetList()
 	return tbRet
 end
 
-function tbHeroClass:AutoMove()
+function tbHeroClass:Finish()
+	self.bFinish = 1
+end
+
+function tbHeroClass:IsFinish()
+	return self.bFinish
+end
+
+function tbHeroClass:Activate()
 	local x, y = self.pSprite:getPosition()
 
 	local function IsArriveTarget()
@@ -152,7 +160,7 @@ function tbHeroClass:PushPos(nDir)
 	if not nDir then
 		return 0
 	end
-	local nOppDir = self:GetOppositeDirection(nDir)
+	local nOppDir = Lib:GetOppositeDirection(nDir)
 	table.insert(self.tbStack, nOppDir)
 	return 1
 end

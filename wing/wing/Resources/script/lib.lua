@@ -119,3 +119,15 @@ function Lib:GetDistance(tbCharacterA, tbCharacterB)
 	return math.sqrt((nDistanceY * nDistanceY) + (nDistanceX * nDistanceX))
 end
 
+function Lib:GetOppositeDirection(nDir)
+	if nDir == Def.DIR_DOWN then
+		return Def.DIR_UP
+	elseif nDir == Def.DIR_RIGHT then
+		return Def.DIR_LEFT
+	elseif nDir == Def.DIR_LEFT then
+		return Def.DIR_RIGHT
+	elseif nDir == Def.DIR_UP then
+		return Def.DIR_DOWN
+	end
+end
+

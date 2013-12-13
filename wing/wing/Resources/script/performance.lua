@@ -48,6 +48,23 @@ function Performance:GetNodeFight()
 	return self.nodeFight
 end
 
+function Performance:SetSpriteDirection(pSprite, nDirection)
+	local frameWidth = 36
+	local frameHeight = 48
+
+	local Texture = pSprite:getTexture()
+	local animFrames = CCArray:create()
+	for i = 1, 4 do
+		local rect = CCRectMake((i - 1) * frameWidth, frameHeight * Def.tbTextureRow[nDirection], frameWidth, frameHeight)
+	    local frame = CCSpriteFrame:createWithTexture(Texture, rect)
+	    animFrames:addObject(frame)
+	end
+    local animation = CCAnimation:createWithSpriteFrames(animFrames, 0.15)
+    local animate = CCAnimate:create(animation)
+    pSprite:stopAllActions()
+    pSprite:runAction(CCRepeatForever:create(animate))
+end
+
 function Performance:RegistEvent()
 	if not self.nRegHPChanged then
 		self.nRegHPChanged = Event:RegistEvent("CharacterHPChanged", self.OnCharacterHPChanged, self)

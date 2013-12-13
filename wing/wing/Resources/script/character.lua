@@ -7,8 +7,10 @@
 --=======================================================================
 
 
-function Character:Init(pSprite, tbProperty, tbSkill, szAIName)
+function Character:Init(pSprite, dwTemplateId, tbProperty, tbSkill, szAIName)
 	self.pSprite = pSprite
+	self.dwTemplateId = dwTemplateId
+	self.tbCatchRoom = {}
 	local nOriginX, nOriginY = pSprite:getPosition()
 	self.tbOrigin = {x = nOriginX, y = nOriginY}
 	local nRow, nCol = Lib:GetRowColByPos(nOriginX, nOriginY)
@@ -53,7 +55,7 @@ function Character:Init(pSprite, tbProperty, tbSkill, szAIName)
 	    	self.nWaitFrame = self.nWaitFrame - 1
 	    	return
 	    end
-	    self:AutoMove()
+	    self:Activate()
 	end
 	self.nRegId = CCDirector:sharedDirector():getScheduler():scheduleScriptFunc(tick, 0, false)
 end
@@ -62,46 +64,16 @@ function Character:Uninit()
 	CCDirector:sharedDirector():getScheduler():unscheduleScriptEntry(self.nRegId)
 end
 
-function Character:GoAndAttack(nDirection, tbTarget)
-	local nDistance = Lib:GetDistance(self, tbTarget)
-	local nAttackRange = self:GetProperty("AttackRange")
-	self:SetDirection(nDirection)
-	if nAttackRange < nDistance then
-		self:Goto(nDirection)
-	else
-		local tbSkill = self:GetSkill()
-		local szSkillName = tbSkill[math.random(1, #tbSkill)]
-		Skill:CastSkill(szSkillName, self)
-	end
-end
-
-function Character:ReceiveDamage(nDamage)
-	local nCurHP = self:GetProperty("CurHP")
-	local nNewHP = nCurHP - nDamage
-	self:SetProperty("CurHP", nNewHP)
-	Event:FireEvent("CharacterHPChanged", self.dwId, nCurHP, nNewHP)
-	if nNewHP <= 0 then
-		self:Die()
-	end
-end
-
-function Character:Die()
-	Event:FireEvent("CharacterDie", self.dwId)
-	Maze:ClearUnit(self.tbLogicPos.nRow, self.tbLogicPos.nCol)
-	GameMgr:RemoveCharacter("GameScene", self.dwId)
-	self:Uninit()
-end
-
-function Character:Wait(nFrame)
-	self.nWaitFrame = nFrame
-end
-
 function Character:Start()
 	self.tbStack = {}
 	self.tbRecordPos = {}
 	self.pSprite:setVisible(true)
 	self.pSprite.isPaused = false
 	Event:FireEvent("CharacterStartMove", self.dwId)
+end
+
+function Character:Wait(nFrame)
+	self.nWaitFrame = nFrame
 end
 
 function Character:Pause()
@@ -142,21 +114,63 @@ function Character:SetProperty(Key, Value)
 	return 0
 end
 
+function Character:GetTemplateId()
+	return self.dwTemplateId
+end
+
 function Character:GetSkill( )
 	-- body
 	return self.tbSkill
 end
 
-function Character:GetOppositeDirection(nDir)
-	if nDir == Def.DIR_DOWN then
-		return Def.DIR_UP
-	elseif nDir == Def.DIR_RIGHT then
-		return Def.DIR_LEFT
-	elseif nDir == Def.DIR_LEFT then
-		return Def.DIR_RIGHT
-	elseif nDir == Def.DIR_UP then
-		return Def.DIR_DOWN
+function Character:GoAndAttack(nDirection, tbTarget)
+	local nDistance = Lib:GetDistance(self, tbTarget)
+	local nAttackRange = self:GetProperty("AttackRange")
+	self:SetDirection(nDirection)
+	if nAttackRange < nDistance then
+		self:Goto(nDirection)
+	else
+		self:Attack()
 	end
+end
+
+function Character:Attack()
+	local tbSkill = self:GetSkill()
+	local szSkillName = tbSkill[math.random(1, #tbSkill)]
+	Skill:CastSkill(szSkillName, self)
+end
+
+function Character:GoAndCatch(nDirection, tbTarget)
+	local nDistance = Lib:GetDistance(self, tbTarget)
+	if  nDistance > 1 then
+		self:Goto(nDirection)
+		return 0
+	else
+		self:Catch(tbTarget)
+		return 1
+	end
+end
+
+function Character:Catch(tbTarget)
+	self.tbCatchRoom[#self.tbCatchRoom + 1] = tbTarget:GetTemplateId()
+	tbTarget:Die()
+end
+
+function Character:ReceiveDamage(nDamage)
+	local nCurHP = self:GetProperty("CurHP")
+	local nNewHP = nCurHP - nDamage
+	self:SetProperty("CurHP", nNewHP)
+	Event:FireEvent("CharacterHPChanged", self.dwId, nCurHP, nNewHP)
+	if nNewHP <= 0 then
+		self:Die()
+	end
+end
+
+function Character:Die()
+	Event:FireEvent("CharacterDie", self.dwId)
+	Maze:ClearUnit(self.tbLogicPos.nRow, self.tbLogicPos.nCol)
+	GameMgr:RemoveCharacter("GameScene", self.dwId)
+	self:Uninit()
 end
 
 function Character:Move()
@@ -203,32 +217,15 @@ function Character:Goto(nDir)
     Event:FireEvent("CharacterGoto", self.dwId, x, y, nDir)
 end
 
-function Character:SetSpriteDirection(pSprite, nDirection)
-	local frameWidth = 36
-	local frameHeight = 48
-
-	local Texture = pSprite:getTexture()
-	local animFrames = CCArray:create()
-	for i = 1, 4 do
-		local rect = CCRectMake((i - 1) * frameWidth, frameHeight * Def.tbTextureRow[nDirection], frameWidth, frameHeight)
-	    local frame = CCSpriteFrame:createWithTexture(Texture, rect)
-	    animFrames:addObject(frame)
-	end
-    local animation = CCAnimation:createWithSpriteFrames(animFrames, 0.15)
-    local animate = CCAnimate:create(animation)
-    pSprite:stopAllActions()
-    pSprite:runAction(CCRepeatForever:create(animate))
-end
-
 function Character:SetDirection(nDirection)
 	if self.nDirection ~= nDirection then
 		self.nDirection = nDirection
 		
-		Character:SetSpriteDirection(self.pSprite, nDirection)
+		Performance:SetSpriteDirection(self.pSprite, nDirection)
 	end
 end
 
-function Character:AutoMove()
+function Character:Activate()
 	local x, y = self.pSprite:getPosition()
 	local function IsArriveTarget()
 		if not self.nDirection or not self.tbTarget then
