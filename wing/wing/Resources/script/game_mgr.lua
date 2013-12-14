@@ -355,20 +355,31 @@ function GameMgr:OnStart_TestSkill()
 	Maze:SetSkillTest()
 	local tbScene = SceneMgr:GetScene("GameScene")
 	if tbScene then
-		local tbSkillMonster = tbScene:GenSingleMonster(999, 20, 21)
-		tbSkillMonster:SetDirection(Def.DIR_LEFT)
 
-		local tbMagicHero = tbScene:GenHero(999, 19, 18)
+		local tbMagicHero = tbScene:GenHero(999, 18, 22)
 		tbMagicHero:SetDirection(Def.DIR_RIGHT)
-		local tbMonster1 = tbScene:GenSingleMonster(999, 19, 22)
+		local tbMonster1 = tbScene:GenSingleMonster(999, 18, 24)
 		tbMonster1:SetDirection(Def.DIR_LEFT)
-		local tbMonster3 = tbScene:GenSingleMonster(3, 19, 21)
-		tbMonster3:SetDirection(Def.DIR_LEFT)
-
-		local tbPhysicHero = tbScene:GenHero(1000, 18, 19)
-		tbPhysicHero:SetDirection(Def.DIR_RIGHT)
-		local tbMonster2 = tbScene:GenSingleMonster(1000, 18, 20)
+		local tbMonster2 = tbScene:GenSingleMonster(999, 18, 25)
 		tbMonster2:SetDirection(Def.DIR_LEFT)
+		local tbMonster3 = tbScene:GenSingleMonster(999, 16, 22)
+		tbMonster3:SetDirection(Def.DIR_UP)
+		local tbMonster4 = tbScene:GenSingleMonster(999, 20, 22)
+		tbMonster4:SetDirection(Def.DIR_DOWN)
+		local tbMonster5 = tbScene:GenSingleMonster(999, 18, 20)
+		tbMonster5:SetDirection(Def.DIR_RIGHT)
+
+		local tbPhysicHero = tbScene:GenHero(1000, 19, 17)
+		tbPhysicHero:SetDirection(Def.DIR_RIGHT)
+		local tbMonster6 = tbScene:GenSingleMonster(1000, 18, 17)
+		tbMonster6:SetDirection(Def.DIR_UP)
+		local tbMonster7 = tbScene:GenSingleMonster(1000, 19, 16)
+		tbMonster7:SetDirection(Def.DIR_RIGHT)
+		local tbMonster8 = tbScene:GenSingleMonster(1000, 19, 18)
+		tbMonster8:SetDirection(Def.DIR_LEFT)
+		local tbMonster9 = tbScene:GenSingleMonster(1000, 20, 17)
+		tbMonster9:SetDirection(Def.DIR_DOWN)
+		
 	end
 end
 

@@ -83,7 +83,7 @@ function Maze:SetSkillTest()
 	local nWidth , nHeight = Def.MAZE_COL_COUNT, Def.MAZE_ROW_COUNT
 	for i = 1, nHeight do
 		for j = 1, nWidth do
-			if i == 1 or i == nHeight or j == 1 or j == nWidth or j == 16 or j == 24 or i == 17 then
+			if i == 1 or i == nHeight or j == 1 or j == nWidth or j == 15 or j == 27 or i == 10 then
 				self:SetData(i, j, self.MAP_BLOCK)
 			else
 				self:SetData(i, j, self.MAP_FREE)
