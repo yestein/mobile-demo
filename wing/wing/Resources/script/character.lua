@@ -11,6 +11,7 @@ function Character:Init(pSprite, dwTemplateId, tbProperty, tbSkill, szAIName)
 	self.pSprite = pSprite
 	self.dwTemplateId = dwTemplateId
 	self.tbCatchRoom = {}
+	self.dwMasterId = 0
 	local nOriginX, nOriginY = pSprite:getPosition()
 	self.tbOrigin = {x = nOriginX, y = nOriginY}
 	local nRow, nCol = Lib:GetRowColByPos(nOriginX, nOriginY)
@@ -123,14 +124,24 @@ function Character:GetSkill( )
 	return self.tbSkill
 end
 
+function Character:GetCatchList()
+	return self.tbCatchRoom
+end
+
+function Character:GetMasterId()
+	return self.dwMasterId
+end
+
 function Character:GoAndAttack(nDirection, tbTarget)
 	local nDistance = Lib:GetDistance(self, tbTarget)
 	local nAttackRange = self:GetProperty("AttackRange")
-	self:SetDirection(nDirection)
 	if nAttackRange < nDistance then
 		self:Goto(nDirection)
+		return 0
 	else
+		self:SetDirection(nDirection)
 		self:Attack()
+		return 1
 	end
 end
 
@@ -146,14 +157,22 @@ function Character:GoAndCatch(nDirection, tbTarget)
 		self:Goto(nDirection)
 		return 0
 	else
+		self:SetDirection(nDirection)
 		self:Catch(tbTarget)
 		return 1
 	end
 end
 
 function Character:Catch(tbTarget)
-	self.tbCatchRoom[#self.tbCatchRoom + 1] = tbTarget:GetTemplateId()
-	tbTarget:Die()
+	self.tbCatchRoom[tbTarget.dwId] = 1
+	tbTarget:BeCatched(self)
+
+end
+
+function Character:BeCatched(tbMaster)
+	self.dwMasterId = tbMaster.dwId
+	self:SetProperty("Speed", tbMaster:GetProperty("Speed"))
+	Event:FireEvent("CharacterBeCatched", self.dwId, self.dwMasterId)
 end
 
 function Character:ReceiveDamage(nDamage)
@@ -204,6 +223,12 @@ function Character:Goto(nDir)
 	if not tbPosOffset then
 		return 0
 	end
+	for dwId, _ in pairs(self.tbCatchRoom) do
+		local tbMonster = GameMgr:GetCharacterById(dwId)
+		if tbMonster then
+			tbMonster:Goto(self.nDirection)
+		end
+	end
 	self:SetDirection(nDir)
 	local x, y = self.pSprite:getPosition()
 	local nX, nY = unpack(tbPosOffset)
@@ -226,6 +251,14 @@ function Character:SetDirection(nDirection)
 end
 
 function Character:Activate()
+	self:ExecuteAI()
+	self:Move()
+end
+
+function Character:ExecuteAI()
+	if not self.szAIName then
+		return
+	end
 	local x, y = self.pSprite:getPosition()
 	local function IsArriveTarget()
 		if not self.nDirection or not self.tbTarget then
@@ -237,15 +270,12 @@ function Character:Activate()
 		return 0
 	end
 
-	if IsArriveTarget() == 1 then
-		self:ExecuteAI()
+	if IsArriveTarget() ~= 1 then
+		return
 	end
-	self:Move()
-end
-
-function Character:ExecuteAI()
 	local tbCfg = AI:GetCfg(self.szAIName)
 	if not tbCfg then
+		print(self.szAIName)
 		assert(false)
 		return
 	end
@@ -270,10 +300,12 @@ function Character:GetLogicPos()
 	return self.tbLogicPos.nRow, self.tbLogicPos.nCol
 end
 
-function Character:TryFindUnit(bHero)
+function Character:TryFindUnit(bHero, tbExpect)
 	local nFindRange = self.tbProperty.ViewRange
 	local nRow, nCol = self:GetLogicPos()
-	
+	if not tbExpect then
+		tbExpect = {}
+	end
 	for nDirection = Def.DIR_START + 1, Def.DIR_END - 1 do
 		local tbPosOffset = Def.tbMove[nDirection]
 		if not tbPosOffset then
@@ -288,19 +320,19 @@ function Character:TryFindUnit(bHero)
 				break
 			end
 			local dwId = Maze:GetUnit(nCheckRow, nCheckCol)
-			if dwId > 0 and Lib:IsHero(dwId) == bHero then
+			if dwId > 0 and not tbExpect[dwId] and Lib:IsHero(dwId) == bHero then
 				return GameMgr:GetCharacterById(dwId), nDirection, nX, nY
 			end
 		end
 	end
 end
 
-function Character:TryFindMonster()
-	return self:TryFindUnit(0)
+function Character:TryFindMonster(tbExpect)
+	return self:TryFindUnit(0, tbExpect)
 end
 
-function Character:TryFindHero()
-	return self:TryFindUnit(1)
+function Character:TryFindHero(tbExpect)
+	return self:TryFindUnit(1, tbExpect)
 end
 
 

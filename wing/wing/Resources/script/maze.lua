@@ -16,7 +16,7 @@ function Maze:Init(nWidth, nHeight)
 	self.tbData = {}
 	self.tbUnit = {}
 	self.tbRecord = {}
-	self.tbKindPos = {Def.tbEntrance[1], Def.tbEntrance[2]}
+	self.tbMapTargetPos = {Def.tbEntrance[1], Def.tbEntrance[2]}
 	for i = 1, nHeight do
 		self.tbData[i] = {}
 		self.tbUnit[i] = {}
@@ -204,6 +204,10 @@ function Maze:MoveMonster(nRow, nCol, nNewRow, nNewCol)
 
 	self.tbData[nNewRow][nNewCol] = self.tbData[nRow][nCol]
 	self.tbData[nRow][nCol] = self.MAP_FREE
+	if self.tbData[nNewRow][nNewCol] == self.MAP_TARGET + self.MAP_MONSTER_START - 1 then
+		self.tbMapTargetPos[1] = nNewRow
+		self.tbMapTargetPos[2] = nNewCol
+	end
 	Event:FireEvent("MoveMonster", self.tbUnit[nNewRow][nNewCol], self.tbData[nNewRow][nNewCol], nRow, nCol, nNewRow, nNewCol)
 	return 1
 end

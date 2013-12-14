@@ -28,23 +28,33 @@ function AI:GetDirctionList(szAIName)
 end
 
 function AI.AI_HeroExplore(tbHero)
+	local self = tbHero
 	local nNextDir = Def.DIR_END
-	if self:IsFinish() ~= 1 then
-		local x, y = tbHero.pSprite:getPosition()
-		tbHero:RecordPos(x, y)
-		local tbMonster, nDirection = tbHero:TryFindMonster()
-		if tbMonster then
-			if tbMonster:GetTemplateId() == Maze.MAP_TARGET then
-				local bCatch = tbHero:GoAndCatch(nDirection, tbMonster)
-				if bCatch == 1 then
-					tbHero:Finish()
-					--TODO Other Heros
-				end
+	local tbCatchList = self:GetCatchList()
+	local tbMonster, nDirection = self:TryFindMonster(tbCatchList)
+	if tbMonster then
+		if tbMonster:GetTemplateId() == Maze.MAP_TARGET then
+			local bCatch = self:GoAndCatch(nDirection, tbMonster)
+			if bCatch == 1 then
+				self:Finish()
+				self:SetDirection(Lib:GetOppositeDirection(self.nDirection))
+				nNextDir = self:PopPos()
+				self:Goto(nNextDir)
+				--TODO Other Heros
 			else
-				tbHero:GoAndAttack(nDirection, tbMonster)
+				self:PushPos(nDirection)
 			end
-			return 0
-		end				
+		else
+			local bAttack = self:GoAndAttack(nDirection, tbMonster)
+			if bAttack == 0 then
+				self:PushPos(nDirection)
+			end
+		end
+		return 1
+	end
+	if self:IsFinish() ~= 1 then
+		local x, y = self.pSprite:getPosition()
+		self:RecordPos(x, y)
 		for _, nDir in ipairs(self.tbAIDirection) do
 			local tbPosOffset = Def.tbMove[nDir]
 			if not tbPosOffset then
@@ -65,7 +75,9 @@ function AI.AI_HeroExplore(tbHero)
 			self.pSprite.isPaused = true
 			self.nDirection = nil
 			self.tbTarget = nil
-			--TODO
+			if self:IsFinish() == 1 then
+				GameMgr:SetState(GameMgr.STATE_NORMAL)
+			end
 			return
 		end
 	end
@@ -73,11 +85,13 @@ function AI.AI_HeroExplore(tbHero)
 end
 
 function AI.AI_NormalMove(tbCharacter)
-	-- 
-	local x, y = tbCharacter.pSprite:getPosition()
-	local tbHero, nDirection = tbCharacter:TryFindHero()
+	
+	local self = tbCharacter
+	local x, y = self.pSprite:getPosition()
+	local tbCatchList = self:GetCatchList()
+	local tbHero, nDirection = self:TryFindHero(tbCatchList)
 	if tbHero then
-		tbCharacter:GoAndAttack(nDirection, tbHero)
+		self:GoAndAttack(nDirection, tbHero)
 		return 0
 	end
 	
@@ -86,7 +100,7 @@ function AI.AI_NormalMove(tbCharacter)
 	if nRandom == 2 then
 		nStep = -1
 	end
-	local nTryDirction = tbCharacter.nDirection
+	local nTryDirction = self.nDirection
 	for i = Def.DIR_START + 1, Def.DIR_END - 1 do
 		local nNextDir = nTryDirction + (i - 1) * nStep
 		if nNextDir > Def.DIR_END - 1 then
@@ -97,9 +111,9 @@ function AI.AI_NormalMove(tbCharacter)
 		local tbPosOffset = Def.tbMove[nNextDir]
 		if tbPosOffset then
 			local nX, nY = unpack(tbPosOffset)
-			local nNewX, nNewY = x + tbCharacter.tbSize.width * nX + nX, y + tbCharacter.tbSize.height * nY
-			if tbCharacter:TryGoto(nNewX, nNewY) == 1 then
-				tbCharacter:Goto(nNextDir)
+			local nNewX, nNewY = x + self.tbSize.width * nX + nX, y + self.tbSize.height * nY
+			if self:TryGoto(nNewX, nNewY) == 1 then
+				self:Goto(nNextDir)
 				break
 			end
 		end
@@ -107,15 +121,21 @@ function AI.AI_NormalMove(tbCharacter)
 end
 
 function AI.AI_NotMove(tbCharacter)
-	local tbHero, nDirection, nX, nY = tbCharacter:TryFindHero()
+	local self = tbCharacter
+	local tbHero, nDirection, nX, nY = self:TryFindHero(self:GetCatchList())
 	if tbHero then
-		tbCharacter:GoAndAttack(nDirection, tbHero)
+		self:GoAndAttack(nDirection, tbHero)
 		return 0
 	end
 	return 1
 end
 
 function AI.AI_Follow(tbCharacter)
+	local self = tbCharacter
+	local dwMasterId = self:GetMasterId()
+	if not dwMasterId or dwMasterId <= 0 then
+		return 0
+	end
 	return 1
 end
 

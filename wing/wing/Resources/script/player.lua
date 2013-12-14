@@ -11,7 +11,7 @@ Player.ORGINAL_GOLD      = 1000
 Player.ORGINAL_MAGIC     = 1000
 
 Player.tbResourceMax = {
-	[1]  = {DigPoint = 25, Gold = 3000, Magic = 3000,},
+	[1]  = {DigPoint = 55, Gold = 3000, Magic = 3000,},
 	[2]  = {DigPoint = 35, Gold = 6000, Magic = 6000,},
 	[3]  = {DigPoint = 45, Gold = 9000, Magic = 9000,},
 	[4]  = {DigPoint = 55, Gold = 15000, Magic = 15000,},

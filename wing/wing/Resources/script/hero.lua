@@ -32,7 +32,7 @@ function Hero:GenerateId()
 	return nRetId
 end
 
-function Hero:NewHero(dwHeroTemplateId, nStartX, nStartY, tbAI)
+function Hero:NewHero(dwHeroTemplateId, nStartX, nStartY)
 	-- create hero animate
 	local tbCfg = self.tbCfg[dwHeroTemplateId]
 	local textureHero = CCTextureCache:sharedTextureCache():addImage(tbCfg.szImgFile)
@@ -44,7 +44,7 @@ function Hero:NewHero(dwHeroTemplateId, nStartX, nStartY, tbAI)
     pHero.isPaused = true
     tbNewHero.dwId = self:GenerateId()
     local tbProperty = tbCfg.tbProperty
-	tbNewHero:Init(pHero, dwHeroTemplateId, tbProperty, tbCfg.tbSkill, tbAI)
+	tbNewHero:Init(pHero, dwHeroTemplateId, tbProperty, tbCfg.tbSkill, tbCfg.szAIName)
 	GameMgr:AddCharacter(tbNewHero.dwId, tbNewHero)
 	Event:FireEvent("HeroAdd", tbNewHero.dwId)
 	return tbNewHero, pHero
@@ -77,57 +77,6 @@ end
 
 function tbHeroClass:IsFinish()
 	return self.bFinish
-end
-
-function tbHeroClass:Activate()
-	local x, y = self.pSprite:getPosition()
-
-	local function IsArriveTarget()
-		if not self.nDirection or not self.tbTarget then
-			return 1
-		end
-		if x == self.tbTarget.x and y == self.tbTarget.y then
-			return 1
-		end
-		return 0
-	end
-
-	if IsArriveTarget() == 1 then
-		self:RecordPos(x, y)
-		local tbMonster, nDirection, nX, nY = self:TryFindMonster()
-		if tbMonster then
-			self:GoAndAttack(nDirection, tbMonster)
-			return 0
-		end
-		local nNextDir = Def.DIR_END		
-		for _, nDir in ipairs(self.tbAIDirection) do
-			local tbPosOffset = Def.tbMove[nDir]
-			if not tbPosOffset then
-				return 0
-			end			
-			local nX, nY = unpack(tbPosOffset)
-			local nNewX, nNewY = x + self.tbSize.width * nX + nX, y + self.tbSize.height * nY
-			if self:TryGoto(nNewX, nNewY) == 1 then
-				nNextDir = nDir
-				self:PushPos(nNextDir)
-				break
-			end
-		end
-		if nNextDir == Def.DIR_END then
-			nNextDir = self:PopPos()
-			if not nNextDir then
-				self.pSprite.isPaused = true
-				self.nDirection = nil
-				self.tbTarget = nil
-
-				-- GameMgr:SetState(GameMgr.STATE_NORMAL)
-				return
-			end
-		end
-		self:Goto(nNextDir)
-	end
-
-	self:Move()
 end
 
 function tbHeroClass:TryGoto(nNewX, nNewY)

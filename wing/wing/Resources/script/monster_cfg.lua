@@ -32,9 +32,9 @@ Monster.tbCfg = {
 		szAIName = "NotMove"
 	},
 	[3]= {
-		tbProperty = {MaxHP = 50, Attack = 10, Defense = 10, AttackRange = 3, Speed = 2},
-		tbSkill = {"光魔法"},
-		szAIName = "NotMove"
+		tbProperty = {MaxHP = 150, Attack = 10, Defense = 10, AttackRange = 3, Speed = 2},
+		tbSkill = {"火魔法"},
+		szAIName = "NormalMove"
 	},
 
 	[999]= {
@@ -50,7 +50,7 @@ Monster.tbCfg = {
 	[Maze.MAP_TARGET]= {
 		tbProperty = {MaxHP = 10000, Attack = 0, Defense = 0, AttackRange = 0},
 		tbSkill = {},
-		szAIName = "Follow",
+		-- szAIName = "Follow",
 	},
 }
 
