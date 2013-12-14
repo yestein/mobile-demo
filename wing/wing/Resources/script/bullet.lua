@@ -49,25 +49,30 @@ function Bullet:Init()
 				local x, y = pSprite:getPosition()
 				local nNewX, nNewY = x + nX * nMoveSpeed, y + nY * nMoveSpeed
 				pSprite:setPosition(nNewX, nNewY)
-
-				local nRow, nCol = Lib:GetRowColByPos(nNewX, nNewY)
+				local tbSize = pSprite:getTextureRect().size
+				local nCheckX, nCheckY = nNewX + nX * tbSize.width / 2, nNewY + nY * tbSize.height / 2
+				local nRow, nCol = Lib:GetRowColByPos(nCheckX, nCheckY)
 				if Maze:GetData(nRow, nCol) == Maze.MAP_BLOCK  then
 					tbBullet:Uninit()
 					self.tbBulletList[dwBulletId] = nil
 					return
 				end
-				local dwTargetId = Maze:GetUnit(nRow, nCol)
-				if dwTargetId and dwTargetId > 0 then
+				local tbUnit = Maze:GetUnit(nRow, nCol)
+				for dwTargetId, _ in pairs(tbUnit) do
 					local tbCharacter = GameMgr:GetCharacterById(dwTargetId)
 					if tbCharacter then
 						if tbBullet:JudgeCollide(nRow, nCol, dwTargetId) == 1  then
 							local nDamage = tbBullet:CalcDamage(tbCharacter)
 							tbCharacter:ReceiveDamage(nDamage)
-							tbBullet:Uninit()
-							self.tbBulletList[dwBulletId] = nil
+							tbBullet:RecordTarget(dwTargetId)
+							if not tbBullet.tbProperty.bAOE then
+								tbBullet:Uninit()
+								self.tbBulletList[dwBulletId] = nil
+								break
+							end
 						end
 					end
-				end		
+				end
 			end			
 	    end
 	end
@@ -152,9 +157,13 @@ function tbBulletClass:Init(nX, nY, tbProperty)
 	bulletNode:addChild(pSprite)
 	self.pSprite = pSprite
 	self.tbProperty = tbProperty
+	self.tbRecordTarget = {}
 end
 
 function tbBulletClass:JudgeCollide(nRow, nCol, dwTargetId)
+	if self:IsInRecord(dwTargetId) then
+		return 0
+	end
 	local func = Bullet.tbJudgeCollide[self.tbProperty.szTargetType]
 	return func(self.tbProperty.dwLancherId, dwTargetId)
 end
@@ -163,6 +172,18 @@ function tbBulletClass:CalcDamage(tbCharacter)
 	local nTargetDefense = tbCharacter:GetProperty("Defense")
 	local nDamage = math.floor(self.tbProperty.Damage * (100 / (100 + nTargetDefense)))
 	return nDamage
+end
+
+function tbBulletClass:RecordTarget(dwTargetId)
+	self.tbRecordTarget[dwTargetId] = 1
+end
+
+function tbBulletClass:IsInRecord(dwTargetId)
+	return self.tbRecordTarget[dwTargetId]
+end
+
+function tbBulletClass:RemoveRecordTarget(dwTargetId)
+	self.tbRecordTarget[dwTargetId] = nil
 end
 
 function tbBulletClass:Uninit()

@@ -26,7 +26,7 @@ function Maze:Init(nWidth, nHeight)
 			else
 				self.tbData[i][j] = self.MAP_BLOCK
 			end
-			self.tbUnit[i][j] = 0
+			self.tbUnit[i][j] = {}
 		end
 	end
 end
@@ -88,7 +88,7 @@ function Maze:SetSkillTest()
 			else
 				self:SetData(i, j, self.MAP_FREE)
 			end
-			self.tbUnit[i][j] = 0
+			self.tbUnit[i][j] = {}
 		end
 	end
 end
@@ -194,12 +194,11 @@ function Maze:PutMonster(nRow, nCol, dwMonsterTemplateId)
 	return 1
 end
 
-function Maze:MoveMonster(nRow, nCol, nNewRow, nNewCol)
+function Maze:MoveMonster(dwId, nRow, nCol, nNewRow, nNewCol)
 	if self.tbData[nRow][nCol] < self.MAP_MONSTER_START then
 		return 0
 	end
-	local dwId = self.tbUnit[nRow][nCol]
-	self:ClearUnit(nRow, nCol)
+	self:ClearUnit(nRow, nCol, dwId)
 	self:SetUnit(nNewRow, nNewCol, dwId)
 
 	self.tbData[nNewRow][nNewCol] = self.tbData[nRow][nCol]
@@ -208,7 +207,7 @@ function Maze:MoveMonster(nRow, nCol, nNewRow, nNewCol)
 		self.tbMapTargetPos[1] = nNewRow
 		self.tbMapTargetPos[2] = nNewCol
 	end
-	Event:FireEvent("MoveMonster", self.tbUnit[nNewRow][nNewCol], self.tbData[nNewRow][nNewCol], nRow, nCol, nNewRow, nNewCol)
+	Event:FireEvent("MoveMonster", dwId, self.tbData[nNewRow][nNewCol], nRow, nCol, nNewRow, nNewCol)
 	return 1
 end
 
@@ -296,31 +295,37 @@ function Maze:CanMove(nX, nY)
 	if self:IsFree(nRow, nCol) ~= 1 then
 		return 0
 	end
-	if self:GetUnit(nRow, nCol) > 0 then
-		return 0
-	end
 	return 1
 
 end
 
-function Maze:ClearUnit(nRow, nCol)
+function Maze:ClearUnit(nRow, nCol, dwId)
 	if self.tbUnit[nRow] then
-		self.tbUnit[nRow][nCol] = 0
+		self.tbUnit[nRow][nCol][dwId] = nil
 	end
 end
 
 function Maze:SetUnit(nRow, nCol, dwId)
-	if self.tbUnit[nRow] then
-		self.tbUnit[nRow][nCol] = dwId
-	end
+	self.tbUnit[nRow][nCol][dwId] = 1
 	Event:FireEvent("SetUnit", nRow, nCol, dwId)
 end
 
 function Maze:GetUnit(nRow, nCol)
-	if self.tbUnit[nRow] then
+	if self.tbUnit[nRow] and self.tbUnit[nRow][nCol] then
 		return self.tbUnit[nRow][nCol]
 	end
-	return 0
+	return {}
+end
+
+function Maze:GetRandomUnit(nRow, nCol)
+	local dwRetId = nil
+	if self.tbUnit[nRow] and self.tbUnit[nRow][nCol] then
+		 for dwId, _ in pairs(self.tbUnit[nRow][nCol]) do
+		 	dwRetId = dwId
+		 	break
+		 end
+	end
+	return dwRetId
 end
 
 function Maze:IsFree(nRow, nCol)
@@ -377,7 +382,7 @@ end
 
 function Maze:StartDrag(nRow, nCol)
 	if not self.tbDrag then
-		local dwCharacterId = self:GetUnit(nRow, nCol)
+		local dwCharacterId = self:GetRandomUnit(nRow, nCol)
 		if not dwCharacterId then
 			return
 		end
@@ -389,6 +394,7 @@ function Maze:StartDrag(nRow, nCol)
 			nRow = nRow, 
 			nCol = nCol,
 			pSprite = tbCharacter.pSprite,
+			dwId = dwCharacterId,
 		}
 	end
 end
@@ -400,7 +406,7 @@ end
 function Maze:StopDrag(nRow, nCol)
 	local bRet = 0
 	if self.tbData[nRow] and self.tbData[nRow][nCol] == self.MAP_FREE then
-		self:MoveMonster(self.tbDrag.nRow, self.tbDrag.nCol, nRow, nCol)
+		self:MoveMonster(self.tbDrag.dwId, self.tbDrag.nRow, self.tbDrag.nCol, nRow, nCol)
 		bRet = 1
 	end
 	self.tbDrag = nil

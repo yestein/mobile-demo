@@ -36,7 +36,7 @@ function GameScene:Create()
     
     local tbBulletNodeList = Bullet:Init()
     for szType, bulletNode in pairs(tbBulletNodeList) do
-        layerMaze:addChild(bulletNode)
+        layerMaze:addChild(bulletNode, Def.ZOOM_LEVEL_BULLET)
     end
 
     -- handing touch events

@@ -148,8 +148,7 @@ end
 function Character:Attack()
 	local tbSkill = self:GetSkill()
 	local szSkillName = tbSkill[math.random(1, #tbSkill)]
-	Skill:CastSkill(szSkillName, self)
-	local nWaitFrame = 30
+	local bSuccess, nWaitFrame = Skill:CastSkill(szSkillName, self)
 	local nSpeedMulti = GameMgr:GetSpeedMulti()
 	nWaitFrame = math.floor(nWaitFrame / nSpeedMulti)
 	self:Wait(nWaitFrame)
@@ -191,7 +190,7 @@ end
 
 function Character:Die()
 	Event:FireEvent("CharacterDie", self.dwId)
-	Maze:ClearUnit(self.tbLogicPos.nRow, self.tbLogicPos.nCol)
+	Maze:ClearUnit(self.tbLogicPos.nRow, self.tbLogicPos.nCol, self.dwId)
 	GameMgr:RemoveCharacter("GameScene", self.dwId)
 	self:Uninit()
 end
@@ -238,7 +237,7 @@ function Character:Goto(nDir)
 	self:SetDirection(nDir)
 	local x, y = self.pSprite:getPosition()
 	local nX, nY = unpack(tbPosOffset)
-	Maze:ClearUnit(self.tbLogicPos.nRow, self.tbLogicPos.nCol)
+	Maze:ClearUnit(self.tbLogicPos.nRow, self.tbLogicPos.nCol, self.dwId)
 	self.tbLogicPos.nRow = self.tbLogicPos.nRow + nY
 	self.tbLogicPos.nCol = self.tbLogicPos.nCol + nX
 	Maze:SetUnit(self.tbLogicPos.nRow, self.tbLogicPos.nCol, self.dwId)
@@ -325,9 +324,11 @@ function Character:TryFindUnit(bHero, tbExpect)
 			if Maze:IsFree(nCheckRow, nCheckCol) ~= 1 then
 				break
 			end
-			local dwId = Maze:GetUnit(nCheckRow, nCheckCol)
-			if dwId > 0 and not tbExpect[dwId] and Lib:IsHero(dwId) == bHero then
-				return GameMgr:GetCharacterById(dwId), nDirection, nX, nY
+			local tbUnitList = Maze:GetUnit(nCheckRow, nCheckCol)
+			for dwId, _ in pairs(tbUnitList) do
+				if not tbExpect[dwId] and Lib:IsHero(dwId) == bHero then
+					return GameMgr:GetCharacterById(dwId), nDirection, nX, nY
+				end
 			end
 		end
 	end

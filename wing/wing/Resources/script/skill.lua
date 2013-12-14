@@ -22,7 +22,7 @@ function Skill:CastSkill(szSkillName, tbLancher)
 	local func = tbSkillCfg.func
 	local nRetCode, tbTargetList = func(self, tbLancher, tbSkillCfg)
 	Event:FireEvent("CastSkill", szSkillName, tbLancher.dwId, tbTargetList)
-	return nRetCode
+	return nRetCode, tbSkillCfg.nCDFrame
 end
 
 function Skill:CastPhysicAttack(tbLancher, tbCfg)
@@ -33,7 +33,7 @@ function Skill:CastPhysicAttack(tbLancher, tbCfg)
 	local nDirection = tbLancher.nDirection	
 	local tbOffset = Def.tbMove[nDirection]
 	local nCheckRow, nCheckCol = tbLancher.tbLogicPos.nRow + tbOffset[2], tbLancher.tbLogicPos.nCol + tbOffset[1]
-	local dwCharacterId = Maze:GetUnit(nCheckRow, nCheckCol)
+	local dwCharacterId = Maze:GetRandomUnit(nCheckRow, nCheckCol)
 	if not dwCharacterId or dwCharacterId == 0 then
 		return 0
 	end
@@ -82,6 +82,7 @@ function Skill:CastFireAttack(tbLancher, tbCfg)
 		nMoveSpeed   = tbCfg.nBulletSpeed,
 		szBulletType = "Fire",
 		szTargetType = "Enemy",
+		bAOE = tbCfg.bAOE,
 	}
 	local nDirection = tbLancher.nDirection
 	Bullet:AddBullet(nX , nY, nDirection, tbBulletProperty)
@@ -91,5 +92,5 @@ end
 Skill.tbCfg = {
 	["物理攻击"] = {nCDFrame = 10, nBulletSpeed = 4, func = Skill.CastPhysicAttack},
 	["光魔法"]   = {nCDFrame = 30, nBulletSpeed = 8, func = Skill.CastLightAttack,},
-	["火魔法"]   = {nCDFrame = 30, nBulletSpeed = 2, func = Skill.CastFireAttack,},
+	["火魔法"]   = {nCDFrame = 30, nBulletSpeed = 2, bAOE = 1, func = Skill.CastFireAttack,},
 }
