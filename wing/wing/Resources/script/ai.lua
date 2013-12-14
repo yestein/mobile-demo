@@ -94,7 +94,6 @@ function AI.AI_NormalMove(tbCharacter)
 		self:GoAndAttack(nDirection, tbHero)
 		return 0
 	end
-	
 	local nStep = 1
 	local nRandom = math.random(1, 2)
 	if nRandom == 2 then

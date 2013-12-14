@@ -102,11 +102,11 @@ end
 
 function Bullet:CreateFire(bulletNode)
 	local textureBullet = bulletNode:getTexture()
-	local pSprite = CCSprite:createWithTexture(textureBullet)
-
-	local tbTextureSize = pSprite:getTextureRect().size
-	local nFrameWidth = tbTextureSize.width / 4
-	local nFrameHeight = tbTextureSize.height / 4
+	local nFrameWidth = textureBullet:getPixelsWide() / 4
+	local nFrameHeight = textureBullet:getPixelsHigh() / 4
+	local rect = CCRectMake(0, nFrameHeight, nFrameWidth, nFrameHeight)
+	local frameRaw = CCSpriteFrame:createWithTexture(textureBullet, rect)
+    local pSprite = CCSprite:createWithSpriteFrame(frameRaw)
 	local spriteFrames = CCArray:create()	
 	for i = 1, 4 do
 		local rect = CCRectMake((i - 1) * nFrameWidth, nFrameHeight, nFrameWidth, nFrameHeight)
@@ -115,9 +115,9 @@ function Bullet:CreateFire(bulletNode)
     end
     local animation = CCAnimation:createWithSpriteFrames(spriteFrames, 0.15)
     local animate = CCAnimate:create(animation)
-    pSprite:stopAllActions()
+    --pSprite:stopAllActions()
     pSprite:runAction(CCRepeatForever:create(animate))
-    pSprite:setScale(0.5)
+    -- pSprite:setScale(0.5)
 
     return pSprite
 end	

@@ -44,7 +44,7 @@ Monster.tbCfg = {
 	},
 	[1000]= {
 		tbProperty = {MaxHP = 10000, Attack = 10, Defense = 5, AttackRange = 1},
-		tbSkill = {"物理攻击"},
+		tbSkill = {"火魔法", "物理攻击"},
 		szAIName = "NotMove"
 	},
 	[Maze.MAP_TARGET]= {

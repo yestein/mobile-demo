@@ -236,7 +236,7 @@ function Character:Goto(nDir)
 	self.tbLogicPos.nRow = self.tbLogicPos.nRow + nY
 	self.tbLogicPos.nCol = self.tbLogicPos.nCol + nX
 	Maze:SetUnit(self.tbLogicPos.nRow, self.tbLogicPos.nCol, self.dwId)
-	local nNewX, nNewY = x + self.tbSize.width * nX + nX, y + self.tbSize.height * nY
+	local nNewX, nNewY = x + self.tbSize.width * nX, y + self.tbSize.height * nY
 	self:SetDirection(nDir)
     self.tbTarget = {x = nNewX, y = nNewY}
     Event:FireEvent("CharacterGoto", self.dwId, x, y, nDir)

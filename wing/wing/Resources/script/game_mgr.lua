@@ -233,8 +233,8 @@ function GameMgr:OnStart_Battle()
 
 	local tbScene = SceneMgr:GetScene("GameScene")
 	if tbScene then
-		self.nMaxHero = 2
-		self.nCurHero = 2
+		self.nMaxHero = 1
+		self.nCurHero = 1
 		tbScene:GenHero(self.nCurHero, unpack(Def.tbEntrance))
 		tbScene:GenMonster()
 		self.nRegGenHeroId = CCDirector:sharedDirector():getScheduler():scheduleScriptFunc(
@@ -286,6 +286,23 @@ function GameMgr:OnStart_TestSkill()
 			{
 	        	szItemName = "怪物攻击",
 	        	fnCallBack = function()
+	                for dwId, tbCharacter in pairs(Monster:GetList()) do
+	                	local tbHero, nDirection = tbCharacter:TryFindHero()
+	                	if tbHero then
+							tbCharacter:GoAndAttack(nDirection, tbHero)
+						end
+					end
+	            end,
+	        },
+	        {
+	        	szItemName = "一起攻击",
+	        	fnCallBack = function()
+	        		for dwId, tbCharacter in pairs(Hero:GetList()) do
+	                	local tbMonster, nDirection = tbCharacter:TryFindMonster()
+	                	if tbMonster then
+							tbCharacter:GoAndAttack(nDirection, tbMonster)
+						end
+					end
 	                for dwId, tbCharacter in pairs(Monster:GetList()) do
 	                	local tbHero, nDirection = tbCharacter:TryFindHero()
 	                	if tbHero then
