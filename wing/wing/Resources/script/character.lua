@@ -100,11 +100,11 @@ function Character:Reset()
 end
 
 function Character:GetProperty(Key)
-	if not self.tbProperty[Key] then
-		return -1
-	else
-		return self.tbProperty[Key]
+	local nValue = self.tbProperty[Key]
+	if not nValue then
+		nValue = -1
 	end
+	return nValue
 end
 
 function Character:SetProperty(Key, Value)
@@ -149,6 +149,10 @@ function Character:Attack()
 	local tbSkill = self:GetSkill()
 	local szSkillName = tbSkill[math.random(1, #tbSkill)]
 	Skill:CastSkill(szSkillName, self)
+	local nWaitFrame = 30
+	local nSpeedMulti = GameMgr:GetSpeedMulti()
+	nWaitFrame = math.floor(nWaitFrame / nSpeedMulti)
+	self:Wait(nWaitFrame)
 end
 
 function Character:GoAndCatch(nDirection, tbTarget)
@@ -204,7 +208,9 @@ function Character:Move()
 	end
 	local nX, nY = unpack(tbPosOffset)
 	local x, y = self.pSprite:getPosition()
-	local nNewX, nNewY = x + nX * self.tbProperty.Speed, y + nY * self.tbProperty.Speed
+	local nSpeedMulti = GameMgr:GetSpeedMulti()
+	local nMoveSpeed = self.tbProperty.Speed * nSpeedMulti
+	local nNewX, nNewY = x + nX * nMoveSpeed, y + nY * nMoveSpeed
 	if self.tbTarget.x == nNewX then
 		if (nY > 0 and nNewY > self.tbTarget.y) or (nY < 0 and nNewY < self.tbTarget.y) then
 			nNewY = self.tbTarget.y

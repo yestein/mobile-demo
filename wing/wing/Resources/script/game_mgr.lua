@@ -26,6 +26,16 @@ end
 function GameMgr:Init()
 	self.tbCharacterMap = {}
 	self.nState = self.STATE_NORMAL
+	self.nSpeedMulti = 1
+end
+
+function GameMgr:SetSpeedMulti(nMulti)
+	self.nSpeedMulti = nMulti
+	Event:FireEvent("SpeedChanged", nMulti)
+end
+
+function GameMgr:GetSpeedMulti(nMulti)
+	return self.nSpeedMulti
 end
 
 function GameMgr:SetState(nState)
@@ -221,10 +231,30 @@ function GameMgr:OnStart_Battle()
 	        {
 	        	szItemName = "结束战斗",
 	        	fnCallBack = function()
-	        		if GameMgr.nRegGenHeroId then
+	        		if self.nRegGenHeroId then
 	        			return
 	        		end
 	                GameMgr:SetState(self.STATE_NORMAL)
+	            end,
+	        },
+	    },
+	    [2] = {
+	        {
+	        	szItemName = "正常速度",
+	        	fnCallBack = function()
+	        		self:SetSpeedMulti(1)
+	            end,
+	        },
+	        {
+	        	szItemName = "2倍速度",
+	        	fnCallBack = function()
+	                self:SetSpeedMulti(2)
+	            end,
+	        },
+	        {
+	        	szItemName = "4倍速度",
+	        	fnCallBack = function()
+	                self:SetSpeedMulti(4)
 	            end,
 	        },
 	    },

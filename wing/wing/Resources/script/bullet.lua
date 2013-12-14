@@ -40,7 +40,8 @@ function Bullet:Init()
 		for dwBulletId, tbBullet in pairs(self.tbBulletList) do
 			local nDirection = tbBullet.nDirection
 			local tbProperty = tbBullet.tbProperty
-			local nMoveSpeed = tbProperty.nMoveSpeed
+			local nSpeedMulti = GameMgr:GetSpeedMulti()
+			local nMoveSpeed = tbProperty.nMoveSpeed * nSpeedMulti
 			local tbPosOffset = Def.tbMove[nDirection]
 			if tbPosOffset then
 				local pSprite = tbBullet.pSprite

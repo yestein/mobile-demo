@@ -77,6 +77,7 @@ local function main()
     Performance:Init(layerWorld)
     GameMgr:InitTitle()
     GameMgr:SetState(GameMgr.STATE_NORMAL)
+    GameMgr:SetSpeedMulti(1)
     Player:Init()
     Lib:SafeCall({Player.Load, Player})
 		

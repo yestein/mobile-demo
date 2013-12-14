@@ -47,7 +47,6 @@ function Skill:CastPhysicAttack(tbLancher, tbCfg)
 	local nDamage = math.floor(nLancherAttack * (100 / (100 + nTargetDefense)))
 	Event:FireEvent("CharacterPhyiscAttack", tbLancher.dwId, tbTarget.dwId, nDamage)
 	tbTarget:ReceiveDamage(nDamage)
-	tbLancher:Wait(30)
 	return 1, tbTarget
 end
 
@@ -67,7 +66,6 @@ function Skill:CastLightAttack(tbLancher, tbCfg)
 	}
 	local nDirection = tbLancher.nDirection
 	Bullet:AddBullet(nX , nY, nDirection, tbBulletProperty)
-	tbLancher:Wait(30)
 	return 1
 end
 
@@ -87,7 +85,6 @@ function Skill:CastFireAttack(tbLancher, tbCfg)
 	}
 	local nDirection = tbLancher.nDirection
 	Bullet:AddBullet(nX , nY, nDirection, tbBulletProperty)
-	tbLancher:Wait(30)
 	return 1
 end
 
