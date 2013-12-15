@@ -16,6 +16,7 @@ end
 
 function GameMgr:InitTitle()
 	self.tbTitle = {}
+    self.tbResurce = {}
     self.tbHeroHP = {}
     self.tbWaitToRemoveHP = {}
 	local sceneGame = SceneMgr:GetSceneObj("GameScene")
@@ -36,7 +37,8 @@ function GameMgr:InitTitle()
     local cclf = CCLabelTTF:create("当前模式", szTitleFontName, 24)
     layerTitle:addChild(cclf)
     local tbTitleSize = cclf:getTextureRect().size
-    cclf:setPosition(tbTitleSize.width / 2, tbVisibleSize.height - tbBgSize.height / 2)
+    cclf:setAnchorPoint(CCPoint:new(1, 0))
+    cclf:setPosition(tbVisibleSize.width , 0)
 
     self.tbSysMsg = {}
     for i = 1, GameMgr.MSG_MAX_COUNT do
@@ -66,7 +68,7 @@ function GameMgr:InitTitle()
 
     local nHeight = 20
     local nWidth = 20
-    self.nSpriteX = tbTitleSize.width + nWidth / 2
+    self.nSpriteX = nWidth / 2 + 10
     self.nSpriteY = tbVisibleSize.height - nHeight / 2
     for _, tb in ipairs(tbTemp) do
         local spriteIcon = CCSprite:create(tb.szImageFile)
@@ -81,8 +83,9 @@ function GameMgr:InitTitle()
             local tbValueSize = labelValue:getTextureRect().size
             self.nHeroX = self.nSpriteX + nWidth + tbValueSize.width
         end
-        self.tbTitle[tb.szResourceName] = labelValue
+        self.tbResurce[tb.szResourceName] = {icon = spriteIcon, value = labelValue}
         self.nSpriteY = self.nSpriteY - nHeight
+
     end
 
     self.tbTitle["State"] = cclf
@@ -110,7 +113,7 @@ function GameMgr:AddHeroHP(dwHeroId)
     cclfHP:setAnchorPoint(CCPoint:new(0, 0))
     self.layerTitle:addChild(cclfHP)
     local tbHPSize = cclfHP:getTextureRect().size
-    cclfHP:setPosition(self.nHeroX + tbSpriteSize.width + 1, tbVisibleSize.height - dwHeroId * tbSpriteSize.height * 0.6)
+    cclfHP:setPosition(self.nHeroX + tbSpriteSize.width / 2 + 5, tbVisibleSize.height - dwHeroId * tbSpriteSize.height * 0.6)
     self.tbHeroHP[dwHeroId] = {
         spriteHead = pCopySprite,
         labelHP = cclfHP,
@@ -161,7 +164,6 @@ function GameMgr:OnStateChanged(nState)
         self:RemoveHeroHP(dwId)
     end
     self.tbWaitToRemoveHP = {}
-    Event:FireEvent("TitleStateUpdate", szDesc)
 end
 
 function GameMgr:OnHeroAdd(dwHeroId)
@@ -184,11 +186,12 @@ function GameMgr:OnCharacterReceiveDamage(dwCharacterId)
 end
 
 function GameMgr:OnResourceChanged(szResourceName, nNewValue, bMax)
-    local label = self.tbTitle[szResourceName]
-    if not label then
+    local tbResurce = self.tbResurce[szResourceName]
+    if not tbResurce then
         return
     end
-    label:setString(tostring(nNewValue))
+    local labelValue = tbResurce.value
+    labelValue:setString(tostring(nNewValue))
 end
 
 function GameMgr:SysMsg(szMsg, szColor)

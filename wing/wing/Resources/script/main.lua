@@ -26,11 +26,15 @@ local tbOrigin = sharedDirector:getVisibleOrigin()
 local nOffsetX, nOffsetY = 0, 0
 
 local function DoTest()
-	local nX , nY = Lib:GetPositionByRowCol(1, 1)
+	local nLogicX, nLogicY = 1, 1
+	local nX , nY = Lib:GetPositionByLogicPos(nLogicX, nLogicY)
+	print("logic", nLogicX, nLogicY, "->", nX, nY)
 	assert(nX == -702)
 	assert(nY == -696)
 	
-	nX , nY = Lib:GetPositionByRowCol(21, 40)
+	nLogicX, nLogicY = 40, 21
+	nX , nY = Lib:GetPositionByLogicPos(nLogicX, nLogicY)
+	print("logic", nLogicX, nLogicY, "->", nX, nY)
 	assert(nX == 702)
 	assert(nY == 264)
 end
@@ -64,7 +68,7 @@ local function main()
     Hero:Init()
     Monster:Init()
     
-	Maze:Init(Def.MAZE_COL_COUNT, Def.MAZE_ROW_COUNT)
+	Maze:Init(Def.MAZE_LOGIC_WIDTH, Def.MAZE_LOGIC_HEIGHT)
 	Lib:SafeCall({Maze.Load, Maze})
 
 	local function StartGame(nState)
@@ -127,7 +131,7 @@ local function main()
 	        },
 	    },
     }
-    MenuMgr:UpdateByString("MainMenu", tbElement, {szFontName = Def.szMenuFontName, nSize = 40, szAlignType = "center", nIntervalX = 40})
+    MenuMgr:UpdateByString("MainMenu", tbElement, {szFontName = Def.szMenuFontName, nSize = 26, szAlignType = "center", nIntervalX = 20})
     sharedDirector:runWithScene(sceneMain)
 end
 

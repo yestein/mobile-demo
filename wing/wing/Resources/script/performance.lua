@@ -149,9 +149,9 @@ function Performance:OnCharacterPhyiscAttack(dwLancherId, dwTargetId, nDamage)
 	local nLancherX, nLancherY = pLancherSprite:getPosition()
 	local nTargetX, nTargetY = pTargetSprite:getPosition()
 
-	local nDisPlayX = math.floor((nLancherX + nTargetX) / 2)
-	local nDisPlayY = math.floor((nLancherY + nTargetY) / 2)
-	self:GenerateFightFlag(nDisPlayX, nDisPlayY)
+	-- local nDisPlayX = math.floor((nLancherX + nTargetX) / 2)
+	-- local nDisPlayY = math.floor((nLancherY + nTargetY) / 2)
+	self:GenerateFightFlag(nTargetX, nTargetY)
 end
 
 function Performance:GenerateFightFlag(nX, nY)

@@ -280,6 +280,11 @@ function GameMgr:OnStart_Battle()
 			end,
 			1, false
 		)
+		local tbMonsterList = Monster:GetList()
+		for _, tbMonster in pairs(tbMonsterList) do
+			tbMonster.pSprite:setVisible(false)
+		end
+		Maze:HideAllBlock()
 		self:StartBattle()
 	end	
 end
@@ -287,6 +292,7 @@ function GameMgr:OnEnd_Battle()
 	self:Reset()
 	Hero:ClearAll()
 	Monster:ClearAll()
+	Maze:Refresh()
 end
 
 function GameMgr:OnStart_TestSkill()
@@ -356,28 +362,28 @@ function GameMgr:OnStart_TestSkill()
 	local tbScene = SceneMgr:GetScene("GameScene")
 	if tbScene then
 
-		local tbMagicHero = tbScene:GenHero(999, 18, 22)
+		local tbMagicHero = tbScene:GenHero(999, 22, 18)
 		tbMagicHero:SetDirection(Def.DIR_RIGHT)
-		local tbMonster1 = tbScene:GenSingleMonster(999, 18, 24)
+		local tbMonster1 = tbScene:GenSingleMonster(999, 24, 18)
 		tbMonster1:SetDirection(Def.DIR_LEFT)
-		local tbMonster2 = tbScene:GenSingleMonster(999, 18, 25)
+		local tbMonster2 = tbScene:GenSingleMonster(999, 25, 18)
 		tbMonster2:SetDirection(Def.DIR_LEFT)
-		local tbMonster3 = tbScene:GenSingleMonster(999, 16, 22)
+		local tbMonster3 = tbScene:GenSingleMonster(999, 22, 16)
 		tbMonster3:SetDirection(Def.DIR_UP)
-		local tbMonster4 = tbScene:GenSingleMonster(999, 20, 22)
+		local tbMonster4 = tbScene:GenSingleMonster(999, 22, 20)
 		tbMonster4:SetDirection(Def.DIR_DOWN)
-		local tbMonster5 = tbScene:GenSingleMonster(999, 18, 20)
+		local tbMonster5 = tbScene:GenSingleMonster(999, 20, 18)
 		tbMonster5:SetDirection(Def.DIR_RIGHT)
 
-		local tbPhysicHero = tbScene:GenHero(1000, 19, 17)
+		local tbPhysicHero = tbScene:GenHero(1000, 17, 19, 17)
 		tbPhysicHero:SetDirection(Def.DIR_RIGHT)
-		local tbMonster6 = tbScene:GenSingleMonster(1000, 18, 17)
+		local tbMonster6 = tbScene:GenSingleMonster(1000, 17, 18)
 		tbMonster6:SetDirection(Def.DIR_UP)
-		local tbMonster7 = tbScene:GenSingleMonster(1000, 19, 16)
+		local tbMonster7 = tbScene:GenSingleMonster(1000, 16, 19)
 		tbMonster7:SetDirection(Def.DIR_RIGHT)
-		local tbMonster8 = tbScene:GenSingleMonster(1000, 19, 18)
+		local tbMonster8 = tbScene:GenSingleMonster(1000, 18, 19)
 		tbMonster8:SetDirection(Def.DIR_LEFT)
-		local tbMonster9 = tbScene:GenSingleMonster(1000, 20, 17)
+		local tbMonster9 = tbScene:GenSingleMonster(1000, 17, 20)
 		tbMonster9:SetDirection(Def.DIR_DOWN)
 		
 	end

@@ -51,17 +51,17 @@ function Bullet:Init()
 				pSprite:setPosition(nNewX, nNewY)
 				local tbSize = pSprite:getTextureRect().size
 				local nCheckX, nCheckY = nNewX + nX * tbSize.width / 2, nNewY + nY * tbSize.height / 2
-				local nRow, nCol = Lib:GetRowColByPos(nCheckX, nCheckY)
-				if Maze:GetData(nRow, nCol) == Maze.MAP_BLOCK  then
+				local nLogicX, nLogicY = Lib:GetLogicPosByPosition(nCheckX, nCheckY)
+				if Maze:GetData(nLogicX, nLogicY) == Maze.MAP_BLOCK  then
 					tbBullet:Uninit()
 					self.tbBulletList[dwBulletId] = nil
 					return
 				end
-				local tbUnit = Maze:GetUnit(nRow, nCol)
+				local tbUnit = Maze:GetUnit(nLogicX, nLogicY)
 				for dwTargetId, _ in pairs(tbUnit) do
 					local tbCharacter = GameMgr:GetCharacterById(dwTargetId)
 					if tbCharacter then
-						if tbBullet:JudgeCollide(nRow, nCol, dwTargetId) == 1  then
+						if tbBullet:JudgeCollide(nLogicX, nLogicY, dwTargetId) == 1  then
 							local nDamage = tbBullet:CalcDamage(tbCharacter)
 							tbCharacter:ReceiveDamage(nDamage)
 							tbBullet:RecordTarget(dwTargetId)
@@ -160,7 +160,7 @@ function tbBulletClass:Init(nX, nY, tbProperty)
 	self.tbRecordTarget = {}
 end
 
-function tbBulletClass:JudgeCollide(nRow, nCol, dwTargetId)
+function tbBulletClass:JudgeCollide(nLogicX, nLogicY, dwTargetId)
 	if self:IsInRecord(dwTargetId) then
 		return 0
 	end

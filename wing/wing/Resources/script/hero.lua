@@ -79,11 +79,11 @@ function tbHeroClass:IsFinish()
 	return self.bFinish
 end
 
-function tbHeroClass:TryGoto(nNewX, nNewY)
-	if self:IsExplored(nNewX, nNewY) == 1 then
+function tbHeroClass:TryGoto(nLogicX, nLogicY)
+	if self:IsExplored(nLogicX, nLogicY) == 1 then
 		return 0
 	end
-	if Maze:CanMove(nNewX, nNewY) ~= 1 then
+	if Maze:CanMove(nLogicX, nLogicY) ~= 1 then
 		return 0
 	end
 	
@@ -122,4 +122,42 @@ function tbHeroClass:PopPos()
 	self.tbStack[#self.tbStack] = nil
 	return nDir
 end
-    
+
+function tbHeroClass:IsExploreViewRange(nX, nY)
+	if self.tbExplore and self.tbExplore[nX] and self.tbExplore[nX][nY] then
+		return 1
+	end
+end
+
+function tbHeroClass:ExploreMaze()
+	if not self.tbExplore then
+		self.tbExplore = {}
+	end
+	local nFindRange = self.tbProperty.ViewRange
+	local nLogicX, nLogicY = self:GetLogicPos()
+	for x = nLogicX - nFindRange, nLogicX + nFindRange do
+		if not self.tbExplore[x] then
+			self.tbExplore[x] = {}
+		end
+		for y = nLogicY - nFindRange, nLogicY + nFindRange do
+			if not self.tbExplore[x][y] then
+				if math.floor(Lib:GetDistance(x, y, nLogicX, nLogicY)) <= nFindRange then
+					self.tbExplore[x][y] = 1
+					if Maze:IsFree(x, y) ~= 1 then
+						local pSprite = Maze:GetBlock(x, y)
+						if pSprite then
+							pSprite:setVisible(true)
+						end
+					end
+					local tbUnit = Maze:GetUnit(x, y)
+					for dwMonsterId, _ in pairs(tbUnit) do
+						local tbMonster = GameMgr:GetCharacterById(dwMonsterId)
+						if tbMonster and tbMonster.pSprite then
+							tbMonster.pSprite:setVisible(true)
+						end
+					end
+				end
+			end
+		end
+	end
+end

@@ -105,8 +105,8 @@ Lib.ShowStack	lib.lua	/^function Lib.ShowStack(s)$/;"	f
 Lib:CopyTB1	lib.lua	/^function Lib:CopyTB1(tb)$/;"	f
 Lib:GetDistance	lib.lua	/^function Lib:GetDistance(tbCharacterA, tbCharacterB)$/;"	f
 Lib:GetOppositeDirection	lib.lua	/^function Lib:GetOppositeDirection(nDir)$/;"	f
-Lib:GetPositionByRowCol	lib.lua	/^function Lib:GetPositionByRowCol(nRow, nCol)$/;"	f
-Lib:GetRowColByPos	lib.lua	/^function Lib:GetRowColByPos(nX, nY)$/;"	f
+Lib:GetPositionByLogicPos	lib.lua	/^function Lib:GetPositionByLogicPos(nRow, nCol)$/;"	f
+Lib:GetLogicPosByPosition	lib.lua	/^function Lib:GetLogicPosByPosition(nX, nY)$/;"	f
 Lib:IsHero	lib.lua	/^function Lib:IsHero(dwId)$/;"	f
 Lib:MergeTable	lib.lua	/^function Lib:MergeTable(tbDest, tbSrc)$/;"	f
 Lib:NewClass	lib.lua	/^function Lib:NewClass(tbBase)$/;"	f

@@ -24,7 +24,7 @@ function GameScene:Create()
     local tbSize = ccspMaze:getTextureRect().size
 
     ccspMaze:setPosition(tbOrigin.x, tbOrigin.y)
-    layerMaze:setPosition(nOffsetX, nOffsetY - 50)
+    layerMaze:setPosition(nOffsetX, nOffsetY - 200)
     layerMaze:addChild(ccspMaze)
 
     Maze:SetSize(ccspMaze:getTextureRect().size)
@@ -49,11 +49,11 @@ function GameScene:Create()
 
         if GameMgr:GetState() == GameMgr.STATE_EDIT then
             local nX, nY = layerMaze:getPosition()
-            local nLogicX, nLogicY = x - nX, y - nY
-            local nRow, nCol = Lib:GetRowColByPos(nLogicX, nLogicY)
-            local nData = Maze:GetData(nRow, nCol)
-            if nData and nData >= Maze.MAP_MONSTER_START then
-                Maze:StartDrag(nRow, nCol, pSprite)
+            local nPosX, nPosY = x - nX, y - nY
+            local nLogicX, nLogicY = Lib:GetLogicPosByPosition(nPosX, nPosY)
+            local nData = Maze:GetData(nLogicX, nLogicY)
+            if nData >= Maze.MAP_MONSTER_START then
+                Maze:StartDrag(nLogicX, nLogicY, pSprite)
             end
         end
         return true
@@ -98,43 +98,38 @@ function GameScene:Create()
             local tbDragInfo = Maze:GetDragInfo()
             if tbDragInfo then
                 local nMazeX, nMazeY = layerMaze:getPosition()
-                local nLogicX, nLogicY = x - nMazeX, y - nMazeY
-                local nRow, nCol = Lib:GetRowColByPos(nLogicX, nLogicY)
+                local nPosX, nPosY = x - nMazeX, y - nMazeY
+                local nLogicX, nLogicY = Lib:GetLogicPosByPosition(nPosX, nPosY)
                 local pSprite = tbDragInfo.pSprite
-                local bRet = Maze:StopDrag(nRow, nCol)
+                local bRet = Maze:StopDrag(nLogicX, nLogicY)
                 if bRet == 0 then
-                    nRow = tbDragInfo.nRow
-                    nCol = tbDragInfo.nCol
+                    nLogicX = tbDragInfo.nLogicX
+                    nLogicY = tbDragInfo.nLogicY
                 end
                 local tbSize = Maze:GetSize()
                 local nStartX = -tbSize.width / 2 + Def.BLOCK_WIDTH / 2
                 local nStartY = -tbSize.height / 2 + Def.BLOCK_HEIGHT / 2
-                local nX, nY = nStartX + (nCol - 1) * Def.BLOCK_WIDTH, nStartY + (nRow - 1) * Def.BLOCK_HEIGHT
+                local nX, nY = nStartX + (nLogicX - 1) * Def.BLOCK_WIDTH, nStartY + (nLogicY - 1) * Def.BLOCK_HEIGHT
                 pSprite:setPosition(nX, nY)
             else
                 if x == touchMoveStartPoint.x and y == touchMoveStartPoint.y then
         	        local nX, nY = layerMaze:getPosition()
-        	        local nLogicX, nLogicY = x - nX, y - nY
-        	        nLogicX = math.floor(nLogicX / Def.BLOCK_WIDTH)
-        	        nLogicY = math.floor(nLogicY / Def.BLOCK_HEIGHT)
-
-                    local tbSize = ccspMaze:getTextureRect().size
-        	        local nCol = nLogicX + Def.MAZE_COL_COUNT / 2 + 1
-        	        local nRow = nLogicY + math.floor(tbSize.height / Def.BLOCK_HEIGHT / 2) + 1
+        	        local nPosX, nPosY = x - nX, y - nY
+        	        local nLogicX, nLogicY = Lib:GetLogicPosByPosition(nPosX, nPosY)
                     local dwMonsterTemplateId = Maze:GetMouseMonster()
                     if dwMonsterTemplateId then
-                        local bRet = Maze:PutMonster(nRow, nCol, dwMonsterTemplateId)
+                        local bRet = Maze:PutMonster(nLogicX, nLogicY, dwMonsterTemplateId)
                         if bRet == 1 then
                             local tbSize = Maze:GetSize()
                             local nStartX = -tbSize.width / 2 + Def.BLOCK_WIDTH / 2
                             local nStartY = -tbSize.height / 2 + Def.BLOCK_HEIGHT / 2
-                            local nX, nY = nStartX + (nCol - 1) * Def.BLOCK_WIDTH, nStartY + (nRow - 1) * Def.BLOCK_HEIGHT
+                            local nX, nY = nStartX + (nLogicX - 1) * Def.BLOCK_WIDTH, nStartY + (nLogicY - 1) * Def.BLOCK_HEIGHT
                             local tbMonster, pMonster = Monster:NewMonster(dwMonsterTemplateId, nX, nY)
                             self.layerMaze:addChild(pMonster)
                             Maze:ClearMouseMonster()
                         end
                     else
-                        local bRet = Maze:Dig(nRow, nCol)
+                        local bRet = Maze:Dig(nLogicX, nLogicY)
                     end
                 end
 	        end
@@ -158,7 +153,7 @@ function GameScene:Create()
     self.layerMaze = layerMaze
     self.spriteMaze = ccspMaze
     Event:FireEvent("SceneCreate", self.szClassName, self.szSceneName)
-    return sceneGame
+    return layerMaze
 end
 
 function GameScene:RemoveSprite(pSprite)
@@ -169,9 +164,9 @@ function GameScene:GenMonster()
     local tbSize = Maze:GetSize()
     local nStartX = -tbSize.width / 2 + Def.BLOCK_WIDTH / 2
     local nStartY = -tbSize.height / 2 + Def.BLOCK_HEIGHT / 2
-    for nRow, tbRow in ipairs(Maze:GetAllData()) do
-        for nColumn, nData in ipairs(tbRow) do
-            local nX, nY = nStartX + (nColumn - 1) * Def.BLOCK_WIDTH, nStartY + (nRow - 1) * Def.BLOCK_HEIGHT
+    for nLogicX, tb in ipairs(Maze:GetAllData()) do
+        for nLogicY, nData in ipairs(tb) do
+            local nX, nY = nStartX + (nLogicX - 1) * Def.BLOCK_WIDTH, nStartY + (nLogicY - 1) * Def.BLOCK_HEIGHT
             if nData >= Maze.MAP_MONSTER_START then
                 local dwMonsterTemplateId = nData - Maze.MAP_MONSTER_START + 1
                 local tbMonster, pMonster = Monster:NewMonster(dwMonsterTemplateId, nX, nY)
@@ -181,22 +176,22 @@ function GameScene:GenMonster()
     end
 end
 
-function GameScene:GenSingleMonster(dwMonsterTemplateId, nRow, nCol)
+function GameScene:GenSingleMonster(dwMonsterTemplateId, nLogicX, nLogicY)
     local tbSize = Maze:GetSize()
     local nStartX = -tbSize.width / 2 + Def.BLOCK_WIDTH / 2
     local nStartY = -tbSize.height / 2 + Def.BLOCK_HEIGHT / 2
-    local nX, nY = nStartX + (nCol - 1) * Def.BLOCK_WIDTH, nStartY + (nRow - 1) * Def.BLOCK_HEIGHT
+    local nX, nY = nStartX + (nLogicX - 1) * Def.BLOCK_WIDTH, nStartY + (nLogicY - 1) * Def.BLOCK_HEIGHT
     local tbMonster, pMonster = Monster:NewMonster(dwMonsterTemplateId, nX, nY)
     self.layerMaze:addChild(pMonster)
     return tbMonster, pMonster
 end
 
-function GameScene:GenHero(dwHeroTemplateId, nRow, nCol)
+function GameScene:GenHero(dwHeroTemplateId, nLogicX, nLogicY)
     local tbSize = self.spriteMaze:getTextureRect().size
     local nStartX = -tbSize.width / 2 + Def.BLOCK_WIDTH / 2
     local nStartY = -tbSize.height / 2 + Def.BLOCK_HEIGHT / 2
-    nStartX = nStartX + (nCol - 1) * Def.BLOCK_WIDTH
-    nStartY = nStartY + (nRow - 1) * Def.BLOCK_HEIGHT
+    nStartX = nStartX + (nLogicX - 1) * Def.BLOCK_WIDTH
+    nStartY = nStartY + (nLogicY - 1) * Def.BLOCK_HEIGHT
 
     local tbHero, pSpriteHero = Hero:NewHero(dwHeroTemplateId, nStartX, nStartY)    
     self.layerMaze:addChild(pSpriteHero, 0, tbHero.dwId)

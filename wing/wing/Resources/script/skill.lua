@@ -33,8 +33,9 @@ function Skill:CastAroundPhysicAttack(tbLancher, tbCfg)
 	local tbTargetList = {}
 	for nDirection = Def.DIR_START + 1, Def.DIR_END - 1 do
 		local tbOffset = Def.tbMove[nDirection]
-		local nCheckRow, nCheckCol = tbLancher.tbLogicPos.nRow + tbOffset[2], tbLancher.tbLogicPos.nCol + tbOffset[1]
-		local dwCharacterId = Maze:GetRandomUnit(nCheckRow, nCheckCol)
+		local nLogicX, nLogicY = tbLancher:GetLogicPos()
+		local nCheckLogicX, nCheckLogicY = nLogicX + tbOffset[1], nLogicY + tbOffset[2]
+		local dwCharacterId = Maze:GetRandomUnit(nCheckLogicX, nCheckLogicY)
 		if not dwCharacterId or dwCharacterId == 0 then
 			return 0
 		end
@@ -61,8 +62,9 @@ function Skill:CastPhysicAttack(tbLancher, tbCfg)
 	end
 	local nDirection = tbLancher.nDirection	
 	local tbOffset = Def.tbMove[nDirection]
-	local nCheckRow, nCheckCol = tbLancher.tbLogicPos.nRow + tbOffset[2], tbLancher.tbLogicPos.nCol + tbOffset[1]
-	local dwCharacterId = Maze:GetRandomUnit(nCheckRow, nCheckCol)
+	local nLogicX, nLogicY = tbLancher:GetLogicPos()
+	local nCheckLogicX, nCheckLogicY = nLogicX + tbOffset[1], nLogicY + tbOffset[2]
+	local dwCharacterId = Maze:GetRandomUnit(nCheckLogicX, nCheckLogicY)
 	if not dwCharacterId or dwCharacterId == 0 then
 		return 0
 	end

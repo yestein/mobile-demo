@@ -16,6 +16,10 @@ function Event:RegistWatcher(tbBlackEventList, fnCallBack)
 end
 
 function Event:RegistEvent(szEvent, fnCallBack, ...)
+	if not szEvent or not fnCallBack then
+		assert(false)
+		return
+	end
 	if not self.tbGlobalEvent[szEvent] then
 		self.tbGlobalEvent[szEvent] = {}
 	end
@@ -26,6 +30,10 @@ function Event:RegistEvent(szEvent, fnCallBack, ...)
 end
 
 function Event:UnRegistEvent(szEvent, nRegisterId)
+	if not szEvent or not nRegisterId then
+		assert(false)
+		return
+	end
 	if not self.tbGlobalEvent[szEvent] then
 		return 0
 	end

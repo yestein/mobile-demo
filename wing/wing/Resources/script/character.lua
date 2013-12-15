@@ -14,9 +14,9 @@ function Character:Init(pSprite, dwTemplateId, tbProperty, tbSkill, szAIName)
 	self.dwMasterId = 0
 	local nOriginX, nOriginY = pSprite:getPosition()
 	self.tbOrigin = {x = nOriginX, y = nOriginY}
-	local nRow, nCol = Lib:GetRowColByPos(nOriginX, nOriginY)
-	self.tbLogicPos = {nRow = nRow, nCol = nCol}
-	Maze:SetUnit(nRow, nCol, self.dwId)
+	local nLogicX, nLogicY = Lib:GetLogicPosByPosition(nOriginX, nOriginY)
+	self.tbLogicPos = {nX = nLogicX, nY = nLogicY}
+	Maze:SetUnit(nLogicX, nLogicY, self.dwId)
 	
 	self.tbSize = {width = 36, height = 48}
 	self.tbStack = {}
@@ -68,7 +68,6 @@ end
 function Character:Start()
 	self.tbStack = {}
 	self.tbRecordPos = {}
-	self.pSprite:setVisible(true)
 	self.pSprite.isPaused = false
 	Event:FireEvent("CharacterStartMove", self.dwId)
 end
@@ -133,7 +132,9 @@ function Character:GetMasterId()
 end
 
 function Character:GoAndAttack(nDirection, tbTarget)
-	local nDistance = Lib:GetDistance(self, tbTarget)
+	local nSelfLogicX, nSelfLogicY = self:GetLogicPos()
+	local nTargetLogicX, nTargetLogicY = tbTarget:GetLogicPos()
+	local nDistance = Lib:GetDistance(nSelfLogicX, nSelfLogicY, nTargetLogicX, nTargetLogicY)
 	local nAttackRange = self:GetProperty("AttackRange")
 	if nAttackRange < nDistance then
 		self:Goto(nDirection)
@@ -155,8 +156,10 @@ function Character:Attack()
 end
 
 function Character:GoAndCatch(nDirection, tbTarget)
-	local nDistance = Lib:GetDistance(self, tbTarget)
-	if  nDistance > 1 then
+	local nSelfLogicX, nSelfLogicY = self:GetLogicPos()
+	local nTargetLogicX, nTargetLogicY = tbTarget:GetLogicPos()
+	local nDistance = Lib:GetDistance(nSelfLogicX, nSelfLogicY, nTargetLogicX, nTargetLogicY)
+	if nDistance > 1 then
 		self:Goto(nDirection)
 		return 0
 	else
@@ -190,7 +193,8 @@ end
 
 function Character:Die()
 	Event:FireEvent("CharacterDie", self.dwId)
-	Maze:ClearUnit(self.tbLogicPos.nRow, self.tbLogicPos.nCol, self.dwId)
+	local nLogicX, nLogicY = self:GetLogicPos()
+	Maze:ClearUnit(nLogicX, nLogicY, self.dwId)
 	GameMgr:RemoveCharacter("GameScene", self.dwId)
 	self:Uninit()
 end
@@ -237,10 +241,37 @@ function Character:Goto(nDir)
 	self:SetDirection(nDir)
 	local x, y = self.pSprite:getPosition()
 	local nX, nY = unpack(tbPosOffset)
-	Maze:ClearUnit(self.tbLogicPos.nRow, self.tbLogicPos.nCol, self.dwId)
-	self.tbLogicPos.nRow = self.tbLogicPos.nRow + nY
-	self.tbLogicPos.nCol = self.tbLogicPos.nCol + nX
-	Maze:SetUnit(self.tbLogicPos.nRow, self.tbLogicPos.nCol, self.dwId)
+	local nLogicX, nLogicY = self:GetLogicPos()
+	Maze:ClearUnit(nLogicX, nLogicY, self.dwId)
+
+	nLogicX = nLogicX + nX
+	nLogicY = nLogicY + nY
+	self:SetLogicPos(nLogicX, nLogicY)
+	if Lib:IsHero(self.dwId) ~= 1 then
+		if self.pSprite:isVisible() == false then
+			local tbHeroList = Hero:GetList()
+			for dwId, tbHero in pairs(tbHeroList) do
+				if tbHero:IsExploreViewRange(nLogicX, nLogicY) == 1 then
+					self.pSprite:setVisible(true)
+				end
+			end
+		else
+			local bHide = 1
+			local bHero = 0
+			local tbHeroList = Hero:GetList()
+			for dwId, tbHero in pairs(tbHeroList) do
+				bHero = 1
+				if tbHero:IsExploreViewRange(nLogicX, nLogicY) == 1 then
+					bHide = 0
+					break 
+				end
+			end
+			if bHide == 1 and bHero == 1 then
+				self.pSprite:setVisible(false)
+			end
+		end
+	end
+	Maze:SetUnit(nLogicX, nLogicY, self.dwId)
 	local nNewX, nNewY = x + self.tbSize.width * nX, y + self.tbSize.height * nY
 	self:SetDirection(nDir)
     self.tbTarget = {x = nNewX, y = nNewY}
@@ -293,8 +324,8 @@ function Character:ExecuteAI()
 	return func(self)
 end
 
-function Character:TryGoto(nNewX, nNewY)
-	if Maze:CanMove(nNewX, nNewY) ~= 1 then
+function Character:TryGoto(nLogicX, nLogicY)
+	if Maze:CanMove(nLogicX, nLogicY) ~= 1 then
 		return 0
 	end
 	
@@ -302,12 +333,17 @@ function Character:TryGoto(nNewX, nNewY)
 end
 
 function Character:GetLogicPos()
-	return self.tbLogicPos.nRow, self.tbLogicPos.nCol
+	return self.tbLogicPos.nX, self.tbLogicPos.nY
+end
+
+function Character:SetLogicPos(nLogicX, nLogicY)
+	self.tbLogicPos.nX = nLogicX
+	self.tbLogicPos.nY = nLogicY
 end
 
 function Character:TryFindUnit(bHero, tbExpect)
 	local nFindRange = self.tbProperty.ViewRange
-	local nRow, nCol = self:GetLogicPos()
+	local nLogicX, nLogicY = self:GetLogicPos()
 	if not tbExpect then
 		tbExpect = {}
 	end
@@ -320,11 +356,11 @@ function Character:TryFindUnit(bHero, tbExpect)
 			local nX, nY = unpack(tbPosOffset)
 			nX = nX * i
 			nY = nY * i
-			local nCheckRow, nCheckCol = nRow + nY, nCol + nX
-			if Maze:IsFree(nCheckRow, nCheckCol) ~= 1 then
+			local nFindLogicX, nFindLogicY = nLogicX + nX, nLogicY + nY
+			if Maze:IsFree(nFindLogicX, nFindLogicY) ~= 1 then
 				break
 			end
-			local tbUnitList = Maze:GetUnit(nCheckRow, nCheckCol)
+			local tbUnitList = Maze:GetUnit(nFindLogicX, nFindLogicY)
 			for dwId, _ in pairs(tbUnitList) do
 				if not tbExpect[dwId] and Lib:IsHero(dwId) == bHero then
 					return GameMgr:GetCharacterById(dwId), nDirection, nX, nY

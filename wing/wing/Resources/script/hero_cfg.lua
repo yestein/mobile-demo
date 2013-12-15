@@ -21,8 +21,8 @@
 
 Hero.tbCfg = {
 	[1]= {
-		tbProperty = {MaxHP = 100, Attack = 15, Defense = 5, AttackRange = 5, Speed = 3},
-		tbSkill = {"光魔法"},
+		tbProperty = {MaxHP = 100, Attack = 40, Defense = 5, AttackRange = 5, Speed = 3},
+		tbSkill = {"火球术"},
 		szAIName = "HeroExplore",
 	},
 	[2]= {

@@ -85,20 +85,20 @@ function Lib:Reload()
 	dofile("script/hero.lua")
 end
 
-function Lib:GetRowColByPos(nX, nY)
+function Lib:GetLogicPosByPosition(nX, nY)
 	local tbSize = Maze:GetSize()
 	local nLogicX = math.floor(nX / Def.BLOCK_WIDTH)
 	local nLogicY = math.floor(nY / Def.BLOCK_HEIGHT)
 
-	local nCol = nLogicX + Def.MAZE_COL_COUNT / 2 + 1
-	local nRow = nLogicY + math.floor(tbSize.height / Def.BLOCK_HEIGHT / 2) + 1
-	return nRow, nCol
+	nLogicX = nLogicX + Def.MAZE_LOGIC_WIDTH / 2 + 1
+	nLogicY = nLogicY + math.floor(tbSize.height / Def.BLOCK_HEIGHT / 2) + 1
+	return nLogicX, nLogicY
 end
 
-function Lib:GetPositionByRowCol(nRow, nCol)
+function Lib:GetPositionByLogicPos(nLogicX, nLogicY)
 	local tbSize = Maze:GetSize()
-	local nX = (nCol - Def.MAZE_COL_COUNT / 2 - 0.5) * Def.BLOCK_WIDTH
-	local nY = (nRow - math.floor(tbSize.height / Def.BLOCK_HEIGHT / 2) - 0.5) * Def.BLOCK_HEIGHT
+	local nX = (nLogicX - Def.MAZE_LOGIC_WIDTH / 2 - 0.5) * Def.BLOCK_WIDTH
+	local nY = (nLogicY - math.floor(tbSize.height / Def.BLOCK_HEIGHT / 2) - 0.5) * Def.BLOCK_HEIGHT
 	
 	return nX, nY
 end
@@ -111,11 +111,11 @@ function Lib:IsHero(dwId)
 	end
 end
 
-function Lib:GetDistance(tbCharacterA, tbCharacterB)
-	local nRowA, nColA = tbCharacterA:GetLogicPos()
-	local nRowB, nColB = tbCharacterB:GetLogicPos()
-	local nDistanceY = nRowA - nRowB
-	local nDistanceX = nColA - nColB
+function Lib:GetDistance(nLogicX_A, nLogicY_A, nLogicX_B, nLogicY_B)
+
+	local nDistanceX = nLogicX_A - nLogicX_B
+	local nDistanceY = nLogicY_A - nLogicY_B
+	
 	return math.sqrt((nDistanceY * nDistanceY) + (nDistanceX * nDistanceX))
 end
 

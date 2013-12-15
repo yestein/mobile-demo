@@ -187,14 +187,14 @@ function Player:UnRegistEvent()
 	end
 end
 
-function Player:OnDig(nRow, nCol, bReDo)
+function Player:OnDig(nLogicX, nLogicY, bReDo)
 	local nDigPoint = self:GetResouce("DigPoint")
 	nDigPoint = nDigPoint - 1
 	self:SetResouce("DigPoint", nDigPoint)
 	return
 end
 
-function Player:UnDoDig(nRow, nCol, bReDo)
+function Player:OnUnDoDig(nLogicX, nLogicY, bReDo)
 	local nDigPoint = self:GetResouce("DigPoint")
 	nDigPoint = nDigPoint + 1
 	self:SetResouce("DigPoint", nDigPoint)
@@ -210,7 +210,7 @@ function Player:OnResetMaze()
 	return
 end
 
-function Player:OnPutMonster(dwMonsterTemplateId, nRow, nCol)
+function Player:OnPutMonster(dwMonsterTemplateId, nLogicX, nLogicY)
 	local nCount = self:GetOwnMonsterCount(dwMonsterTemplateId)
 	nCount = nCount - 1
 	self:SetOwnMonsterCount(dwMonsterTemplateId, nCount)
