@@ -18,6 +18,11 @@ local function Accumulate(nId)
 	return Id
 end
 
+Def.szMenuFontName = "MarkerFelt-Thin"
+if OS_WIN32 then
+	Def.szMenuFontName = "Microsoft Yahei"
+end
+
 Def.ZOOM_LEVEL_WORLD = 1
 Def.ZOOM_LEVEL_BULLET = 2
 Def.ZOOM_LEVEL_TITLE = 3
@@ -75,10 +80,12 @@ if OS_WIN32 then
 	Def.szBGImg     = "image/background.png"
 	Def.szTitleFile = "image/ui/title_bg.png"
 	Def.szFightImg  = "image/fight.png"
+	Def.szMainBGImg = "image/main.png"
 else	
 	Def.szHeroFile  = "wizard.png"
 	Def.szBlockImg  = "block.png"
 	Def.szBGImg     = "background.png"
 	Def.szTitleFile = "title_bg.png"
 	Def.szFightImg  = "fight.png"
+	Def.szMainBGImg = "main.png"
 end

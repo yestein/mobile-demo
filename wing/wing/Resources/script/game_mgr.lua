@@ -126,7 +126,7 @@ function GameMgr:OnStart_Normal()
 	        },
 	    },
     }
-    MenuMgr:UpdateByString("MainMenu", tbElement, szMenuFontName, 20)
+    MenuMgr:UpdateByString("GameMenu", tbElement, {szFontName = szMenuFontName, nSize = 20, szAlignType = "right"})
     local tbScene = SceneMgr:GetScene("GameScene")
 	if tbScene then
 		tbScene:GenMonster()
@@ -178,7 +178,7 @@ function GameMgr:OnStart_Edit()
 	        },
         },		
     }
-    MenuMgr:UpdateByString("MainMenu", tbElement, szMenuFontName, 20)
+    MenuMgr:UpdateByString("GameMenu", tbElement, {szFontName = szMenuFontName, nSize = 20, szAlignType = "right"})
 	local tbScene = SceneMgr:GetScene("GameScene")
 	if tbScene then
 		tbScene:GenMonster()
@@ -259,7 +259,7 @@ function GameMgr:OnStart_Battle()
 	        },
 	    },
     }
-    MenuMgr:UpdateByString("MainMenu", tbElement, szMenuFontName, 20)
+    MenuMgr:UpdateByString("GameMenu", tbElement, {szFontName = szMenuFontName, nSize = 20, szAlignType = "right"})
 
 	local tbScene = SceneMgr:GetScene("GameScene")
 	if tbScene then
@@ -351,7 +351,7 @@ function GameMgr:OnStart_TestSkill()
 	        },
 		},
     }
-    MenuMgr:UpdateByString("MainMenu", tbElement, szMenuFontName, 14)
+    MenuMgr:UpdateByString("GameMenu", tbElement, {szFontName = szMenuFontName, nSize = 14, szAlignType = "right"})
 	Maze:SetSkillTest()
 	local tbScene = SceneMgr:GetScene("GameScene")
 	if tbScene then

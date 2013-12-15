@@ -50,7 +50,6 @@ Monster.tbCfg = {
 	[Maze.MAP_TARGET]= {
 		tbProperty = {MaxHP = 10000, Attack = 0, Defense = 0, AttackRange = 0},
 		tbSkill = {},
-		-- szAIName = "Follow",
 	},
 }
 

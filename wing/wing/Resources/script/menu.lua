@@ -102,13 +102,18 @@ function MenuMgr:UpdateByImage(szName, tbElementList)
     return 1
 end
 
-function MenuMgr:UpdateByString(szName, tbElementList, szFontName, nSize)
+function MenuMgr:UpdateByString(szName, tbElementList, tbParam)
+	local szFontName = tbParam.szFontName or ""
+	local nSize = tbParam.nSize or 16
+	local szAlignType = tbParam.szAlignType or "left"
+	local nIntervalX = tbParam.nIntervalX or 15
+	local nIntervalY = tbParam.nIntervalY or 0
+
 	local tbMenu = self:GetMenu(szName)
 	if not tbMenu then
 		cclog("CreateMenu[%s] is not Exists", szName)
 		return 0
 	end
-	
 	local menuArray = CCArray:create()
 	local layerMenu = tbMenu.ccmenuObj
 	if layerMenu:getChildByTag(1) then
@@ -116,22 +121,56 @@ function MenuMgr:UpdateByString(szName, tbElementList, szFontName, nSize)
 	end
 
 	local tbVisibleSize = CCDirector:sharedDirector():getVisibleSize()
+	local itemHeight = nil
+	local nY = 0
 	for nRow, tbRow in ipairs(tbElementList) do
 		local nX = 0
+		if nRow ~= 1 then
+			nY = nY - nIntervalY
+		end
+		local tbRowMenu = {}
 		for nCol, tbElement in ipairs(tbRow) do
-			local ccLabel = CCLabelTTF:create(tbElement.szItemName or "错误的菜单项", szFontName or "", nSize or 16)
-			local menu = CCMenuItemLabel:create(ccLabel)		
+			local ccLabel = CCLabelTTF:create(tbElement.szItemName or "错误的菜单项", szFontName, nSize)
+			local menu = CCMenuItemLabel:create(ccLabel)
 			menu:setAnchorPoint(CCPoint:new(0, 0))
 			menu:registerScriptTapHandler(tbElement.fnCallBack)
 			local itemWidth = menu:getContentSize().width
-	    	local itemHeight = menu:getContentSize().height
-	    	nX = nX - itemWidth - 15
-	    	menu:setPosition(nX,  -nRow * itemHeight)
+			if not itemHeight then
+		    	itemHeight = menu:getContentSize().height
+		    end
+
+			if szAlignType == "right" then
+				if nCol ~= 1 then
+					nX = nX - nIntervalX
+				end
+		    	nX = nX - itemWidth
+		    	menu:setPosition(nX, nY -  itemHeight)
+		    else
+		    	if nCol ~= 1 then
+		    		nX = nX + nIntervalX
+		    	end
+		    	menu:setPosition(nX, nY - itemHeight)
+				nX = nX + itemWidth
+		    end
+		    tbRowMenu[#tbRowMenu + 1] = menu
 	    	menuArray:addObject(menu)
 	    end
+	    if szAlignType == "center" then
+	    	local nOffsetX = math.floor(nX / 2)
+	    	for _, menu in ipairs(tbRowMenu) do
+	    		local nMenuX, nMenuY = menu:getPosition()
+	    		menu:setPosition(nMenuX - nOffsetX, nMenuY)
+	    	end
+		end
+		nY = nY - itemHeight
 	end
 	local menuTools = CCMenu:createWithArray(menuArray)
-    menuTools:setPosition(0, 0)
+	if szAlignType == "center" and itemHeight then
+		local nOffsetY = math.floor(-nY / 2)
+		menuTools:setPosition(0, nOffsetY - itemHeight / 2)
+	else
+    	menuTools:setPosition(0, 0)
+    end
     layerMenu:addChild(menuTools, 1, 1)
 
     return 1

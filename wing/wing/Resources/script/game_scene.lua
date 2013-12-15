@@ -24,7 +24,7 @@ function GameScene:Create()
     local tbSize = ccspMaze:getTextureRect().size
 
     ccspMaze:setPosition(tbOrigin.x, tbOrigin.y)
-    layerMaze:setPosition(nOffsetX, nOffsetY - 200)
+    layerMaze:setPosition(nOffsetX, nOffsetY - 50)
     layerMaze:addChild(ccspMaze)
 
     Maze:SetSize(ccspMaze:getTextureRect().size)
@@ -158,7 +158,7 @@ function GameScene:Create()
     self.layerMaze = layerMaze
     self.spriteMaze = ccspMaze
     Event:FireEvent("SceneCreate", self.szClassName, self.szSceneName)
-    return layerMaze
+    return sceneGame
 end
 
 function GameScene:RemoveSprite(pSprite)

@@ -25,6 +25,16 @@ local tbVisibleSize = sharedDirector:getVisibleSize()
 local tbOrigin = sharedDirector:getVisibleOrigin()
 local nOffsetX, nOffsetY = 0, 0
 
+local function DoTest()
+	local nX , nY = Lib:GetPositionByRowCol(1, 1)
+	assert(nX == -702)
+	assert(nY == -696)
+	
+	nX , nY = Lib:GetPositionByRowCol(21, 40)
+	assert(nX == 702)
+	assert(nY == 264)
+end
+
 function cclog(...)
     print(string.format(...))
 end
@@ -57,45 +67,73 @@ local function main()
 	Maze:Init(Def.MAZE_COL_COUNT, Def.MAZE_ROW_COUNT)
 	Lib:SafeCall({Maze.Load, Maze})
 
-	-- run
-	local tbScene = SceneMgr:CreateScene("GameScene", "GameScene")
-    local sceneGame = tbScene:GetCCObj()
+	local function StartGame(nState)
+        -- run
+		local tbScene = SceneMgr:CreateScene("GameScene", "GameScene")
+	    local sceneGame = tbScene:GetCCObj()
 
-    local layerMainMenu = MenuMgr:CreateMenu("MainMenu")
-    layerMainMenu:setPosition(tbVisibleSize.width, tbVisibleSize.height)
-    sceneGame:addChild(layerMainMenu, Def.ZOOM_LEVEL_MENU)
+	    local layerGameMenu = MenuMgr:CreateMenu("GameMenu")
+	    layerGameMenu:setPosition(tbVisibleSize.width, tbVisibleSize.height)
+	    sceneGame:addChild(layerGameMenu, 10)
 
-    local layerMonsterMenu = MenuMgr:CreateMenu("PutMonster")
-    sceneGame:addChild(layerMonsterMenu, Def.ZOOM_LEVEL_SUB_MENU)
-    layerMonsterMenu:setVisible(false)
-    layerMonsterMenu:setPosition(tbVisibleSize.width / 2, tbVisibleSize.height / 2)
-    
-    local layerWorld = tbScene:Create()
-	sceneGame:addChild(layerWorld, Def.ZOOM_LEVEL_WORLD)
-    GameMgr.layerWorld = layerWorld
+	    local layerMonsterMenu = MenuMgr:CreateMenu("PutMonster")
+	    sceneGame:addChild(layerMonsterMenu, Def.ZOOM_LEVEL_SUB_MENU)
+	    layerMonsterMenu:setVisible(false)
+	    layerMonsterMenu:setPosition(tbVisibleSize.width / 2, tbVisibleSize.height / 2)
+	    
+	    local layerWorld = tbScene:Create()
+		sceneGame:addChild(layerWorld, Def.ZOOM_LEVEL_WORLD)
+	    GameMgr.layerWorld = layerWorld
 
-    Performance:Init(layerWorld)
-    GameMgr:InitTitle()
-    GameMgr:SetState(GameMgr.STATE_NORMAL)
-    GameMgr:SetSpeedMulti(1)
-    Player:Init()
-    Lib:SafeCall({Player.Load, Player})
-		
-	sharedDirector:runWithScene(sceneGame)
+	    Performance:Init(layerWorld)
+	    GameMgr:InitTitle()
+	    GameMgr:SetState(nState)
+	    GameMgr:SetSpeedMulti(1)
+	    Player:Init()
+	    Lib:SafeCall({Player.Load, Player})
+			
+		sharedDirector:replaceScene(sceneGame)
+
+		DoTest()
+    end	
+
+	local tbMainScene = SceneMgr:CreateScene("MainScene", "MainScene")
+	local sceneMain = tbMainScene:GetCCObj()
+	local layerBG = tbMainScene:Create()
+	sceneMain:addChild(layerBG, Def.ZOOM_LEVEL_WORLD)
+
+	local layerMainMenu = MenuMgr:CreateMenu("MainMenu")
+	layerMainMenu:setPosition(tbVisibleSize.width / 2, tbVisibleSize.height / 2)
+    sceneMain:addChild(layerMainMenu, Def.ZOOM_LEVEL_MENU)
+    local tbElement = {
+	    [1] = {
+	        [1] = {
+	        	szItemName = "开始游戏",
+	        	fnCallBack = function()
+	        		StartGame(GameMgr.STATE_NORMAL)
+	        	end,
+	        },
+	    },
+	    [2] = {
+	        [1] = {
+	        	szItemName = "技能测试",
+	        	fnCallBack = function()
+	        		StartGame(GameMgr.STATE_TEST_SKILL)
+	        	end,
+	        },
+	    },
+	    [3] = {
+	    	[1] = {
+	        	szItemName = "编辑关卡",
+	        	fnCallBack = function()
+	        		StartGame(GameMgr.STATE_EDIT)
+	        	end,
+	        },
+	    },
+    }
+    MenuMgr:UpdateByString("MainMenu", tbElement, {szFontName = Def.szMenuFontName, nSize = 40, szAlignType = "center", nIntervalY = 10})
+    sharedDirector:runWithScene(sceneMain)
 end
 
 xpcall(main, __G__TRACKBACK__)
-
-
-local function DoTest()
-	local nX , nY = Lib:GetPositionByRowCol(1, 1)
-	assert(nX == -702)
-	assert(nY == -696)
-	
-	nX , nY = Lib:GetPositionByRowCol(21, 40)
-	assert(nX == 702)
-	assert(nY == 264)
-end
-
-DoTest()
 
