@@ -103,7 +103,7 @@ local function main()
 	sceneMain:addChild(layerBG, Def.ZOOM_LEVEL_WORLD)
 
 	local layerMainMenu = MenuMgr:CreateMenu("MainMenu")
-	layerMainMenu:setPosition(tbVisibleSize.width / 2, tbVisibleSize.height / 2)
+	layerMainMenu:setPosition(tbVisibleSize.width / 2, tbVisibleSize.height / 6)
     sceneMain:addChild(layerMainMenu, Def.ZOOM_LEVEL_MENU)
     local tbElement = {
 	    [1] = {
@@ -113,17 +113,13 @@ local function main()
 	        		StartGame(GameMgr.STATE_NORMAL)
 	        	end,
 	        },
-	    },
-	    [2] = {
-	        [1] = {
+	        [2] = {
 	        	szItemName = "技能测试",
 	        	fnCallBack = function()
 	        		StartGame(GameMgr.STATE_TEST_SKILL)
 	        	end,
 	        },
-	    },
-	    [3] = {
-	    	[1] = {
+	        [3] = {
 	        	szItemName = "编辑关卡",
 	        	fnCallBack = function()
 	        		StartGame(GameMgr.STATE_EDIT)
@@ -131,7 +127,7 @@ local function main()
 	        },
 	    },
     }
-    MenuMgr:UpdateByString("MainMenu", tbElement, {szFontName = Def.szMenuFontName, nSize = 40, szAlignType = "center", nIntervalY = 10})
+    MenuMgr:UpdateByString("MainMenu", tbElement, {szFontName = Def.szMenuFontName, nSize = 40, szAlignType = "center", nIntervalX = 40})
     sharedDirector:runWithScene(sceneMain)
 end
 
