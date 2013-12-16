@@ -247,27 +247,29 @@ function Character:Goto(nDir)
 	nLogicX = nLogicX + nX
 	nLogicY = nLogicY + nY
 	self:SetLogicPos(nLogicX, nLogicY)
-	if Lib:IsHero(self.dwId) ~= 1 then
-		if self.pSprite:isVisible() == false then
-			local tbHeroList = Hero:GetList()
-			for dwId, tbHero in pairs(tbHeroList) do
-				if tbHero:IsExploreViewRange(nLogicX, nLogicY) == 1 then
-					self.pSprite:setVisible(true)
+	if Def.USING_FOG == 1 then
+		if Lib:IsHero(self.dwId) ~= 1 then
+			if self.pSprite:isVisible() == false then
+				local tbHeroList = Hero:GetList()
+				for dwId, tbHero in pairs(tbHeroList) do
+					if tbHero:IsExploreViewRange(nLogicX, nLogicY) == 1 then
+						self.pSprite:setVisible(true)
+					end
 				end
-			end
-		else
-			local bHide = 1
-			local bHero = 0
-			local tbHeroList = Hero:GetList()
-			for dwId, tbHero in pairs(tbHeroList) do
-				bHero = 1
-				if tbHero:IsExploreViewRange(nLogicX, nLogicY) == 1 then
-					bHide = 0
-					break 
+			else
+				local bHide = 1
+				local bHero = 0
+				local tbHeroList = Hero:GetList()
+				for dwId, tbHero in pairs(tbHeroList) do
+					bHero = 1
+					if tbHero:IsExploreViewRange(nLogicX, nLogicY) == 1 then
+						bHide = 0
+						break 
+					end
 				end
-			end
-			if bHide == 1 and bHero == 1 then
-				self.pSprite:setVisible(false)
+				if bHide == 1 and bHero == 1 then
+					self.pSprite:setVisible(false)
+				end
 			end
 		end
 	end

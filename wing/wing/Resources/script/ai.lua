@@ -34,7 +34,9 @@ function AI.AI_HeroExplore(tbHero)
 	self:RecordPos(nLogicX, nLogicY)
 	local nNextDir = Def.DIR_END
 	local tbCatchList = self:GetCatchList()
-	self:ExploreMaze()
+	if Def.USING_FOG == 1 then
+		self:ExploreMaze()
+	end
 
 	local tbMonster, nDirection = self:TryFindMonster(tbCatchList)
 	if tbMonster then

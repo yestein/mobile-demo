@@ -68,7 +68,7 @@ function GameMgr:InitTitle()
 
     local nHeight = 20
     local nWidth = 20
-    self.nSpriteX = nWidth / 2 + 10
+    self.nSpriteX = nWidth / 2 + 30
     self.nSpriteY = tbVisibleSize.height - nHeight / 2
     for _, tb in ipairs(tbTemp) do
         local spriteIcon = CCSprite:create(tb.szImageFile)

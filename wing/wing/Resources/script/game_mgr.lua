@@ -59,6 +59,85 @@ function GameMgr:GetStateDesc(nState)
 	return self.tbStateDesc[nState]
 end
 
+function GameMgr:StartGame(nState)
+	local function DoTest()
+		local nLogicX, nLogicY = 1, 1
+		local nX , nY = Lib:GetPositionByLogicPos(nLogicX, nLogicY)
+		print("logic", nLogicX, nLogicY, "->", nX, nY)
+		assert(nX == -702)
+		assert(nY == -696)
+		
+		nLogicX, nLogicY = 40, 21
+		nX , nY = Lib:GetPositionByLogicPos(nLogicX, nLogicY)
+		print("logic", nLogicX, nLogicY, "->", nX, nY)
+		assert(nX == 702)
+		assert(nY == 264)
+	end
+    -- run
+    local sharedDirector = CCDirector:sharedDirector()
+    local tbVisibleSize = sharedDirector:getVisibleSize()
+	local tbScene = SceneMgr:CreateScene("GameScene", "GameScene")
+    local sceneGame = tbScene:GetCCObj()
+
+    local layerGameMenu = MenuMgr:CreateMenu("GameMenu")
+    layerGameMenu:setPosition(tbVisibleSize.width, tbVisibleSize.height)
+    sceneGame:addChild(layerGameMenu, Def.ZOOM_LEVEL_MENU)
+
+    local layerSpeedMenu = MenuMgr:CreateMenu("SpeedMenu")
+    layerSpeedMenu:setPosition(0, tbVisibleSize.height)
+    sceneGame:addChild(layerSpeedMenu, Def.ZOOM_LEVEL_MENU)
+
+    local tbSpeedElement = {
+    	[1] = {
+	        {
+	        	szItemName = "1X",
+	        	fnCallBack = function()
+	        		GameMgr:SetSpeedMulti(1)
+	            end,
+	        },
+	    },
+	    [2] = {
+	    	{
+	        	szItemName = "2X",
+	        	fnCallBack = function()
+	                GameMgr:SetSpeedMulti(2)
+	            end,
+	        },
+	    },
+	    [3] = {
+	        {
+	        	szItemName = "4X",
+	        	fnCallBack = function()
+	                GameMgr:SetSpeedMulti(4)
+	            end,
+	        },
+	    },
+	}
+	MenuMgr:UpdateByString("SpeedMenu", tbSpeedElement,  
+    	{szFontName = Def.szMenuFontName, nSize = 16, szAlignType = "left"}
+    )
+
+    local layerMonsterMenu = MenuMgr:CreateMenu("PutMonster")
+    sceneGame:addChild(layerMonsterMenu, Def.ZOOM_LEVEL_SUB_MENU)
+    layerMonsterMenu:setVisible(false)
+    layerMonsterMenu:setPosition(tbVisibleSize.width / 2, tbVisibleSize.height / 2)
+    
+    local layerWorld = tbScene:Create()
+	sceneGame:addChild(layerWorld, Def.ZOOM_LEVEL_WORLD)
+    self.layerWorld = layerWorld
+
+    Performance:Init(layerWorld)
+    GameMgr:InitTitle()
+    GameMgr:SetState(nState)
+    GameMgr:SetSpeedMulti(1)
+    Player:Init()
+    Lib:SafeCall({Player.Load, Player})
+
+	sharedDirector:replaceScene(sceneGame)
+
+	DoTest()
+end
+
 function GameMgr:StartBattle()
 	self.bPause = 0
 	for dwId, tbCharacter in pairs(self.tbCharacterMap) do
@@ -237,27 +316,7 @@ function GameMgr:OnStart_Battle()
 	                GameMgr:SetState(self.STATE_NORMAL)
 	            end,
 	        },
-	    },
-	    [2] = {
-	        {
-	        	szItemName = "正常速度",
-	        	fnCallBack = function()
-	        		self:SetSpeedMulti(1)
-	            end,
-	        },
-	        {
-	        	szItemName = "2倍速度",
-	        	fnCallBack = function()
-	                self:SetSpeedMulti(2)
-	            end,
-	        },
-	        {
-	        	szItemName = "4倍速度",
-	        	fnCallBack = function()
-	                self:SetSpeedMulti(4)
-	            end,
-	        },
-	    },
+	    },	    
     }
     MenuMgr:UpdateByString("GameMenu", tbElement, {szFontName = szMenuFontName, nSize = 20, szAlignType = "right"})
 
@@ -280,11 +339,13 @@ function GameMgr:OnStart_Battle()
 			end,
 			1, false
 		)
-		local tbMonsterList = Monster:GetList()
-		for _, tbMonster in pairs(tbMonsterList) do
-			tbMonster.pSprite:setVisible(false)
+		if Def.USING_FOG == 1 then
+			local tbMonsterList = Monster:GetList()
+			for _, tbMonster in pairs(tbMonsterList) do
+				tbMonster.pSprite:setVisible(false)
+			end
+			Maze:HideAllBlock()
 		end
-		Maze:HideAllBlock()
 		self:StartBattle()
 	end	
 end
