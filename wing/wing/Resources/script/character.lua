@@ -192,7 +192,7 @@ function Character:AddStar()
 		    animFrames:addObject(frame)
 		end
 	end
-    local animation = CCAnimation:createWithSpriteFrames(animFrames, 0.1)
+    local animation = CCAnimation:createWithSpriteFrames(animFrames, 0.15)
     local animate = CCAnimate:create(animation)
     spriteStar:stopAllActions()
     spriteStar:runAction(CCRepeatForever:create(animate))

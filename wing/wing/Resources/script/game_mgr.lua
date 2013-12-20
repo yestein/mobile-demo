@@ -322,6 +322,11 @@ function GameMgr:OnStart_Battle()
 
 	local tbScene = SceneMgr:GetScene("GameScene")
 	if tbScene then
+		local layerMaze = tbScene.layerMaze
+		local tbVisibleSize = CCDirector:sharedDirector():getVisibleSize()
+	    local nOffsetX = tbVisibleSize.width / 2
+	    local nOffsetY = tbVisibleSize.height / 2
+		layerMaze:setPosition(nOffsetX, nOffsetY - 300)
 		self.nMaxHero = 6
 		local nHeroId = math.random(1, self.nMaxHero)
 		tbScene:GenHero(nHeroId, unpack(Def.tbEntrance))

@@ -136,6 +136,7 @@ function MenuMgr:UpdateByString(szName, tbElementList, tbParam)
 	local nMaxWidth = 0
 	local nSumWidth = 0
 	for nRow, tbRow in ipairs(tbElementList) do
+		nSumWidth = 0
 		local nX = 0
 		if nRow ~= 1 then
 			nY = nY - nIntervalY

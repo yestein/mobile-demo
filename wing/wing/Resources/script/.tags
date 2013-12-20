@@ -19,6 +19,7 @@ Bullet:CreateLightBall	.\bullet.lua	/^function Bullet:CreateLightBall(bulletNode
 Bullet:GetBulletNode	.\bullet.lua	/^function Bullet:GetBulletNode(szType)$/;"	f
 Bullet:Init	.\bullet.lua	/^function Bullet:Init()$/;"	f
 Character:Activate	.\character.lua	/^function Character:Activate()$/;"	f
+Character:AddStar	.\character.lua	/^function Character:AddStar()$/;"	f
 Character:Attack	.\character.lua	/^function Character:Attack()$/;"	f
 Character:BeCatched	.\character.lua	/^function Character:BeCatched(tbMaster)$/;"	f
 Character:CancelPause	.\character.lua	/^function Character:CancelPause()$/;"	f
@@ -159,7 +160,7 @@ Maze:SetUnit	.\maze.lua	/^function Maze:SetUnit(nX, nY, dwId)$/;"	f
 Maze:StartDrag	.\maze.lua	/^function Maze:StartDrag(nX, nY)$/;"	f
 Maze:StopDrag	.\maze.lua	/^function Maze:StopDrag(nX, nY)$/;"	f
 Maze:UnDoDig	.\maze.lua	/^function Maze:UnDoDig()$/;"	f
-MenuMgr:CreateMenu	.\menu.lua	/^function MenuMgr:CreateMenu(szName)$/;"	f
+MenuMgr:CreateMenu	.\menu.lua	/^function MenuMgr:CreateMenu(szName, szBgImg)$/;"	f
 MenuMgr:GetMenu	.\menu.lua	/^function MenuMgr:GetMenu(szName)$/;"	f
 MenuMgr:Init	.\menu.lua	/^function MenuMgr:Init()$/;"	f
 MenuMgr:Uninit	.\menu.lua	/^function MenuMgr:Uninit()$/;"	f
@@ -214,10 +215,7 @@ SceneMgr:GetScene	.\scene_mgr.lua	/^function SceneMgr:GetScene(szName)$/;"	f
 SceneMgr:GetSceneObj	.\scene_mgr.lua	/^function SceneMgr:GetSceneObj(szName)$/;"	f
 SceneMgr:Init	.\scene_mgr.lua	/^function SceneMgr:Init()$/;"	f
 SceneMgr:Uninit	.\scene_mgr.lua	/^function SceneMgr:Uninit()$/;"	f
-Skill:CastAOEFireAttack	.\skill.lua	/^function Skill:CastAOEFireAttack(tbLancher, tbCfg)$/;"	f
-Skill:CastAroundPhysicAttack	.\skill.lua	/^function Skill:CastAroundPhysicAttack(tbLancher, tbCfg)$/;"	f
-Skill:CastFireAttack	.\skill.lua	/^function Skill:CastFireAttack(tbLancher, tbCfg)$/;"	f
-Skill:CastLightAttack	.\skill.lua	/^function Skill:CastLightAttack(tbLancher, tbCfg)$/;"	f
+Skill:CastBullet	.\skill.lua	/^function Skill:CastBullet(tbLancher, tbCfg)$/;"	f
 Skill:CastPhysicAttack	.\skill.lua	/^function Skill:CastPhysicAttack(tbLancher, tbCfg)$/;"	f
 Skill:CastSkill	.\skill.lua	/^function Skill:CastSkill(szSkillName, tbLancher)$/;"	f
 Skill:Init	.\skill.lua	/^function Skill:Init( ... )$/;"	f
