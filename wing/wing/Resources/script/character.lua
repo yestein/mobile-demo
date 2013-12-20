@@ -48,7 +48,7 @@ function Character:Init(pSprite, dwTemplateId, tbProperty, tbSkill, szAIName)
 	self.tbSkill = tbSkill
 	self:SetDirection(Def.DIR_DOWN)
 	-- moving Hero at every frame
-	local function tick()
+	local function OnActive()
 	    if pSprite.isPaused then
 	    	return
 	    end
@@ -58,7 +58,7 @@ function Character:Init(pSprite, dwTemplateId, tbProperty, tbSkill, szAIName)
 	    end
 	    self:Activate()
 	end
-	self.nRegId = CCDirector:sharedDirector():getScheduler():scheduleScriptFunc(tick, 0, false)
+	self.nRegId = CCDirector:sharedDirector():getScheduler():scheduleScriptFunc(OnActive, 0, false)
 end
 
 function Character:Uninit()

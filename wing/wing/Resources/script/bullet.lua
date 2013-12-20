@@ -36,7 +36,7 @@ function Bullet:Init()
 		self.tbBulletNodeList[szBulletType] = bulletNode
 	end
 
-	local function tick()
+	local function OnActive()
 		for dwBulletId, tbBullet in pairs(self.tbBulletList) do
 			local nDirection = tbBullet.nDirection
 			local tbProperty = tbBullet.tbProperty
@@ -73,10 +73,10 @@ function Bullet:Init()
 						end
 					end
 				end
-			end			
+			end
 	    end
 	end
-	CCDirector:sharedDirector():getScheduler():scheduleScriptFunc(tick, 0, false)
+	CCDirector:sharedDirector():getScheduler():scheduleScriptFunc(OnActive, 0, false)
 	return self.tbBulletNodeList
 end
 
