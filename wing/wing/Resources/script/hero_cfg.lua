@@ -22,37 +22,37 @@
 Hero.tbCfg = {
 	[1]= {
 		zName = "魔法师",
-		tbProperty = {MaxHP = 80, Attack = 40, Defense = 50, AttackRange = 5, Speed = 1},
+		tbProperty = {MaxHP = 180, Attack = 40, Defense = 50, AttackRange = 5, Speed = 1},
 		tbSkill = {"光魔法"},
 		szAIName = "HeroExplore",
 	},
 	[2]= {
 		zName = "士兵A",
-		tbProperty = {MaxHP = 120, Attack = 20, Defense = 100, Speed = 2},
+		tbProperty = {MaxHP = 220, Attack = 20, Defense = 100, Speed = 2},
 		tbSkill = {"物理攻击"},
 		szAIName = "HeroExplore",
 	},
 	[3]= {
 		zName = "士兵B",
-		tbProperty = {MaxHP = 120, Attack = 20, Defense = 100, Speed = 2},
+		tbProperty = {MaxHP = 220, Attack = 20, Defense = 100, Speed = 2},
 		tbSkill = {"物理攻击"},
 		szAIName = "HeroExplore",
 	},
 	[4]= {
 		zName = "士兵C",
-		tbProperty = {MaxHP = 120, Attack = 20, Defense = 100, Speed = 2},
+		tbProperty = {MaxHP = 220, Attack = 20, Defense = 100, Speed = 2},
 		tbSkill = {"物理攻击"},
 		szAIName = "HeroExplore",
 	},
 	[5]= {
 		zName = "士兵D",
-		tbProperty = {MaxHP = 120, Attack = 20, Defense = 100, Speed = 2},
+		tbProperty = {MaxHP = 220, Attack = 20, Defense = 100, Speed = 2},
 		tbSkill = {"物理攻击"},
 		szAIName = "HeroExplore",
 	},
 	[6]= {
 		szName = "盗贼",
-		tbProperty = {MaxHP = 100, Attack = 14, Defense = 80, Speed = 3},
+		tbProperty = {MaxHP = 200, Attack = 14, Defense = 80, Speed = 3},
 		tbSkill = {"速击"},
 		szAIName = "HeroExplore",
 	},

@@ -122,12 +122,12 @@ Monster.tbCfg = {
 		szAIName = "NormalMove"
 	},
 	[999]= {
-		tbProperty = {MaxHP = 10000, Attack = 15, Defense = 2, AttackRange = 5, Speed = 3},
+		tbProperty = {MaxHP = 1000, Attack = 15, Defense = 2, AttackRange = 5, Speed = 3},
 		tbSkill = {"光魔法"},
 		szAIName = "NormalMove"
 	},
 	[1000]= {
-		tbProperty = {MaxHP = 10000, Attack = 10, Defense = 5, ViewRange = 1, AttackRange = 1},
+		tbProperty = {MaxHP = 1000, Attack = 10, Defense = 5, ViewRange = 1, AttackRange = 1},
 		tbSkill = {"物理攻击"},
 		szAIName = "NotMove"
 	},

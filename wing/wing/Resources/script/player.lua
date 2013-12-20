@@ -57,22 +57,22 @@ function Player:Save()
     local szPath = CCFileUtils:sharedFileUtils():getWritablePath()
 	local file = assert(io.open(szPath.."saveplayer.lua", "w"))
 
-	file:write(string.format("Player:Entry{\nnLevel = %d,\n", self.nLevel))
-	file:write("tbResource = {")
+	file:write(string.format("Player:Entry{\n\tnLevel = %d,\n", self.nLevel))
+	file:write("\ttbResource = {\n")
 	for szResourceName, nCount in pairs(self.tbResource) do
-		file:write(string.format("[\"%s\"] = %d,\n", szResourceName, nCount))
+		file:write(string.format("\t\t[\"%s\"] = %d,\n", szResourceName, nCount))
 	end
-	file:write("},\n")
-	file:write("tbMonster = {")
+	file:write("\t},\n")
+	file:write("\ttbMonster = {\n")
 	for dwMonsterTemplateId, nCount in pairs(self.tbMonster) do
-		file:write(string.format("[%d] = %d,\n", dwMonsterTemplateId, nCount))
+		file:write(string.format("\t\t[%d] = %d,\n", dwMonsterTemplateId, nCount))
 	end
-	file:write("},\n")
-	file:write("tbHero = {")
+	file:write("\t},\n")
+	file:write("\ttbHero = {\n")
 	for dwHeroTemplateId, nCount in pairs(self.tbHero) do
-		file:write(string.format("[%d] = %d,\n", dwHeroTemplateId, nCount))
+		file:write(string.format("\t\t[%d] = %d,\n", dwHeroTemplateId, nCount))
 	end
-	file:write("},\n}")
+	file:write("\t},\n}")
 	file:close()
 	Event:FireEvent("SavePlayerSuccess")
 end

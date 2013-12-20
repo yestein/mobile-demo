@@ -209,8 +209,9 @@ end
 function Character:ReceiveDamage(nDamage)
 	local nCurHP = self:GetProperty("CurHP")
 	local nNewHP = nCurHP - nDamage
+	local nMaxHP = self:GetProperty("MaxHP")
 	self:SetProperty("CurHP", nNewHP)
-	Event:FireEvent("CharacterHPChanged", self.dwId, nCurHP, nNewHP)
+	Event:FireEvent("CharacterHPChanged", self.dwId, nCurHP, nNewHP, nMaxHP)
 	if nNewHP <= 0 then
 		self:Die()
 	end

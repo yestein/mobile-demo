@@ -84,6 +84,7 @@ if OS_WIN32 then
 	Def.szFightImg  = "image/fight.png"
 	Def.szMainBGImg = "image/main.png"
 	Def.szStarImg   = "image/star.png"
+	Def.szBarImg   = "image/ui/bar.png"
 else	
 	Def.szHeroFile  = "wizard.png"
 	Def.szBlockImg  = "block.png"
@@ -92,4 +93,5 @@ else
 	Def.szFightImg  = "fight.png"
 	Def.szMainBGImg = "main.png"
 	Def.szStarImg   = "star.png"
+	Def.szBarImg   = "bar.png"
 end

@@ -108,16 +108,44 @@ function GameMgr:AddHeroHP(dwHeroId)
     pCopySprite:setPosition(self.nHeroX, tbVisibleSize.height - dwHeroId * tbSpriteSize.height * 0.6)
     self.layerTitle:addChild(pCopySprite)
 
+    local spriteHP = CCSprite:create(Def.szBarImg, CCRectMake(0, 0, 20, 1))
+    local progressHP = CCProgressTimer:create(spriteHP)
+    local tbProgressHPSize = spriteHP:getTextureRect().size
+    progressHP:setAnchorPoint(CCPoint:new(0.5, 0))
+    progressHP:setMidpoint(CCPoint:new(0, 0.5))
+    progressHP:setBarChangeRate(CCPoint:new(1, 0))
+    local nXScale = 120 / tbProgressHPSize.width
+    progressHP:setScaleX(nXScale)
+    local nYScale = 20 / tbProgressHPSize.height
+    progressHP:setScaleY(nYScale)
+    progressHP:setType(1)
+    local nPosX = self.nHeroX + tbSpriteSize.width / 2 + 10 + tbProgressHPSize.width * nXScale / 2
+    local nPosY = tbVisibleSize.height - dwHeroId * tbSpriteSize.height * 0.6
+    progressHP:setPosition(nPosX, nPosY)
+
+    local spriteHPBG = CCSprite:create(Def.szBarImg, CCRectMake(0, 1, 20, 1))
+    spriteHPBG:setAnchorPoint(CCPoint:new(0.5, 0))
+    spriteHPBG:setScaleX(nXScale)
+    spriteHPBG:setScaleY(nYScale)
+    spriteHPBG:setPosition(nPosX, nPosY)
+
+    self.layerTitle:addChild(spriteHPBG)
+    self.layerTitle:addChild(progressHP)
+
     local szMsg = string.format("%d / %d", tbHero:GetProperty("CurHP"), tbHero:GetProperty("MaxHP"))
     local cclfHP = CCLabelTTF:create(szMsg, szTitleFontName, 16)
-    cclfHP:setAnchorPoint(CCPoint:new(0, 0))
+    cclfHP:setAnchorPoint(CCPoint:new(0.5, 0))
     self.layerTitle:addChild(cclfHP)
     local tbHPSize = cclfHP:getTextureRect().size
-    cclfHP:setPosition(self.nHeroX + tbSpriteSize.width / 2 + 5, tbVisibleSize.height - dwHeroId * tbSpriteSize.height * 0.6)
+    cclfHP:setPosition(nPosX + (tbProgressHPSize.width * nXScale - tbHPSize.width) / 2, nPosY)
     self.tbHeroHP[dwHeroId] = {
         spriteHead = pCopySprite,
         labelHP = cclfHP,
+        progressHP = progressHP,
+        spriteHPBG = spriteHPBG,
     }
+
+    progressHP:setPercentage(100)
     Event:FireEvent("TitleHPAdd", dwHeroId, szMsg)
     return 1
 end
@@ -129,6 +157,8 @@ function GameMgr:RemoveHeroHP(dwHeroId)
     end
     self.layerTitle:removeChild(tbHero.spriteHead, true)
     self.layerTitle:removeChild(tbHero.labelHP, true)
+    self.layerTitle:removeChild(tbHero.progressHP, true)
+    self.layerTitle:removeChild(tbHero.spriteHPBG, true)
     self.tbHeroHP[dwHeroId] = nil
     Event:FireEvent("TitleHPRemove", dwHeroId)
     return 1
@@ -143,7 +173,9 @@ function GameMgr:UpdateHeroHP(dwHeroId)
     local nCurHP, nMaxHP = tbHero:GetProperty("CurHP"), tbHero:GetProperty("MaxHP")
     local szHP = string.format("%d / %d", nCurHP, nMaxHP)
     tbHP.labelHP:setString(szHP)
+    tbHP.progressHP:setPercentage(nCurHP * 100 / nMaxHP)
     Event:FireEvent("TitleHPUpdate", dwHeroId, szHP)
+
 end
 
 function GameMgr:RegistEvent()

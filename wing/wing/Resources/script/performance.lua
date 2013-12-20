@@ -73,6 +73,9 @@ function Performance:RegistEvent()
 	if not self.nRegPhysicAttack then
 		self.nRegPhysicAttack = Event:RegistEvent("CharacterPhyiscAttack", self.OnCharacterPhyiscAttack, self)
 	end
+	if not self.nRegMonsterAdd then
+		Event:RegistEvent("MonsterAdd", self.OnMonsterAdd, self)
+	end
 end
 
 function Performance:UnRegistEvent()
@@ -85,10 +88,45 @@ function Performance:UnRegistEvent()
 		Event:UnRegistEvent("CharacterPhyiscAttack", self.nRegPhysicAttack )
 		self.nRegPhysicAttack = nil
 	end
+
+	if self.nRegMonsterAdd then
+		Event:UnRegistEvent("nRegMonsterAdd", self.nRegnRegMonsterAdd )
+		self.nRegnRegMonsterAdd = nil
+	end
 end
 
+function Performance:OnMonsterAdd(dwMonsterId)
+	local tbMonster = GameMgr:GetCharacterById(dwMonsterId)
+	if tbMonster then
+		local pSprite = tbMonster.pSprite
+		local tbSpriteSize = pSprite:getTextureRect().size
+		local spriteHP = CCSprite:create(Def.szBarImg, CCRectMake(0, 0, 20, 1))
+		local spriteHPBG = CCSprite:create(Def.szBarImg, CCRectMake(0, 1, 20, 1))
+    	local progressHP = CCProgressTimer:create(spriteHP)
+    	local progressSize = spriteHP:getTextureRect().size
+    	progressHP:setPercentage(100)
+	    progressHP:setMidpoint(CCPoint:new(0, 0.5))
+	    progressHP:setBarChangeRate(CCPoint:new(1, 0))
+	    progressHP:setType(1)
 
-function Performance:OnCharacterHPChanged(dwCharacterId,  nBeforeHP, nAfterHP)
+    	progressHP:setAnchorPoint(CCPoint:new(0.5, 1))
+    	spriteHPBG:setAnchorPoint(CCPoint:new(0.5, 1))
+	    progressHP:setScaleX(36 * 0.7 / progressSize.width)
+	    spriteHPBG:setScaleX(36 * 0.7 / progressSize.width)
+	    progressHP:setScaleY(4)
+	    spriteHPBG:setScaleY(4)
+	    progressHP:setPosition(18, tbSpriteSize.height)
+	    spriteHPBG:setPosition(18, tbSpriteSize.height)
+	    progressHP:setVisible(false)
+	    spriteHPBG:setVisible(false)
+	    pSprite:addChild(spriteHPBG)
+	    pSprite:addChild(progressHP)	    
+	    tbMonster.progressHP = progressHP
+	    tbMonster.spriteHPBG = spriteHPBG
+	end
+end
+
+function Performance:OnCharacterHPChanged(dwCharacterId, nBeforeHP, nAfterHP, nMaxHP)
 	local nDamage = nAfterHP - nBeforeHP
 	local color = nil
 	local szMsg = nil
@@ -109,6 +147,13 @@ function Performance:OnCharacterHPChanged(dwCharacterId,  nBeforeHP, nAfterHP)
 	local pSprite = tbCharacter.pSprite
 	if not pSprite then
 		return
+	end
+
+	local progressHP = tbCharacter.progressHP
+	if progressHP then
+		progressHP:setVisible(true)
+		tbCharacter.spriteHPBG:setVisible(true)
+		progressHP:setPercentage(nAfterHP * 100 / nMaxHP)
 	end
 
 	local nX, nY = pSprite:getPosition()
