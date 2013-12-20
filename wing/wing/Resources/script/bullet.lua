@@ -65,7 +65,7 @@ function Bullet:Init()
 							local nDamage = tbBullet:CalcDamage(tbCharacter)
 							tbCharacter:ReceiveDamage(nDamage)
 							tbBullet:RecordTarget(dwTargetId)
-							if not tbBullet.tbProperty.bAOE then
+							if tbBullet.tbProperty.bAOE ~= 1 then
 								tbBullet:Uninit()
 								self.tbBulletList[dwBulletId] = nil
 								break

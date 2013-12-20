@@ -62,7 +62,7 @@ local function main()
 	local layerBG = tbMainScene:Create()
 	sceneMain:addChild(layerBG, Def.ZOOM_LEVEL_WORLD)
 
-	local layerMainMenu = MenuMgr:CreateMenu("MainMenu")
+	local layerMainMenu = MenuMgr:CreateMenu("MainMenu", "image/menu.png")
 	layerMainMenu:setPosition(tbVisibleSize.width / 2, tbVisibleSize.height / 6)
     sceneMain:addChild(layerMainMenu, Def.ZOOM_LEVEL_MENU)
     local tbElement = {

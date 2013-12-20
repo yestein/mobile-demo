@@ -32,7 +32,6 @@ function Maze:Init(nWidth, nHeight)
 end
 
 function Maze:Reset()
-	cclog("Maze:Rest")
 	for nX , tb in ipairs(self.tbData) do
 		for nY, _ in ipairs(tb) do
 			self:SetData(nX, nY, self.MAP_BLOCK)

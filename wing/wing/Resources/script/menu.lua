@@ -14,15 +14,25 @@ function MenuMgr:Uninit()
 	self.tbMenu = {}
 end
 
-function MenuMgr:CreateMenu(szName)
+function MenuMgr:CreateMenu(szName, szBgImg)
 	if self.tbMenu[szName] then
 		cclog("CreateMenu[%s] Failed Already Exists", szName)
 		return nil
 	end
 
-	local layerMenu = CCLayer:create()   
+	local layerMenu = CCLayer:create()
+	local tbBgSize = nil
+	if szBgImg then
+		local spriteBG = CCSprite:create(szBgImg)
+		if spriteBG then
+			layerMenu:addChild(spriteBG, 1, 100)
+			spriteBG:setPosition(0, 0)
+			spriteBG:setAnchorPoint(CCPoint:new(0.5, 0.5))
+			tbBgSize = spriteBG:getTextureRect().size
+		end
+	end
 
-	self.tbMenu[szName] ={ ccmenuObj = layerMenu, }
+	self.tbMenu[szName] ={ ccmenuObj = layerMenu, tbBgSize = tbBgSize}
 
     return layerMenu
 end
@@ -123,6 +133,8 @@ function MenuMgr:UpdateByString(szName, tbElementList, tbParam)
 	local tbVisibleSize = CCDirector:sharedDirector():getVisibleSize()
 	local itemHeight = nil
 	local nY = 0
+	local nMaxWidth = 0
+	local nSumWidth = 0
 	for nRow, tbRow in ipairs(tbElementList) do
 		local nX = 0
 		if nRow ~= 1 then
@@ -132,7 +144,7 @@ function MenuMgr:UpdateByString(szName, tbElementList, tbParam)
 		for nCol, tbElement in ipairs(tbRow) do
 			local ccLabel = CCLabelTTF:create(tbElement.szItemName or "错误的菜单项", szFontName, nSize)
 			local menu = CCMenuItemLabel:create(ccLabel)
-			menu:setAnchorPoint(CCPoint:new(0, 0))
+			menu:setAnchorPoint(CCPoint:new(0.5, 0.5))
 			menu:registerScriptTapHandler(tbElement.fnCallBack)
 			local itemWidth = menu:getContentSize().width
 			if not itemHeight then
@@ -142,15 +154,21 @@ function MenuMgr:UpdateByString(szName, tbElementList, tbParam)
 			if szAlignType == "right" then
 				if nCol ~= 1 then
 					nX = nX - nIntervalX
+					nSumWidth = nSumWidth + nIntervalX
 				end
-		    	nX = nX - itemWidth
-		    	menu:setPosition(nX, nY -  itemHeight)
+		    	nX = nX - itemWidth / 2
+		    	nSumWidth = nSumWidth + itemWidth
+		    	menu:setPosition(nX, nY - itemHeight / 2)
+		    	nX = nX - itemWidth / 2
 		    else
 		    	if nCol ~= 1 then
 		    		nX = nX + nIntervalX
+		    		nSumWidth = nSumWidth + nIntervalX
 		    	end
-		    	menu:setPosition(nX, nY - itemHeight)
-				nX = nX + itemWidth
+		    	nX = nX + itemWidth / 2
+		    	menu:setPosition(nX, nY - itemHeight / 2)
+				nX = nX + itemWidth / 2
+				nSumWidth = nSumWidth + itemWidth
 		    end
 		    tbRowMenu[#tbRowMenu + 1] = menu
 	    	menuArray:addObject(menu)
@@ -163,13 +181,22 @@ function MenuMgr:UpdateByString(szName, tbElementList, tbParam)
 	    	end
 		end
 		nY = nY - itemHeight
+		if nSumWidth > nMaxWidth then
+			nMaxWidth = nSumWidth
+		end
 	end
 	local menuTools = CCMenu:createWithArray(menuArray)
 	if szAlignType == "center" and itemHeight then
 		local nOffsetY = math.floor(-nY / 2)
-		menuTools:setPosition(0, nOffsetY - itemHeight / 2)
+		menuTools:setPosition(0, nOffsetY)
 	else
     	menuTools:setPosition(0, 0)
+    end
+    local pBG = layerMenu:getChildByTag(100)
+    if pBG then
+    	local tbBgSize = tbMenu.tbBgSize
+    	pBG:setScaleX((nMaxWidth + 20) / tbBgSize.width)
+    	pBG:setScaleY((10 - nY) / tbBgSize.height)
     end
     layerMenu:addChild(menuTools, 1, 1)
 

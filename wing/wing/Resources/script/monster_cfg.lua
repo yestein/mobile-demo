@@ -22,17 +22,17 @@ require("maze")
 
 Monster.tbCfg = {
 	[1]= {
-		tbProperty = {MaxHP = 30, Attack = 10, Defense = 5, AttackRange = 1},
+		tbProperty = {MaxHP = 40, Attack = 10, Defense = 50, AttackRange = 1},
 		tbSkill = {"物理攻击"},
 		szAIName = "NormalMove",
 	},
 	[2]= {
-		tbProperty = {MaxHP = 20, Attack = 15, Defense = 2, AttackRange = 5, Speed = 3},
+		tbProperty = {MaxHP = 20, Attack = 15, Defense = 10, AttackRange = 5, Speed = 2},
 		tbSkill = {"光魔法"},
 		szAIName = "NotMove"
 	},
 	[3]= {
-		tbProperty = {MaxHP = 150, Attack = 10, Defense = 10, AttackRange = 3, Speed = 2},
+		tbProperty = {MaxHP = 70, Attack = 20, Defense = 50, AttackRange = 5, Speed = 1},
 		tbSkill = {"火球术"},
 		szAIName = "NormalMove"
 	},

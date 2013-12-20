@@ -322,23 +322,23 @@ function GameMgr:OnStart_Battle()
 
 	local tbScene = SceneMgr:GetScene("GameScene")
 	if tbScene then
-		self.nMaxHero = 1
-		self.nCurHero = 1
-		tbScene:GenHero(self.nCurHero, unpack(Def.tbEntrance))
+		self.nMaxHero = 6
+		local nHeroId = math.random(1, self.nMaxHero)
+		tbScene:GenHero(nHeroId, unpack(Def.tbEntrance))
 		tbScene:GenMonster()
-		self.nRegGenHeroId = CCDirector:sharedDirector():getScheduler():scheduleScriptFunc(
-			function()
-				self.nCurHero = self.nCurHero + 1
-				if self.nCurHero > self.nMaxHero then
-					CCDirector:sharedDirector():getScheduler():unscheduleScriptEntry(GameMgr.nRegGenHeroId)
-					GameMgr.nRegGenHeroId = nil
-					return
-				end		
-				local tbHero = tbScene:GenHero(self.nCurHero, unpack(Def.tbEntrance))
-				tbHero:Start()
-			end,
-			1, false
-		)
+		-- self.nRegGenHeroId = CCDirector:sharedDirector():getScheduler():scheduleScriptFunc(
+		-- 	function()
+		-- 		self.nCurHero = self.nCurHero + 1
+		-- 		if self.nCurHero > self.nMaxHero then
+		-- 			CCDirector:sharedDirector():getScheduler():unscheduleScriptEntry(GameMgr.nRegGenHeroId)
+		-- 			GameMgr.nRegGenHeroId = nil
+		-- 			return
+		-- 		end		
+		-- 		local tbHero = tbScene:GenHero(self.nCurHero, unpack(Def.tbEntrance))
+		-- 		tbHero:Start()
+		-- 	end,
+		-- 	1, false
+		-- )
 		if Def.USING_FOG == 1 then
 			local tbMonsterList = Monster:GetList()
 			for _, tbMonster in pairs(tbMonsterList) do
@@ -354,6 +354,7 @@ function GameMgr:OnEnd_Battle()
 	Hero:ClearAll()
 	Monster:ClearAll()
 	Maze:Refresh()
+	Player:Save()
 end
 
 function GameMgr:OnStart_TestSkill()

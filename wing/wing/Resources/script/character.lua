@@ -170,9 +170,34 @@ function Character:GoAndCatch(nDirection, tbTarget)
 end
 
 function Character:Catch(tbTarget)
-	self.tbCatchRoom[tbTarget.dwId] = 1
+	--self.tbCatchRoom[tbTarget.dwId] = 1
+	self:AddStar()
 	tbTarget:BeCatched(self)
+	tbTarget:Die()
+end
 
+function Character:AddStar()
+	local frameWidth = 36
+	local frameHeight = 48
+
+	local textureStar = CCTextureCache:sharedTextureCache():addImage(Def.szStarImg)
+	local rectRaw = CCRectMake(0, frameWidth, frameWidth, frameHeight)
+	local frameRaw = CCSpriteFrame:createWithTexture(textureStar, rectRaw)
+    local spriteStar = CCSprite:createWithSpriteFrame(frameRaw)
+	local animFrames = CCArray:create()
+	for i = 1, 4 do
+		for j = 1, 4 do
+			local rect = CCRectMake(frameWidth * (i - 1), frameHeight * (j - 1), frameWidth, frameHeight)
+		    local frame = CCSpriteFrame:createWithTexture(textureStar, rect)
+		    animFrames:addObject(frame)
+		end
+	end
+    local animation = CCAnimation:createWithSpriteFrames(animFrames, 0.1)
+    local animate = CCAnimate:create(animation)
+    spriteStar:stopAllActions()
+    spriteStar:runAction(CCRepeatForever:create(animate))
+	spriteStar:setPosition(frameWidth / 2, frameHeight / 2)
+	self.pSprite:addChild(spriteStar)
 end
 
 function Character:BeCatched(tbMaster)
@@ -221,6 +246,17 @@ function Character:Move()
 	elseif self.tbTarget.y == nNewY then
 		if (nX > 0 and nNewX > self.tbTarget.x) or (nX < 0 and nNewX < self.tbTarget.x) then
 			nNewX = self.tbTarget.x
+		end
+	end
+	if Lib:IsHero(self.dwId) == 1 then
+		local nOffsetX = x - nNewX
+		local nOffsetY = y - nNewY
+		local tbScene = SceneMgr:GetScene("GameScene")
+		if tbScene then
+			local layerMaze = tbScene.layerMaze
+			local nLayerX, nLayerY = layerMaze:getPosition()
+            nLayerX, nLayerY = nLayerX + nOffsetX, nLayerY + nOffsetY
+            layerMaze:setPosition(nLayerX, nLayerY)
 		end
 	end
 	self.pSprite:setPosition(nNewX, nNewY)
