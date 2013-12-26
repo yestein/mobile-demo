@@ -54,38 +54,50 @@ function GameMgr:InitTitle()
     local tbTemp = nil
     if OS_WIN32 then
         tbTemp = {
-            {szImageFile = "image/ui/digpoint.png", szResourceName = "DigPoint"},
-            {szImageFile = "image/ui/gold.png", szResourceName = "Gold"},
-            {szImageFile = "image/ui/magic.png", szResourceName = "Magic"},
+            {
+                {szImageFile = "image/ui/digpoint.png", szResourceName = "DigPoint"},
+                {szImageFile = "image/ui/gold.png", szResourceName = "Gold"},
+                {szImageFile = "image/ui/magic.png", szResourceName = "Magic"},
+            },
+            {
+                {szImageFile = "image/ui/wood.png", szResourceName = "Wood"},
+                {szImageFile = "image/ui/stone.png", szResourceName = "Stone"},
+                {szImageFile = "image/ui/iron.png", szResourceName = "Iron"},
+            },
         }
     else
         tbTemp = {
-            {szImageFile = "digpoint.png", szResourceName = "DigPoint"},
-            {szImageFile = "gold.png", szResourceName = "Gold"},
-            {szImageFile = "magic.png", szResourceName = "Magic"},
+            {
+                {szImageFile = "digpoint.png", szResourceName = "DigPoint"},
+                {szImageFile = "gold.png", szResourceName = "Gold"},
+                {szImageFile = "magic.png", szResourceName = "Magic"},
+            },
+            {
+                {szImageFile = "wood.png", szResourceName = "Wood"},
+                {szImageFile = "stone.png", szResourceName = "Stone"},
+                {szImageFile = "iron.png", szResourceName = "Iron"},
+            },
         }
     end
-
     local nHeight = 20
     local nWidth = 20
-    self.nSpriteX = nWidth / 2 + 30
-    self.nSpriteY = tbVisibleSize.height - nHeight / 2
-    for _, tb in ipairs(tbTemp) do
-        local spriteIcon = CCSprite:create(tb.szImageFile)
-        local labelValue = CCLabelTTF:create("10000000", szTitleFontName, 16)
-        layerTitle:addChild(spriteIcon)
-        layerTitle:addChild(labelValue)
-        spriteIcon:setPosition(self.nSpriteX, self.nSpriteY)
-        spriteIcon:setScale(0.7)
-        labelValue:setPosition(self.nSpriteX + nWidth, self.nSpriteY)
-        labelValue:setAnchorPoint(CCPoint:new(0, 0.5))
-        if not self.nHeroX then
+    for nCol, tbCol in ipairs(tbTemp) do
+        self.nSpriteX = (nCol - 1) * 100 + nWidth / 2 + 30
+        self.nSpriteY = tbVisibleSize.height - nHeight / 2
+        for _, tb in pairs(tbCol) do
+            local spriteIcon = CCSprite:create(tb.szImageFile)
+            local labelValue = CCLabelTTF:create("10000000", szTitleFontName, 16)
+            layerTitle:addChild(spriteIcon)
+            layerTitle:addChild(labelValue)
+            spriteIcon:setPosition(self.nSpriteX, self.nSpriteY)
+            spriteIcon:setScale(0.7)
+            labelValue:setPosition(self.nSpriteX + nWidth, self.nSpriteY)
+            labelValue:setAnchorPoint(CCPoint:new(0, 0.5))
             local tbValueSize = labelValue:getTextureRect().size
             self.nHeroX = self.nSpriteX + nWidth + tbValueSize.width
+            self.tbResurce[tb.szResourceName] = {icon = spriteIcon, value = labelValue}
+            self.nSpriteY = self.nSpriteY - nHeight
         end
-        self.tbResurce[tb.szResourceName] = {icon = spriteIcon, value = labelValue}
-        self.nSpriteY = self.nSpriteY - nHeight
-
     end
 
     self.tbTitle["State"] = cclf
@@ -97,55 +109,36 @@ function GameMgr:AddHeroHP(dwHeroId)
     if self.tbHeroHP[dwHeroId] then
         return 0
     end
+    local fScale = 0.6
     local tbHero = self:GetCharacterById(dwHeroId)
     local pSprite = tbHero.pSprite
     local pCopySprite = CCSprite:createWithTexture(pSprite:getTexture())
     Performance:SetSpriteDirection(pCopySprite, Def.DIR_DOWN)
-    pCopySprite:setScale(0.6)
+    pCopySprite:setScale(fScale)
     local tbVisibleSize = CCDirector:sharedDirector():getVisibleSize()
     local tbSpriteSize = pSprite:getTextureRect().size
-    pCopySprite:setAnchorPoint(CCPoint:new(0, 0))
-    pCopySprite:setPosition(self.nHeroX, tbVisibleSize.height - dwHeroId * tbSpriteSize.height * 0.6)
+
+    local nStartX, nStartY = self.nHeroX, tbVisibleSize.height - ((dwHeroId - 1) * 2 + 0.5) * (tbSpriteSize.height * fScale + 10)
     self.layerTitle:addChild(pCopySprite)
 
-    local spriteHP = CCSprite:create(Def.szBarImg, CCRectMake(0, 0, 20, 1))
-    local progressHP = CCProgressTimer:create(spriteHP)
-    local tbProgressHPSize = spriteHP:getTextureRect().size
-    progressHP:setAnchorPoint(CCPoint:new(0.5, 0))
-    progressHP:setMidpoint(CCPoint:new(0, 0.5))
-    progressHP:setBarChangeRate(CCPoint:new(1, 0))
-    local nXScale = 120 / tbProgressHPSize.width
-    progressHP:setScaleX(nXScale)
-    local nYScale = 20 / tbProgressHPSize.height
-    progressHP:setScaleY(nYScale)
-    progressHP:setType(1)
-    local nPosX = self.nHeroX + tbSpriteSize.width / 2 + 10 + tbProgressHPSize.width * nXScale / 2
-    local nPosY = tbVisibleSize.height - dwHeroId * tbSpriteSize.height * 0.6
-    progressHP:setPosition(nPosX, nPosY)
-
-    local spriteHPBG = CCSprite:create(Def.szBarImg, CCRectMake(0, 1, 20, 1))
-    spriteHPBG:setAnchorPoint(CCPoint:new(0.5, 0))
-    spriteHPBG:setScaleX(nXScale)
-    spriteHPBG:setScaleY(nYScale)
-    spriteHPBG:setPosition(nPosX, nPosY)
-
-    self.layerTitle:addChild(spriteHPBG)
-    self.layerTitle:addChild(progressHP)
-
-    local szMsg = string.format("%d / %d", tbHero:GetProperty("CurHP"), tbHero:GetProperty("MaxHP"))
-    local cclfHP = CCLabelTTF:create(szMsg, szTitleFontName, 16)
-    cclfHP:setAnchorPoint(CCPoint:new(0.5, 0))
+    local nCurHP, nCurMP = tbHero:GetProperty("CurHP"), tbHero:GetProperty("CurMP")
+    local szMsg = string.format("HP:%d MP:%d", nCurHP, nCurMP)
+    local cclfHP = CCLabelTTF:create(szMsg, szTitleFontName, 14)
     self.layerTitle:addChild(cclfHP)
     local tbHPSize = cclfHP:getTextureRect().size
-    cclfHP:setPosition(nPosX + (tbProgressHPSize.width * nXScale - tbHPSize.width) / 2, nPosY)
+
+    
     self.tbHeroHP[dwHeroId] = {
         spriteHead = pCopySprite,
         labelHP = cclfHP,
         progressHP = progressHP,
         spriteHPBG = spriteHPBG,
     }
+    local nLabelX = nStartX + tbHPSize.width / 2
+    local nLabelY = nStartY - (tbSpriteSize.height * fScale + tbHPSize.height) * dwHeroId / 2
 
-    progressHP:setPercentage(100)
+    pCopySprite:setPosition(nLabelX, nStartY)
+    cclfHP:setPosition(nLabelX, nLabelY)
     Event:FireEvent("TitleHPAdd", dwHeroId, szMsg)
     return 1
 end
@@ -170,20 +163,9 @@ function GameMgr:UpdateHeroHP(dwHeroId)
         return
     end
     local tbHero = self:GetCharacterById(dwHeroId)
-    local nCurHP, nMaxHP = tbHero:GetProperty("CurHP"), tbHero:GetProperty("MaxHP")
-    local szHP = string.format("%d / %d", nCurHP, nMaxHP)
-    tbHP.labelHP:setString(szHP)
-    tbHP.progressHP:setPercentage(nCurHP * 100 / nMaxHP)
-    Event:FireEvent("TitleHPUpdate", dwHeroId, szHP)
-
-end
-
-function GameMgr:RegistEvent()
-    Event:RegistEvent("HeroAdd", self.OnHeroAdd, self)
-    Event:RegistEvent("CharacterHPChanged", self.OnCharacterReceiveDamage, self)
-    Event:RegistEvent("CharacterDie", self.OnCharacterDie, self)
-    Event:RegistEvent("GameMgrSetState", self.OnStateChanged, self)
-    Event:RegistEvent("SetResouce", self.OnResourceChanged, self)
+    local nCurHP, nCurMP = tbHero:GetProperty("CurHP"), tbHero:GetProperty("CurMP")
+    local szMsg = string.format("HP:%d MP:%d", nCurHP, nCurMP)
+    tbHP.labelHP:setString(szMsg)
 end
 
 function GameMgr:OnStateChanged(nState)
@@ -217,13 +199,17 @@ function GameMgr:OnCharacterReceiveDamage(dwCharacterId)
     self:UpdateHeroHP(dwCharacterId)    
 end
 
-function GameMgr:OnResourceChanged(szResourceName, nNewValue, bMax)
+function GameMgr:OnResourceChanged(szResourceName, nNewValue, nOldValue)
     local tbResurce = self.tbResurce[szResourceName]
     if not tbResurce then
         return
     end
     local labelValue = tbResurce.value
     labelValue:setString(tostring(nNewValue))
+    if GameMgr:GetState() == GameMgr.STATE_BATTLE then
+        local nChangeValue = nNewValue - nOldValue
+        self:SysMsg(string.format("%s +%d", szResourceName, nChangeValue), "yellow")
+    end
 end
 
 function GameMgr:SysMsg(szMsg, szColor)
@@ -251,4 +237,12 @@ function GameMgr:SysMsg(szMsg, szColor)
     if self.nMsgIndex > self.MSG_MAX_COUNT then
         self.nMsgIndex = self.nMsgIndex - self.MSG_MAX_COUNT
     end
+end
+
+function GameMgr:RegistEvent()
+    Event:RegistEvent("HeroAdd", self.OnHeroAdd, self)
+    Event:RegistEvent("CharacterHPChanged", self.OnCharacterReceiveDamage, self)
+    Event:RegistEvent("CharacterDie", self.OnCharacterDie, self)
+    Event:RegistEvent("GameMgrSetState", self.OnStateChanged, self)
+    Event:RegistEvent("SetResouce", self.OnResourceChanged, self)
 end

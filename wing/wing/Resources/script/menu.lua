@@ -37,12 +37,16 @@ function MenuMgr:CreateMenu(szName, szBgImg)
     return layerMenu
 end
 
-function MenuMgr:UpdateBySprite(szName, tbElementList)
+function MenuMgr:UpdateBySprite(szName, tbElementList, tbParam)
 	local tbMenu = self:GetMenu(szName)
 	if not tbMenu then
 		cclog("CreateMenu[%s] is not Exists", szName)
 		return 0
 	end
+
+	local szAlignType = tbParam.szAlignType or "left"
+	local nIntervalX = tbParam.nIntervalX or 15
+	local nIntervalY = tbParam.nIntervalY or 0
 	
 	local menuArray = CCArray:create()
 	local layerMenu = tbMenu.ccmenuObj
@@ -51,8 +55,17 @@ function MenuMgr:UpdateBySprite(szName, tbElementList)
 	end
 
 	local tbVisibleSize = CCDirector:sharedDirector():getVisibleSize()
+	local itemHeight = nil
+	local nY = 0
+	local nMaxWidth = 0
+	local nSumWidth = 0
 	for nRow, tbRow in ipairs(tbElementList) do
+		nSumWidth = 0
 		local nX = 0
+		if nRow ~= 1 then
+			nY = nY - nIntervalY
+		end
+		local tbRowMenu = {}
 		for nCol, tbElement in ipairs(tbRow) do
 			local texture = CCTextureCache:sharedTextureCache():addImage(tbElement.szImage)
 			local rectNormal = CCRectMake(unpack(tbElement.tbRect["normal"]))
@@ -63,52 +76,60 @@ function MenuMgr:UpdateBySprite(szName, tbElementList)
 			local frameSelected = CCSpriteFrame:createWithTexture(texture, rectSelected)
 			local spriteSelected = CCSprite:createWithSpriteFrame(frameSelected)
 			local menu = CCMenuItemSprite:create(spriteNormal, spriteSelected)
-			menu:setAnchorPoint(CCPoint:new(0, 0))
 			menu:registerScriptTapHandler(tbElement.fnCallBack)
 			local itemWidth = menu:getContentSize().width
-	    	local itemHeight = menu:getContentSize().height
-	    	nX = nX - itemWidth - 15
-	    	menu:setPosition(nX,  -nRow * itemHeight)
+			if not itemHeight then
+		    	itemHeight = menu:getContentSize().height
+		    end
+
+			if szAlignType == "right" then
+				if nCol ~= 1 then
+					nX = nX - nIntervalX
+					nSumWidth = nSumWidth + nIntervalX
+				end
+		    	nX = nX - itemWidth / 2
+		    	nSumWidth = nSumWidth + itemWidth
+		    	menu:setPosition(nX, nY - itemHeight / 2)
+		    	nX = nX - itemWidth / 2
+		    else
+		    	if nCol ~= 1 then
+		    		nX = nX + nIntervalX
+		    		nSumWidth = nSumWidth + nIntervalX
+		    	end
+		    	nX = nX + itemWidth / 2
+		    	menu:setPosition(nX, nY - itemHeight / 2)
+				nX = nX + itemWidth / 2
+				nSumWidth = nSumWidth + itemWidth
+		    end
+		    tbRowMenu[#tbRowMenu + 1] = menu
 	    	menuArray:addObject(menu)
 	    end
+	    if szAlignType == "center" then
+	    	local nOffsetX = math.floor(nX / 2)
+	    	for _, menu in ipairs(tbRowMenu) do
+	    		local nMenuX, nMenuY = menu:getPosition()
+	    		menu:setPosition(nMenuX - nOffsetX, nMenuY)
+	    	end
+		end
+		nY = nY - itemHeight
+		if nSumWidth > nMaxWidth then
+			nMaxWidth = nSumWidth
+		end
 	end
 	local menuTools = CCMenu:createWithArray(menuArray)
-    menuTools:setPosition(0, 0)
+    if szAlignType == "center" and itemHeight then
+		local nOffsetY = math.floor(-nY / 2)
+		menuTools:setPosition(0, nOffsetY)
+	else
+    	menuTools:setPosition(0, 0)
+    end
+    local pBG = layerMenu:getChildByTag(100)
+    if pBG then
+    	local tbBgSize = tbMenu.tbBgSize
+    	pBG:setScaleX((nMaxWidth + 20) / tbBgSize.width)
+    	pBG:setScaleY((10 - nY) / tbBgSize.height)
+    end
     layerMenu:addChild(menuTools, 1, 1)
-    return 1
-end
-
-function MenuMgr:UpdateByImage(szName, tbElementList)
-	local tbMenu = self:GetMenu(szName)
-	if not tbMenu then
-		cclog("CreateMenu[%s] is not Exists", szName)
-		return 0
-	end
-	
-	local menuArray = CCArray:create()
-	local layerMenu = tbMenu.ccmenuObj
-	if layerMenu:getChildByTag(1) then
-		layerMenu:removeChildByTag(1, true)
-	end
-
-	local tbVisibleSize = CCDirector:sharedDirector():getVisibleSize()
-	for nRow, tbRow in ipairs(tbElementList) do
-		local nX = 0
-		for nCol, tbElement in ipairs(tbRow) do
-			local menu = CCMenuItemImage:create(tbElement.szNormalImg, tbElement.szPressedImg)
-			menu:setAnchorPoint(CCPoint:new(0, 0))
-			menu:registerScriptTapHandler(tbElement.fnCallBack)
-			local itemWidth = menu:getContentSize().width
-	    	local itemHeight = menu:getContentSize().height
-	    	nX = nX - itemWidth - 15
-	    	menu:setPosition(nX,  -nRow * itemHeight)
-	    	menuArray:addObject(menu)
-	    end
-	end
-	local menuTools = CCMenu:createWithArray(menuArray)
-    menuTools:setPosition(0, 0)
-    layerMenu:addChild(menuTools, 1, 1)
-
     return 1
 end
 
@@ -145,7 +166,6 @@ function MenuMgr:UpdateByString(szName, tbElementList, tbParam)
 		for nCol, tbElement in ipairs(tbRow) do
 			local ccLabel = CCLabelTTF:create(tbElement.szItemName or "错误的菜单项", szFontName, nSize)
 			local menu = CCMenuItemLabel:create(ccLabel)
-			menu:setAnchorPoint(CCPoint:new(0.5, 0.5))
 			menu:registerScriptTapHandler(tbElement.fnCallBack)
 			local itemWidth = menu:getContentSize().width
 			if not itemHeight then

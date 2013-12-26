@@ -9,18 +9,21 @@
 Player.ORGINAL_DIG_POINT = 25
 Player.ORGINAL_GOLD      = 1000
 Player.ORGINAL_MAGIC     = 1000
+Player.ORGINAL_WOOD     = 4
+Player.ORGINAL_STONE     = 2
+Player.ORGINAL_IRON     = 1
 
 Player.tbResourceMax = {
-	[1]  = {DigPoint = 55, Gold = 3000, Magic = 3000,},
-	[2]  = {DigPoint = 35, Gold = 6000, Magic = 6000,},
-	[3]  = {DigPoint = 45, Gold = 9000, Magic = 9000,},
-	[4]  = {DigPoint = 55, Gold = 15000, Magic = 15000,},
-	[5]  = {DigPoint = 70, Gold = 20000, Magic = 20000,},
-	[6]  = {DigPoint = 90, Gold = 25000, Magic = 25000,},
-	[7]  = {DigPoint = 115, Gold = 40000, Magic = 40000,},
-	[8]  = {DigPoint = 130, Gold = 50000, Magic = 50000,},
-	[9]  = {DigPoint = 160, Gold = 60000, Magic = 60000,},
-	[10] = {DigPoint = 200, Gold = 80000, Magic = 80000,},
+	[1]  = {DigPoint = 55, Gold = 3000, Magic = 3000, Wood = 400, Stone = 200, Iron = 100,},
+	[2]  = {DigPoint = 35, Gold = 6000, Magic = 6000, Wood = 400, Stone = 200, Iron = 100,},
+	[3]  = {DigPoint = 45, Gold = 9000, Magic = 9000, Wood = 400, Stone = 200, Iron = 100,},
+	[4]  = {DigPoint = 55, Gold = 15000, Magic = 15000, Wood = 400, Stone = 200, Iron = 100,},
+	[5]  = {DigPoint = 70, Gold = 20000, Magic = 20000, Wood = 400, Stone = 200, Iron = 100,},
+	[6]  = {DigPoint = 90, Gold = 25000, Magic = 25000, Wood = 400, Stone = 200, Iron = 100,},
+	[7]  = {DigPoint = 115, Gold = 40000, Magic = 40000, Wood = 400, Stone = 200, Iron = 100,},
+	[8]  = {DigPoint = 130, Gold = 50000, Magic = 50000, Wood = 400, Stone = 200, Iron = 100,},
+	[9]  = {DigPoint = 160, Gold = 60000, Magic = 60000, Wood = 400, Stone = 200, Iron = 100,},
+	[10] = {DigPoint = 200, Gold = 80000, Magic = 80000, Wood = 400, Stone = 200, Iron = 100,},
 }
 
 function Player:Init()
@@ -33,6 +36,9 @@ function Player:Init()
 	self:SetResouce("DigPoint", self.ORGINAL_DIG_POINT) 
 	self:SetResouce("Gold", self.ORGINAL_GOLD)
 	self:SetResouce("Magic", self.ORGINAL_MAGIC)
+	self:SetResouce("Wood", self.ORGINAL_WOOD)
+	self:SetResouce("Stone", self.ORGINAL_STONE)
+	self:SetResouce("Iron", self.ORGINAL_IRON)
 	self:SetOwnMonsterCount(3, 1)
 	self:SetOwnHeroCount(1, 1)
 
@@ -113,16 +119,26 @@ function Player:GetCurResouceMax(szResourceName)
 end
 
 function Player:SetResouce(szResourceName, nCount)
-	local nMax = self:GetCurResouceMax(szResourceName)
-	local bMax = nil
-	if nCount > nMax then
-		nCount = nMax
-		bMax = 1
-	elseif nCount < 0 then
-		nCount = 0
-	end
+	local nOldCount = self.tbResource[szResourceName]
 	self.tbResource[szResourceName] = nCount
-	Event:FireEvent("SetResouce", szResourceName, nCount, bMax)
+	Event:FireEvent("SetResouce", szResourceName, nCount, nOldCount)
+end
+
+function Player:ChangeResouce(szResourceName, nChangeCount)
+	local nMax = self:GetCurResouceMax(szResourceName)
+	local nCur = self:GetResouce(szResourceName)
+	local nNew = nCur + nChangeCount
+	local bMax = nil
+	if nNew > nMax then
+		nNew = nMax
+		bMax = 1
+	elseif nNew < 0 then
+		nNew = 0
+	end
+	if nNew == nCur then
+		return
+	end
+	self:SetResouce(szResourceName, nNew)
 end
 
 function Player:GetOwnMonster()
@@ -188,16 +204,12 @@ function Player:UnRegistEvent()
 end
 
 function Player:OnDig(nLogicX, nLogicY, bReDo)
-	local nDigPoint = self:GetResouce("DigPoint")
-	nDigPoint = nDigPoint - 1
-	self:SetResouce("DigPoint", nDigPoint)
+	self:ChangeResouce("DigPoint", -1)
 	return
 end
 
 function Player:OnUnDoDig(nLogicX, nLogicY, bReDo)
-	local nDigPoint = self:GetResouce("DigPoint")
-	nDigPoint = nDigPoint + 1
-	self:SetResouce("DigPoint", nDigPoint)
+	self:ChangeResouce("DigPoint", 1)
 	return
 end
 

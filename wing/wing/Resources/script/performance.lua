@@ -8,21 +8,21 @@
 
 Performance.MAX_DISPLAY_DAMAGE = 20
 
-local szDamageFontName = "Courier"
+local szFlyLabelFont = "Courier"
 if OS_WIN32 then
-    szDamageFontName = "Microsoft Yahei"
+    szFlyLabelFont = "Microsoft Yahei"
 end
-print(szDamageFontName)
+print(szFlyLabelFont)
 
 function Performance:Init(layer)
 
-    self.tbDamage = {}
+    self.tbFlyLabel = {}
     self.nDamageIndex = 1
 	for i = 1, self.MAX_DISPLAY_DAMAGE do
-		local labelDamage = CCLabelTTF:create("-100", szDamageFontName, 18)
-        layer:addChild(labelDamage, 10)
-        labelDamage:setVisible(false)
-        self.tbDamage[i] = labelDamage
+		local labelFly = CCLabelTTF:create("-100", szFlyLabelFont, 18)
+        layer:addChild(labelFly, 10)
+        labelFly:setVisible(false)
+        self.tbFlyLabel[i] = labelFly
 	end
 	self.nodeFight = CCSpriteBatchNode:create(Def.szFightImg)
 	self.nodeFight:setPosition(0, 0)
@@ -34,8 +34,8 @@ end
 function Performance:Uninit()
 end
 
-function Performance:GetAvaiableDamageLabel()
-	local label = self.tbDamage[self.nDamageIndex]
+function Performance:GetAvaiableFlyLabel()
+	local label = self.tbFlyLabel[self.nDamageIndex]
 
 	self.nDamageIndex = self.nDamageIndex + 1
 	if self.nDamageIndex > self.MAX_DISPLAY_DAMAGE then
@@ -73,6 +73,9 @@ function Performance:RegistEvent()
 	if not self.nRegPhysicAttack then
 		self.nRegPhysicAttack = Event:RegistEvent("CharacterPhyiscAttack", self.OnCharacterPhyiscAttack, self)
 	end
+	if not self.nRegHeroAdd then
+		Event:RegistEvent("HeroAdd", self.OnHeroAdd, self)
+	end
 	if not self.nRegMonsterAdd then
 		Event:RegistEvent("MonsterAdd", self.OnMonsterAdd, self)
 	end
@@ -89,19 +92,32 @@ function Performance:UnRegistEvent()
 		self.nRegPhysicAttack = nil
 	end
 
+	if self.nRegHeroAdd then
+		Event:UnRegistEvent("HeroAdd", self.nRegHeroAdd )
+		self.nRegHeroAdd = nil
+	end
+
 	if self.nRegMonsterAdd then
-		Event:UnRegistEvent("nRegMonsterAdd", self.nRegnRegMonsterAdd )
-		self.nRegnRegMonsterAdd = nil
+		Event:UnRegistEvent("MonsterAdd", self.nRegMonsterAdd )
+		self.nRegMonsterAdd = nil
 	end
 end
 
+function Performance:OnHeroAdd(dwHeroId)
+	return self:OnCharacterAdd(dwHeroId, CCRectMake(0, 1, 20, 1))
+end
+
 function Performance:OnMonsterAdd(dwMonsterId)
-	local tbMonster = GameMgr:GetCharacterById(dwMonsterId)
-	if tbMonster then
-		local pSprite = tbMonster.pSprite
+	return self:OnCharacterAdd(dwMonsterId, CCRectMake(0, 0, 20, 1))
+end
+
+function Performance:OnCharacterAdd(dwCharacterId, ccRect)
+	local tbCharacter = GameMgr:GetCharacterById(dwCharacterId)
+	if tbCharacter then
+		local pSprite = tbCharacter.pSprite
 		local tbSpriteSize = pSprite:getTextureRect().size
-		local spriteHP = CCSprite:create(Def.szBarImg, CCRectMake(0, 0, 20, 1))
-		local spriteHPBG = CCSprite:create(Def.szBarImg, CCRectMake(0, 1, 20, 1))
+		local spriteHP = CCSprite:create(Def.szBarImg, ccRect)
+		local spriteHPBG = CCSprite:create(Def.szBarImg, CCRectMake(0, 3, 20, 1))
     	local progressHP = CCProgressTimer:create(spriteHP)
     	local progressSize = spriteHP:getTextureRect().size
     	progressHP:setPercentage(100)
@@ -121,8 +137,8 @@ function Performance:OnMonsterAdd(dwMonsterId)
 	    spriteHPBG:setVisible(false)
 	    pSprite:addChild(spriteHPBG)
 	    pSprite:addChild(progressHP)	    
-	    tbMonster.progressHP = progressHP
-	    tbMonster.spriteHPBG = spriteHPBG
+	    tbCharacter.progressHP = progressHP
+	    tbCharacter.spriteHPBG = spriteHPBG
 	end
 end
 
@@ -157,7 +173,7 @@ function Performance:OnCharacterHPChanged(dwCharacterId, nBeforeHP, nAfterHP, nM
 	end
 
 	local nX, nY = pSprite:getPosition()
-	local label = self:GetAvaiableDamageLabel()
+	local label = self:GetAvaiableFlyLabel()
 	if not label then
 		return
 	end

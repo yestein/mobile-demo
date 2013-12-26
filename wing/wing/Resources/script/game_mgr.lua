@@ -39,15 +39,16 @@ function GameMgr:GetSpeedMulti(nMulti)
 end
 
 function GameMgr:SetState(nState)
-	local funcEnd = self.fnEndState[self.nState]
+	local nOldState = self.nState
+	local funcEnd = self.fnEndState[nOldState]
 	if funcEnd then
 		funcEnd(self)
-	end
-	self.nState = nState
+	end	
+	self.nState = nState	
 	local funcStart = self.fnStartState[nState]
 	if funcStart then
 		funcStart(self)
-	end
+	end	
 	Event:FireEvent("GameMgrSetState", nState)
 end
 
@@ -117,7 +118,7 @@ function GameMgr:StartGame(nState)
     	{szFontName = Def.szMenuFontName, nSize = 16, szAlignType = "left"}
     )
 
-    local layerMonsterMenu = MenuMgr:CreateMenu("PutMonster")
+    local layerMonsterMenu = MenuMgr:CreateMenu("PutMonster", "image/menu.png")
     sceneGame:addChild(layerMonsterMenu, Def.ZOOM_LEVEL_SUB_MENU)
     layerMonsterMenu:setVisible(false)
     layerMonsterMenu:setPosition(tbVisibleSize.width / 2, tbVisibleSize.height / 2)
@@ -287,12 +288,13 @@ function GameMgr.OnClickPutMonster()
 					fnCallBack = function()
 						Maze:SetMouseMonster(dwMonsterTemplateId)
 				        layerMenu:removeChildByTag(1, true)
+				        layerMenu:setVisible(false)
 					end,
 		        }
 		        table.insert(tbElement[1], tb)
 			end
 		end
-	    MenuMgr:UpdateBySprite("PutMonster", tbElement)
+	    MenuMgr:UpdateBySprite("PutMonster", tbElement, {szAlignType = "center"})
 	end
 	layerMenu:setVisible(true)
 end
@@ -316,6 +318,12 @@ function GameMgr:OnStart_Battle()
 	                GameMgr:SetState(self.STATE_NORMAL)
 	            end,
 	        },
+	        {
+	        	szItemName = "调试迷宫",
+	        	fnCallBack = function()
+	        		Maze:Debug()
+	            end,
+	    	},
 	    },	    
     }
     MenuMgr:UpdateByString("GameMenu", tbElement, {szFontName = szMenuFontName, nSize = 20, szAlignType = "right"})

@@ -81,8 +81,14 @@ function Character:Pause()
 	Event:FireEvent("CharacterPause", self.dwId)
 end
 
+function Character:Stop()
+	self.pSprite.isPaused = true
+	Event:FireEvent("CharacterPause", self.dwId)
+end
+
 function Character:CancelPause()
 	self.pSprite.isPaused = false
+	self.tbTarget = nil
 	Event:FireEvent("CharacterCancelPause", self.dwId)
 end
 
@@ -173,7 +179,7 @@ function Character:Catch(tbTarget)
 	--self.tbCatchRoom[tbTarget.dwId] = 1
 	self:AddStar()
 	tbTarget:BeCatched(self)
-	tbTarget:Die()
+	tbTarget:Die(self.dwId)
 end
 
 function Character:AddStar()
@@ -206,19 +212,19 @@ function Character:BeCatched(tbMaster)
 	Event:FireEvent("CharacterBeCatched", self.dwId, self.dwMasterId)
 end
 
-function Character:ReceiveDamage(nDamage)
+function Character:ReceiveDamage(nDamage, dwLancherId)
 	local nCurHP = self:GetProperty("CurHP")
 	local nNewHP = nCurHP - nDamage
 	local nMaxHP = self:GetProperty("MaxHP")
 	self:SetProperty("CurHP", nNewHP)
-	Event:FireEvent("CharacterHPChanged", self.dwId, nCurHP, nNewHP, nMaxHP)
+	Event:FireEvent("CharacterHPChanged", self.dwId, nCurHP, nNewHP, nMaxHP, dwLancherId)
 	if nNewHP <= 0 then
-		self:Die()
+		self:Die(dwLancherId)
 	end
 end
 
-function Character:Die()
-	Event:FireEvent("CharacterDie", self.dwId)
+function Character:Die(dwLancherId)
+	Event:FireEvent("CharacterDie", self.dwId, dwLancherId)
 	local nLogicX, nLogicY = self:GetLogicPos()
 	Maze:ClearUnit(nLogicX, nLogicY, self.dwId)
 	GameMgr:RemoveCharacter("GameScene", self.dwId)

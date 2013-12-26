@@ -53,6 +53,7 @@ local function main()
     MenuMgr:Init()
     Hero:Init()
     Monster:Init()
+    Ecnomic:Init()
     
 	Maze:Init(Def.MAZE_LOGIC_WIDTH, Def.MAZE_LOGIC_HEIGHT)
 	Lib:SafeCall({Maze.Load, Maze})

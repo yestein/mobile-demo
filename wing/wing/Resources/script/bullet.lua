@@ -63,7 +63,7 @@ function Bullet:Init()
 					if tbCharacter then
 						if tbBullet:JudgeCollide(nLogicX, nLogicY, dwTargetId) == 1  then
 							local nDamage = tbBullet:CalcDamage(tbCharacter)
-							tbCharacter:ReceiveDamage(nDamage)
+							tbCharacter:ReceiveDamage(nDamage, tbBullet.tbProperty.dwLancherId)
 							tbBullet:RecordTarget(dwTargetId)
 							if tbBullet.tbProperty.bAOE ~= 1 then
 								tbBullet:Uninit()

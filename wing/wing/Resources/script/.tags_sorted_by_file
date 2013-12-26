@@ -11,6 +11,7 @@ Bullet:CreateFire	bullet.lua	/^function Bullet:CreateFire(bulletNode)$/;"	f
 Bullet:CreateLightBall	bullet.lua	/^function Bullet:CreateLightBall(bulletNode)$/;"	f
 Bullet:GetBulletNode	bullet.lua	/^function Bullet:GetBulletNode(szType)$/;"	f
 Bullet:Init	bullet.lua	/^function Bullet:Init()$/;"	f
+OnActive	bullet.lua	/^	local function OnActive()$/;"	f
 tbBulletClass:CalcDamage	bullet.lua	/^function tbBulletClass:CalcDamage(tbCharacter)$/;"	f
 tbBulletClass:Init	bullet.lua	/^function tbBulletClass:Init(nX, nY, tbProperty)$/;"	f
 tbBulletClass:IsInRecord	bullet.lua	/^function tbBulletClass:IsInRecord(dwTargetId)$/;"	f
@@ -18,14 +19,13 @@ tbBulletClass:JudgeCollide	bullet.lua	/^function tbBulletClass:JudgeCollide(nLog
 tbBulletClass:RecordTarget	bullet.lua	/^function tbBulletClass:RecordTarget(dwTargetId)$/;"	f
 tbBulletClass:RemoveRecordTarget	bullet.lua	/^function tbBulletClass:RemoveRecordTarget(dwTargetId)$/;"	f
 tbBulletClass:Uninit	bullet.lua	/^function tbBulletClass:Uninit()$/;"	f
-tick	bullet.lua	/^	local function tick()$/;"	f
 Character:Activate	character.lua	/^function Character:Activate()$/;"	f
 Character:AddStar	character.lua	/^function Character:AddStar()$/;"	f
 Character:Attack	character.lua	/^function Character:Attack()$/;"	f
 Character:BeCatched	character.lua	/^function Character:BeCatched(tbMaster)$/;"	f
 Character:CancelPause	character.lua	/^function Character:CancelPause()$/;"	f
 Character:Catch	character.lua	/^function Character:Catch(tbTarget)$/;"	f
-Character:Die	character.lua	/^function Character:Die()$/;"	f
+Character:Die	character.lua	/^function Character:Die(dwLancherId)$/;"	f
 Character:ExecuteAI	character.lua	/^function Character:ExecuteAI()$/;"	f
 Character:GetCatchList	character.lua	/^function Character:GetCatchList()$/;"	f
 Character:GetLogicPos	character.lua	/^function Character:GetLogicPos()$/;"	f
@@ -39,12 +39,13 @@ Character:Goto	character.lua	/^function Character:Goto(nDir)$/;"	f
 Character:Init	character.lua	/^function Character:Init(pSprite, dwTemplateId, tbProperty, tbSkill, szAIName)$/;"	f
 Character:Move	character.lua	/^function Character:Move()$/;"	f
 Character:Pause	character.lua	/^function Character:Pause()$/;"	f
-Character:ReceiveDamage	character.lua	/^function Character:ReceiveDamage(nDamage)$/;"	f
+Character:ReceiveDamage	character.lua	/^function Character:ReceiveDamage(nDamage, dwLancherId)$/;"	f
 Character:Reset	character.lua	/^function Character:Reset()$/;"	f
 Character:SetDirection	character.lua	/^function Character:SetDirection(nDirection)$/;"	f
 Character:SetLogicPos	character.lua	/^function Character:SetLogicPos(nLogicX, nLogicY)$/;"	f
 Character:SetProperty	character.lua	/^function Character:SetProperty(Key, Value)$/;"	f
 Character:Start	character.lua	/^function Character:Start()$/;"	f
+Character:Stop	character.lua	/^function Character:Stop()$/;"	f
 Character:TryFindHero	character.lua	/^function Character:TryFindHero(tbExpect)$/;"	f
 Character:TryFindMonster	character.lua	/^function Character:TryFindMonster(tbExpect)$/;"	f
 Character:TryFindUnit	character.lua	/^function Character:TryFindUnit(bHero, tbExpect)$/;"	f
@@ -52,7 +53,7 @@ Character:TryGoto	character.lua	/^function Character:TryGoto(nLogicX, nLogicY)$/
 Character:Uninit	character.lua	/^function Character:Uninit()$/;"	f
 Character:Wait	character.lua	/^function Character:Wait(nFrame)$/;"	f
 IsArriveTarget	character.lua	/^	local function IsArriveTarget()$/;"	f
-tick	character.lua	/^	local function tick()$/;"	f
+OnActive	character.lua	/^	local function OnActive()$/;"	f
 GameMgr:AddCharacter	character_mgr.lua	/^function GameMgr:AddCharacter(dwId, tbCharacter)$/;"	f
 GameMgr:GetCharacterById	character_mgr.lua	/^function GameMgr:GetCharacterById(dwId)$/;"	f
 GameMgr:RemoveCharacter	character_mgr.lua	/^function GameMgr:RemoveCharacter(szSceneName, dwId)$/;"	f
@@ -60,6 +61,11 @@ GameMgr:RemoveSprite	character_mgr.lua	/^function GameMgr:RemoveSprite(szSceneNa
 Debug.Print	dbg.lua	/^function Debug.Print(...)$/;"	f
 Debug:Init	dbg.lua	/^function Debug:Init(nMode)$/;"	f
 Accumulate	define.lua	/^local function Accumulate(nId)$/;"	f
+Ecnomic:Init	ecnomic.lua	/^function Ecnomic:Init()$/;"	f
+Ecnomic:OnCharacterDie	ecnomic.lua	/^function Ecnomic:OnCharacterDie(dwCharacterId, dwLancherId)$/;"	f
+Ecnomic:RegisterEvent	ecnomic.lua	/^function Ecnomic:RegisterEvent()$/;"	f
+Ecnomic:UnRegisterEvent	ecnomic.lua	/^function Ecnomic:UnRegisterEvent()$/;"	f
+Ecnomic:Uninit	ecnomic.lua	/^function Ecnomic:Uninit()$/;"	f
 Event:CallBack	event.lua	/^function Event:CallBack(tbEvent, ...)$/;"	f
 Event:FireEvent	event.lua	/^function Event:FireEvent(szEvent, ...)$/;"	f
 Event:Preload	event.lua	/^function Event:Preload()$/;"	f
@@ -140,6 +146,7 @@ Maze:CheckCanDig	maze.lua	/^function Maze:CheckCanDig(nX, nY)$/;"	f
 Maze:ClearMouseMonster	maze.lua	/^function Maze:ClearMouseMonster()$/;"	f
 Maze:ClearRecordOP	maze.lua	/^function Maze:ClearRecordOP()$/;"	f
 Maze:ClearUnit	maze.lua	/^function Maze:ClearUnit(nX, nY, dwId)$/;"	f
+Maze:Debug	maze.lua	/^function Maze:Debug()$/;"	f
 Maze:Dig	maze.lua	/^function Maze:Dig(nX, nY)$/;"	f
 Maze:Entry	maze.lua	/^function Maze:Entry(tbData)$/;"	f
 Maze:GenBlock	maze.lua	/^function Maze:GenBlock()$/;"	f
@@ -178,8 +185,7 @@ MenuMgr:CreateMenu	menu.lua	/^function MenuMgr:CreateMenu(szName, szBgImg)$/;"	f
 MenuMgr:GetMenu	menu.lua	/^function MenuMgr:GetMenu(szName)$/;"	f
 MenuMgr:Init	menu.lua	/^function MenuMgr:Init()$/;"	f
 MenuMgr:Uninit	menu.lua	/^function MenuMgr:Uninit()$/;"	f
-MenuMgr:UpdateByImage	menu.lua	/^function MenuMgr:UpdateByImage(szName, tbElementList)$/;"	f
-MenuMgr:UpdateBySprite	menu.lua	/^function MenuMgr:UpdateBySprite(szName, tbElementList)$/;"	f
+MenuMgr:UpdateBySprite	menu.lua	/^function MenuMgr:UpdateBySprite(szName, tbElementList, tbParam)$/;"	f
 MenuMgr:UpdateByString	menu.lua	/^function MenuMgr:UpdateByString(szName, tbElementList, tbParam)$/;"	f
 Monster:ClearAll	monster.lua	/^function Monster:ClearAll()$/;"	f
 Monster:GenerateId	monster.lua	/^function Monster:GenerateId()$/;"	f
@@ -188,16 +194,20 @@ Monster:Init	monster.lua	/^function Monster:Init()$/;"	f
 Monster:NewMonster	monster.lua	/^function Monster:NewMonster(dwMonsterTemplateId, nStartX, nStartY, szAIName)$/;"	f
 Monster:Uninit	monster.lua	/^function Monster:Uninit()$/;"	f
 Performance:GenerateFightFlag	performance.lua	/^function Performance:GenerateFightFlag(nX, nY)$/;"	f
-Performance:GetAvaiableDamageLabel	performance.lua	/^function Performance:GetAvaiableDamageLabel()$/;"	f
+Performance:GetAvaiableFlyLabel	performance.lua	/^function Performance:GetAvaiableFlyLabel()$/;"	f
 Performance:GetNodeFight	performance.lua	/^function Performance:GetNodeFight()$/;"	f
 Performance:Init	performance.lua	/^function Performance:Init(layer)$/;"	f
-Performance:OnCharacterHPChanged	performance.lua	/^function Performance:OnCharacterHPChanged(dwCharacterId,  nBeforeHP, nAfterHP)$/;"	f
+Performance:OnCharacterAdd	performance.lua	/^function Performance:OnCharacterAdd(dwCharacterId, ccRect)$/;"	f
+Performance:OnCharacterHPChanged	performance.lua	/^function Performance:OnCharacterHPChanged(dwCharacterId, nBeforeHP, nAfterHP, nMaxHP)$/;"	f
 Performance:OnCharacterPhyiscAttack	performance.lua	/^function Performance:OnCharacterPhyiscAttack(dwLancherId, dwTargetId, nDamage)$/;"	f
+Performance:OnHeroAdd	performance.lua	/^function Performance:OnHeroAdd(dwHeroId)$/;"	f
+Performance:OnMonsterAdd	performance.lua	/^function Performance:OnMonsterAdd(dwMonsterId)$/;"	f
 Performance:RegistEvent	performance.lua	/^function Performance:RegistEvent()$/;"	f
 Performance:SetSpriteDirection	performance.lua	/^function Performance:SetSpriteDirection(pSprite, nDirection)$/;"	f
 Performance:UnRegistEvent	performance.lua	/^function Performance:UnRegistEvent()$/;"	f
 Performance:Uninit	performance.lua	/^function Performance:Uninit()$/;"	f
 tick	performance.lua	/^    local function tick()$/;"	f
+Player:ChangeResouce	player.lua	/^function Player:ChangeResouce(szResourceName, nChangeCount)$/;"	f
 Player:Entry	player.lua	/^function Player:Entry(tbData)$/;"	f
 Player:GetCurResouceMax	player.lua	/^function Player:GetCurResouceMax(szResourceName)$/;"	f
 Player:GetLevel	player.lua	/^function Player:GetLevel()$/;"	f
@@ -239,7 +249,7 @@ GameMgr:InitTitle	title.lua	/^function GameMgr:InitTitle()$/;"	f
 GameMgr:OnCharacterDie	title.lua	/^function GameMgr:OnCharacterDie(dwCharacterId)$/;"	f
 GameMgr:OnCharacterReceiveDamage	title.lua	/^function GameMgr:OnCharacterReceiveDamage(dwCharacterId)$/;"	f
 GameMgr:OnHeroAdd	title.lua	/^function GameMgr:OnHeroAdd(dwHeroId)$/;"	f
-GameMgr:OnResourceChanged	title.lua	/^function GameMgr:OnResourceChanged(szResourceName, nNewValue, bMax)$/;"	f
+GameMgr:OnResourceChanged	title.lua	/^function GameMgr:OnResourceChanged(szResourceName, nNewValue, nOldValue)$/;"	f
 GameMgr:OnStateChanged	title.lua	/^function GameMgr:OnStateChanged(nState)$/;"	f
 GameMgr:RegistEvent	title.lua	/^function GameMgr:RegistEvent()$/;"	f
 GameMgr:RemoveHeroHP	title.lua	/^function GameMgr:RemoveHeroHP(dwHeroId)$/;"	f

@@ -204,13 +204,20 @@ function Maze:MoveMonster(dwId, nX, nY, nNewX, nNewY)
 	end
 	self:ClearUnit(nX, nY, dwId)
 	self:SetUnit(nNewX, nNewY, dwId)
-
-	self:SetData(nNewX, nNewY, nMazeData)
-	self:SetData(nX, nY, self.MAP_FREE)
-	if nMazeData - self.MAP_MONSTER_START + 1 == self.MAP_TARGET then
-		self.tbMapTargetPos[1] = nNewX
-		self.tbMapTargetPos[2] = nNewY
+	if GameMgr:GetState() == GameMgr.STATE_EDIT then
+		self:SetData(nNewX, nNewY, nMazeData)
+		self:SetData(nX, nY, self.MAP_FREE)
+		if nMazeData - self.MAP_MONSTER_START + 1 == self.MAP_TARGET then
+			self.tbMapTargetPos[1] = nNewX
+			self.tbMapTargetPos[2] = nNewY
+		end
 	end
+	local tbCharacter = GameMgr:GetCharacterById(dwId)
+	if not tbCharacter then
+		assert(false)
+		return
+	end
+	tbCharacter:SetLogicPos(nNewX, nNewY)
 	Event:FireEvent("MoveMonster", dwId, nMazeData - self.MAP_MONSTER_START + 1, nX, nY, nNewX, nNewY)
 	return 1
 end
@@ -376,6 +383,25 @@ function Maze:GenBlock()
 	return tbSprite
 end
 
+function Maze:Debug()
+	if not self.bDebug then
+		self.bDebug = true
+	else
+		self.bDebug = false
+	end
+	for nX, tb in pairs(self.tbUnit) do
+		for nY, tbList in pairs(tb) do
+			local szList = ""
+			for dwId, _ in pairs(tbList) do
+				szList = szList .. " ".. dwId
+			end
+			if szList ~= "" then
+				print(nX, nY, szList)
+			end
+		end
+	end
+end
+
 function Maze:GetBlock(nX, nY)
 	if self.tbBlock[nX] and self.tbBlock[nX][nY] then
 		return self.tbBlock[nX][nY]
@@ -405,7 +431,9 @@ function Maze:StartDrag(nX, nY)
 			nLogicY = nY,
 			pSprite = tbCharacter.pSprite,
 			dwId = dwCharacterId,
+			isPause = tbCharacter.pSprite.isPaused,
 		}
+		tbCharacter:Pause()
 	end
 end
 
@@ -418,6 +446,14 @@ function Maze:StopDrag(nX, nY)
 	if self:GetData(nX, nY) == self.MAP_FREE then
 		self:MoveMonster(self.tbDrag.dwId, self.tbDrag.nLogicX, self.tbDrag.nLogicY, nX, nY)
 		bRet = 1
+	end
+	if self.tbDrag.isPause == false then
+		local tbCharacter = GameMgr:GetCharacterById(self.tbDrag.dwId)
+		if not tbCharacter then
+			assert(false)
+			return
+		end
+		tbCharacter:CancelPause()
 	end
 	self.tbDrag = nil
 	return bRet

@@ -47,13 +47,13 @@ function GameScene:Create()
         touchBeginPoint = {x = x, y = y}
         touchMoveStartPoint = {x = x, y = y}
 
-        if GameMgr:GetState() == GameMgr.STATE_EDIT then
+        if GameMgr:GetState() == GameMgr.STATE_EDIT or GameMgr:GetState() == GameMgr.STATE_NORMAL then
             local nX, nY = layerMaze:getPosition()
             local nPosX, nPosY = x - nX, y - nY
             local nLogicX, nLogicY = Lib:GetLogicPosByPosition(nPosX, nPosY)
-            local nData = Maze:GetData(nLogicX, nLogicY)
-            if nData >= Maze.MAP_MONSTER_START then
-                Maze:StartDrag(nLogicX, nLogicY, pSprite)
+            local dwId = Maze:GetRandomUnit(nLogicX, nLogicY)
+            if dwId and dwId > 0 then
+                Maze:StartDrag(nLogicX, nLogicY)
             end
         end
         return true
@@ -90,11 +90,12 @@ function GameScene:Create()
     end
 
     local function onTouchEnded(x, y)
-        if GameMgr:GetState() == GameMgr.STATE_BATTLE then
+        local nState = GameMgr:GetState()
+        if nState == GameMgr.STATE_BATTLE then
             if x == touchMoveStartPoint.x and y == touchMoveStartPoint.y then
                 GameMgr:PauseBattle()
             end
-        elseif GameMgr:GetState() == GameMgr.STATE_EDIT then
+        elseif nState == GameMgr.STATE_EDIT or nState == GameMgr.STATE_NORMAL then
             local tbDragInfo = Maze:GetDragInfo()
             if tbDragInfo then
                 local nMazeX, nMazeY = layerMaze:getPosition()

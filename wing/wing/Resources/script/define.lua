@@ -74,6 +74,7 @@ Def.tbColor = {
 	["green"] = ccc3(0, 255, 0),
 	["blue"]  = ccc3(0, 0, 255),
 	["white"] = ccc3(0, 0, 0),
+	["yellow"] = ccc3(255, 255, 0),
 }
 
 if OS_WIN32 then

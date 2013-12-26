@@ -66,6 +66,10 @@ if not _G.Performance then
 	_G.Performance  = {}
 end
 
+if not _G.Ecnomic then
+	_G.Ecnomic = {}
+end
+
 require("define")
 require("lib")
 require("event")
@@ -73,6 +77,7 @@ require("dbg")
 require("performance")
 require("game_mgr")
 require("maze")
+require("ecnomic")
 require("player")
 require("character")
 require("hero")

@@ -56,7 +56,7 @@ function Skill:CastPhysicAttack(tbLancher, tbCfg)
 			local nTargetDefense = tbTarget:GetProperty("Defense")
 			local nDamage = math.floor(nLancherAttack * nEffectRate * (100 / (100 + nTargetDefense)))
 			Event:FireEvent("CharacterPhyiscAttack", tbLancher.dwId, tbTarget.dwId, nDamage)
-			tbTarget:ReceiveDamage(nDamage)
+			tbTarget:ReceiveDamage(nDamage, tbLancher.dwId)
 
 			tbTargetList[#tbTargetList + 1] = tbTarget
 			if tbCfg.tbParam.bAOE ~= 1 then
