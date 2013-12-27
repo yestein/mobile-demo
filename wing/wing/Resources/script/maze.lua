@@ -198,19 +198,20 @@ function Maze:MoveMonster(dwId, nX, nY, nNewX, nNewY)
 		assert(false)
 		return
 	end
-	local nMazeData = self:GetData(nX, nY)
-	if nMazeData < self.MAP_MONSTER_START then
-		return 0
-	end
 	self:ClearUnit(nX, nY, dwId)
 	self:SetUnit(nNewX, nNewY, dwId)
 	if GameMgr:GetState() == GameMgr.STATE_EDIT then
-		self:SetData(nNewX, nNewY, nMazeData)
-		self:SetData(nX, nY, self.MAP_FREE)
-		if nMazeData - self.MAP_MONSTER_START + 1 == self.MAP_TARGET then
-			self.tbMapTargetPos[1] = nNewX
-			self.tbMapTargetPos[2] = nNewY
-		end
+		local nMazeData = self:GetData(nX, nY)
+		if nMazeData >= self.MAP_MONSTER_START then
+			self:SetData(nNewX, nNewY, nMazeData)
+			self:SetData(nX, nY, self.MAP_FREE)
+			if nMazeData - self.MAP_MONSTER_START + 1 == self.MAP_TARGET then
+				self.tbMapTargetPos[1] = nNewX
+				self.tbMapTargetPos[2] = nNewY
+			end
+		else
+			assert(false)
+		end		
 	end
 	local tbCharacter = GameMgr:GetCharacterById(dwId)
 	if not tbCharacter then
@@ -218,7 +219,7 @@ function Maze:MoveMonster(dwId, nX, nY, nNewX, nNewY)
 		return
 	end
 	tbCharacter:SetLogicPos(nNewX, nNewY)
-	Event:FireEvent("MoveMonster", dwId, nMazeData - self.MAP_MONSTER_START + 1, nX, nY, nNewX, nNewY)
+	Event:FireEvent("MoveMonster", dwId, nX, nY, nNewX, nNewY)
 	return 1
 end
 
